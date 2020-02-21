@@ -16,6 +16,7 @@ const	ascii_style = ``;
 let	dom_ascii;
 let	dom_spans;
 let	current_layer;
+let	rect_border_chars;
 
 let	ascii;
 let	canvas_width, canvas_height;
@@ -45,7 +46,7 @@ function	create_canvas(width, height) {
 	/// CREATE ARRAY
 	for (y = 0; y < height; ++y) {
 		span = document.createElement("span");
-		span.textContent = "-".repeat(width);
+		span.textContent = " ".repeat(width);
 		dom_ascii.appendChild(span);
 		ascii.push(span.textContent.split(""));
 	}
@@ -113,6 +114,27 @@ function	clear(to_draw = null) {
 	}
 }
 
+function	rect_border(characters) {
+	rect_border_chars = characters;
+}
+
+function	rect(x, y, width, height = width) {
+	let		layer;
+	let		chars;
+
+	layer = current_layer;
+	chars = rect_border_chars;
+	layer[y][x] = chars[0];
+	layer[y][x + 1] = chars[1];
+	layer[y][x + 2] = chars[2];
+	layer[y + 1][x] = chars[3];
+	layer[y + 1][x + 1] = chars[4];
+	layer[y + 1][x + 2] = chars[5];
+	layer[y + 2][x] = chars[6];
+	layer[y + 2][x + 1] = chars[7];
+	layer[y + 2][x + 2] = chars[8];
+}
+
 //////////////////////////////////////////////////
 /// PRIVATE FUNCTIONS
 //////////////////////////////////////////////////
@@ -147,6 +169,7 @@ window.addEventListener("load", function () {
 	let		style;
 	let		body;
 
+	rect_border_chars = "/-\\| |\\_/";
 	mouse_x = 0;
 	mouse_y = 0;
 	/// INSERT STYLE
