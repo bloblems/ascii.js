@@ -1,0 +1,27 @@
+html, * {
+	font-family:		"Lucida Console", Monaco, monospace;
+}
+
+#ascii {
+	position:			fixed;
+	display:			block;
+
+	left:				0;
+	/*right:				0;*/
+	top:				0;
+	overflow-x:			hidden;
+
+	white-space:		pre;
+
+	margin:				0;
+	padding:			0;
+}
+
+#ascii span {
+	display:			block;
+	margin:				0;
+	margin-top:			0;
+	margin-bottom:		0;
+	padding:			0;
+}
+
