@@ -41,24 +41,41 @@ let	mouse_x, mouse_y;
 /// CANVAS
 //////////////////////////////
 
-function	create_canvas(width, height) {
-	let		y;
+function	create_canvas(width = null, height = null) {
+	let		i;
 	let		span;
-	let		test;
+	let		num_char;
 
-	/// INIT
+	span = document.createElement("span");
+	dom_ascii.appendChild(span);
+	/// RESPONSIVE WIDTH
+	if (width == 0 || width == null) {
+		span.textContent += " ".repeat(100);
+		num_char = window.innerWidth / (dom_ascii.offsetWidth / 100);
+		width = Math.ceil(num_char);
+		span.textContent = " ".repeat(width);
+	/// FIXED WIDTH
+	} else {
+		span.textContent += " ".repeat(width);
+	}
+	ascii = [span.textContent.split("")];
+	/// RESPONSIVE HEIGHT
+	if (height == 0 || height == null) {
+		while (dom_ascii.offsetHeight <= window.innerHeight) {
+			dom_ascii.appendChild(span.cloneNode(true));
+			ascii.push(span.textContent.split(""));
+		}
+		height = dom_ascii.childNodes.length;
+	/// FIXED HEIGHT
+	} else {
+		for (i = 0; i < height; ++i) {
+			dom_ascii.appendChild(span.cloneNode(true));
+			ascii.push(span.textContent.split(""));
+		}
+	}
+	/// SAVE 
 	canvas_width = width;
 	canvas_height = height;
-	ascii = [];
-	/// CREATE ARRAY
-	for (y = 0; y < height; ++y) {
-		span = document.createElement("span");
-		span.textContent = " ".repeat(width);
-		dom_ascii.appendChild(span);
-		ascii.push(span.textContent.split(""));
-	}
-	/// SAVE
-	dom_spans = dom_ascii.childNodes;
 	current_layer = ascii;
 }
 
@@ -287,12 +304,14 @@ function		line(x0, y0, x1, y1, char = null) {
 
 function	ascii_draw() {
 	let		x, y;
+	let		spans;
 
 	/// CALL USER draw()
 	draw();
 	/// DRAW ARRAY TO DOM ASCII
+	spans = dom_ascii.childNodes;
 	for (y = 0; y < canvas_height; ++y) {
-		dom_spans[y].textContent = ascii[y].join("");
+		spans[y].textContent = ascii[y].join("");
 	}
 	/// LOOP ANIMATION
 	window.requestAnimationFrame(ascii_draw);
