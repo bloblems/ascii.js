@@ -234,27 +234,50 @@ function		set_line_char(char = null) {
 	line_char = char || DEFAULT_LINE_CHAR;
 }
 
-function		line(x1, y1, x2, y2, char = null) {
-	let			layer;
-	let			dx, dy;
-	let			x, y;
-	let			tmp;
-
-	char = char || line_char;
-	layer = current_layer;
-	if (x1 > x2) {
-		tmp = x1;
-		x1 = x2;
-		x2 = tmp;
-		tmp = y1;
-		y1 = y2;
-		y2 = tmp;
+function		line(x0, y0, x1, y1, char = null) {
+	if (Math.abs(y1 - y0) < Math.abs(x1 - x0)) {
+		if (x0 > x1) {
+			ascii_draw_line_low(x1, y1, x0, y0, char || line_char);
+		} else {
+			ascii_draw_line_low(x0, y0, x1, y1, char || line_char);
+		}
+	} else {
+		if (y0 > y1) {
+			ascii_draw_line_high(x1, y1, x0, y0, char || line_char);
+		} else {
+			ascii_draw_line_high(x0, y0, x1, y1, char || line_char);
+		}
 	}
-	dx = x2 - x1;
-	dy = y2 - y1;
-	for (x = x1; x < x2; ++x) {
-		y = Math.round(y1 + dy * (x - x1) / dx);
-		layer[y][x] = char;
+}
+
+function		line(x0, y0, x1, y1, char = null) {
+	let			layer;
+	let			x, y;
+	let			dx, dy;
+	let			sx, sy;
+	let			err, err_2;
+
+	layer = current_layer;
+	char = char || line_char;
+	dx =  Math.abs(x1 - x0);
+	sx = (x0 < x1) ? 1 : -1;
+	dy = -Math.abs( y1 - y0);
+	sy = (y0 < y1) ? 1 : -1;
+	err = dx + dy;
+	while (true) {
+		layer[y0][x0] = char;
+		if (x0 == x1 && y0 == y1) {
+			break;
+		}
+		err_2 = 2 * err;
+		if (err_2 >= dy) {
+			err += dy;
+			x0 += sx;
+		}
+		if (err_2 <= dx) {
+			err += dx;
+			y0 += sy;
+		}
 	}
 }
 
