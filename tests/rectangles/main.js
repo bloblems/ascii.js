@@ -11,15 +11,31 @@ window.requestAnimationFrame = window.requestAnimationFrame
 /// DATA
 ////////////////////////////////////////////////////////////////////////////////
 
+let		x;
+let		y;
+
 ////////////////////////////////////////////////////////////////////////////////
 /// FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
 function	setup() {
 	create_canvas(100, 50);
+	y = -3;
+	x = -5;
 }
 
 function	draw() {
 	clear();
-	rect(10, 10, 20);
+	set_rect_mode(RECT_CORNER);
+	rect(0, 0, 100, 50);
+	set_rect_mode(RECT_CENTER);
+	rect(x, y, 10, 6);
+	++x;
+	if (x >= 105) {
+		x = -5;
+	}
+	++y;
+	if (y >= 53) {
+		y = -3;
+	}
 }

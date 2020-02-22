@@ -11,12 +11,17 @@ window.requestAnimationFrame = window.requestAnimationFrame
 /// DATA
 ////////////////////////////////////////////////////////////////////////////////
 
+const	RECT_CORNER					= 0;
+const	RECT_CENTER					= 1;
+const	DEFAULT_RECT_BORDER_CHARS	= "|-|| ||-|";
+const	DEFAULT_RECT_MODE			= RECT_CORNER;
 const	ascii_style = ``;
 
 let	dom_ascii;
 let	dom_spans;
 let	current_layer;
 let	rect_border_chars;
+let	rect_mode;
 
 let	ascii;
 let	canvas_width, canvas_height;
@@ -114,25 +119,73 @@ function	clear(to_draw = null) {
 	}
 }
 
-function	rect_border(characters) {
-	rect_border_chars = characters;
+function	set_rect_border(characters = null) {
+	rect_border_chars = characters || DEFAULT_RECT_BORDER_CHARS;
 }
 
-function	rect(x, y, width, height = width) {
+function	set_rect_mode(mode = DEFAULT_RECT_MODE) {
+	rect_mode = mode;
+}
+
+function	rect(pos_x, pos_y, width, height = width, border_chars = null) {
 	let		layer;
 	let		chars;
+	let		x, y;
 
+	/// HANDLE RECT MODE
+	if (rect_mode == RECT_CENTER) {
+		pos_x -= Math.round(width / 2);
+		pos_y -= Math.round(height / 2);
+	}
+	/// CHECK OUTSIDE DRAWING
+	if (pos_x >= canvas_width || pos_x + width < 0 || pos_y >= canvas_height
+	|| pos_y + height < 0) {
+		return;
+	}
+	/// SET CHARACTERS
 	layer = current_layer;
-	chars = rect_border_chars;
-	layer[y][x] = chars[0];
-	layer[y][x + 1] = chars[1];
-	layer[y][x + 2] = chars[2];
-	layer[y + 1][x] = chars[3];
-	layer[y + 1][x + 1] = chars[4];
-	layer[y + 1][x + 2] = chars[5];
-	layer[y + 2][x] = chars[6];
-	layer[y + 2][x + 1] = chars[7];
-	layer[y + 2][x + 2] = chars[8];
+	chars = border_chars || rect_border_chars;
+	if (height == 1) {
+		chars = chars.split("");
+		if (width == 1) {
+			chars[6] = chars[4];
+		} else {
+			chars[6] = chars[3];
+			chars[7] = chars[4];
+			chars[8] = chars[5];
+		}
+	} else if (width == 1) {
+		chars = chars.split("");
+		chars[0] = chars[1];
+		chars[3] = chars[4];
+		chars[6] = chars[7];
+	}
+	/// TOP
+	if (height > 1 && pos_y >= 0) {
+		for (x = 0; x < width; ++x) {
+			if (pos_x + x >= 0 && pos_x + x < canvas_width) {
+				layer[pos_y][pos_x + x] = (x == 0) ? chars[0] : (x == width - 1) ? chars[2] : chars[1];
+			}
+		}
+	}
+	/// CENTER
+	for (y = 1; y < height - 1; ++y) {
+		if (pos_y + y >= 0 && pos_y + y < canvas_height) {
+			for (x = 0; x < width; ++x) {
+				if (pos_x + x >= 0 && pos_x + x < canvas_width) {
+					layer[pos_y + y][pos_x + x] = (x == 0) ? chars[3] : (x == width - 1) ? chars[5] : chars[4];
+				}
+			}
+		}
+	}
+	/// BOTTOM
+	if (pos_y + height - 1 >= 0 && pos_y + height - 1 < canvas_height) {
+		for (x = 0; x < width; ++x) {
+			if (pos_x + x >= 0 && pos_x + x < canvas_width) {
+				layer[pos_y + height - 1][pos_x + x] = (x == 0) ? chars[6] : (x == width - 1) ? chars[8] : chars[7];
+			}
+		}
+	}
 }
 
 //////////////////////////////////////////////////
@@ -169,7 +222,8 @@ window.addEventListener("load", function () {
 	let		style;
 	let		body;
 
-	rect_border_chars = "/-\\| |\\_/";
+	rect_border_chars = DEFAULT_RECT_BORDER_CHARS;
+	rect_mode = DEFAULT_RECT_MODE;
 	mouse_x = 0;
 	mouse_y = 0;
 	/// INSERT STYLE
