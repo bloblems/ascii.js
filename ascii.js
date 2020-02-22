@@ -119,6 +119,10 @@ function	clear(to_draw = null) {
 	}
 }
 
+//////////
+/// RECT
+//////////
+
 function	set_rect_border(characters = null) {
 	rect_border_chars = characters || DEFAULT_RECT_BORDER_CHARS;
 }
@@ -186,6 +190,38 @@ function	rect(pos_x, pos_y, width, height = width, border_chars = null) {
 			}
 		}
 	}
+}
+
+//////////
+/// BORDER
+//////////
+
+function	border(char) {
+	let		border_layer;
+	let		x, y;
+
+	/// DRAW ON A NEW LAYER
+	border_layer = create_layer();
+	for (y = 0; y < canvas_height; ++y) {
+		for (x = 0; x < canvas_width; ++x) {
+			if (layer[y][x] != " ") {
+				continue;
+			}
+			if ((x > 0 && layer[y][x - 1] != " ")
+			|| (x + 1 < canvas_width && layer[y][x + 1] != " ")
+			|| (y > 0 && layer[y - 1][x] != " ")
+			|| (y + 1 < canvas_height && layer[y + 1][x] != " ")
+			|| (x > 0 && y > 0 && layer[y - 1][x - 1] != " ")
+			|| (x + 1 < canvas_width && y > 0 && layer[y - 1][x + 1] != " ")
+			|| (x + 1 < canvas_width && y + 1 < canvas_height && layer[y + 1][x + 1] != " ")
+			|| (x > 0 && y + 1 < canvas_height && layer[y + 1][x - 1] != " ")
+			) {
+				border_layer[y][x] = char;
+			}
+		}
+	}
+	/// DRAW NEW LAYER ON CURRENT
+	draw_layer(border_layer);
 }
 
 //////////////////////////////////////////////////
