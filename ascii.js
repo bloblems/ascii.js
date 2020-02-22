@@ -15,6 +15,7 @@ const	RECT_CORNER					= 0;
 const	RECT_CENTER					= 1;
 const	DEFAULT_RECT_BORDER_CHARS	= "|-|| ||-|";
 const	DEFAULT_RECT_MODE			= RECT_CORNER;
+const	DEFAULT_LINE_CHAR			= ".";
 const	ascii_style = ``;
 
 let	dom_ascii;
@@ -22,6 +23,7 @@ let	dom_spans;
 let	current_layer;
 let	rect_border_chars;
 let	rect_mode;
+let	line_char;
 
 let	ascii;
 let	canvas_width, canvas_height;
@@ -119,9 +121,9 @@ function	clear(to_draw = null) {
 	}
 }
 
-//////////
+////////////////////
 /// RECT
-//////////
+////////////////////
 
 function	set_rect_border(characters = null) {
 	rect_border_chars = characters || DEFAULT_RECT_BORDER_CHARS;
@@ -192,9 +194,9 @@ function	rect(pos_x, pos_y, width, height = width, border_chars = null) {
 	}
 }
 
-//////////
+////////////////////
 /// BORDER
-//////////
+////////////////////
 
 function	border(char) {
 	let		border_layer;
@@ -222,6 +224,38 @@ function	border(char) {
 	}
 	/// DRAW NEW LAYER ON CURRENT
 	draw_layer(border_layer);
+}
+
+////////////////////
+/// LINE
+////////////////////
+
+function		set_line_char(char = null) {
+	line_char = char || DEFAULT_LINE_CHAR;
+}
+
+function		line(x1, y1, x2, y2, char = null) {
+	let			layer;
+	let			dx, dy;
+	let			x, y;
+	let			tmp;
+
+	char = char || line_char;
+	layer = current_layer;
+	if (x1 > x2) {
+		tmp = x1;
+		x1 = x2;
+		x2 = tmp;
+		tmp = y1;
+		y1 = y2;
+		y2 = tmp;
+	}
+	dx = x2 - x1;
+	dy = y2 - y1;
+	for (x = x1; x < x2; ++x) {
+		y = Math.round(y1 + dy * (x - x1) / dx);
+		layer[y][x] = char;
+	}
 }
 
 //////////////////////////////////////////////////
@@ -260,6 +294,7 @@ window.addEventListener("load", function () {
 
 	rect_border_chars = DEFAULT_RECT_BORDER_CHARS;
 	rect_mode = DEFAULT_RECT_MODE;
+	line_char = DEFAULT_LINE_CHAR;
 	mouse_x = 0;
 	mouse_y = 0;
 	/// INSERT STYLE
