@@ -11,12 +11,19 @@ window.requestAnimationFrame = window.requestAnimationFrame
 /// DATA
 ////////////////////////////////////////////////////////////////////////////////
 
+const	ascii_style = ``;
+
 const	RECT_CORNER					= 0;
 const	RECT_CENTER					= 1;
-const	DEFAULT_RECT_BORDER_CHARS	= "|-|| ||-|";
-const	DEFAULT_RECT_MODE			= RECT_CORNER;
-const	DEFAULT_LINE_CHAR			= ".";
-const	ascii_style = ``;
+const	RECT_DEFAULT_BORDER_CHARS	= "|-|| ||-|";
+const	RECT_DEFAULT_MODE			= RECT_CORNER;
+const	LINE_DEFAULT_CHAR			= ".";
+const	TEXT_TRIM					= 0;
+const	TEXT_WRAP					= 1;
+const	TEXT_LEFT					= 0;
+const	TEXT_CENTER					= 1;
+const	TEXT_DEFAULT_WRAP			= TEXT_TRIM;
+const	TEXT_DEFAULT_MODE			= TEXT_LEFT;
 
 let		dom_ascii;
 let		dom_spans;
@@ -24,11 +31,14 @@ let		current_layer;
 let		rect_border_chars;
 let		rect_mode;
 let		line_char;
+let		text_mode;
+let		text_wrap;
 let		ascii_loop_draw;
 let		ascii_links;
 
 let		ascii;
 let		canvas_width, canvas_height;
+let		char_width, char_height;
 let		mouse_x, mouse_y;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -76,6 +86,8 @@ function	create_canvas(width = null, height = null) {
 		}
 	}
 	/// SAVE 
+	char_width = dom_ascii.offsetWidth / width;
+	char_height = dom_ascii.offsetHeight / height;
 	canvas_width = width;
 	canvas_height = height;
 	current_layer = ascii;
@@ -153,10 +165,10 @@ function	loop() {
 ////////////////////
 
 function	set_rect_border(characters = null) {
-	rect_border_chars = characters || DEFAULT_RECT_BORDER_CHARS;
+	rect_border_chars = characters || RECT_DEFAULT_BORDER_CHARS;
 }
 
-function	set_rect_mode(mode = DEFAULT_RECT_MODE) {
+function	set_rect_mode(mode = RECT_DEFAULT_MODE) {
 	rect_mode = mode;
 }
 
@@ -258,7 +270,7 @@ function	border(char) {
 ////////////////////
 
 function	set_line_char(char = null) {
-	line_char = char || DEFAULT_LINE_CHAR;
+	line_char = char || LINE_DEFAULT_CHAR;
 }
 
 function	line(x0, y0, x1, y1, char = null) {
@@ -290,6 +302,64 @@ function	line(x0, y0, x1, y1, char = null) {
 		if (err_2 <= dx) {
 			err += dx;
 			y0 += sy;
+		}
+	}
+}
+
+////////////////////
+/// TEXT
+////////////////////
+
+function	set_text_wrap(mode = TEXT_DEFAULT_WRAP) {
+	text_wrap = mode;
+}
+
+function	set_text_mode(mode = TEXT_DEFAULT_MODE) {
+	text_mode = mode;
+}
+
+function	text(string, x, y, vertical = false) {
+	let		layer;
+	let		i;
+
+	layer = current_layer;
+	if (text_mode == TEXT_CENTER) {
+		x -= Math.floor(string.length / 2);
+	}
+	/// HORIZONTAL
+	if (vertical == false) {
+		/// OUT OF FRAME
+		if (y < 0 || y >= canvas_height) {
+			return;
+		}
+		/// PUT CHARACTERS
+		for (i = 0; i < string.length; ++i) {
+			/// OUT ON LEFT
+			if (x + i < 0) {
+				continue;
+			/// OUT ON RIGHT
+			} else if (x + i >= canvas_width) {
+				/// WRAP
+				if (text_wrap == TEXT_WRAP) {
+					x = -i;
+					++y;
+				/// TRIM
+				} else {
+					return;
+				}
+			}
+			layer[y][x + i] = string[i];
+		}
+	/// VERTICAL
+	} else {
+		/// OUT OF FRAME
+		if (x < 0 || x >= canvas_width) {
+			return;
+		}
+		for (i = 0; i < string.length; ++i) {
+			if (y + i >= 0 && y + i < canvas_height) {
+				layer[y + i][x] = string[i];
+			}
 		}
 	}
 }
@@ -406,9 +476,11 @@ window.addEventListener("load", function () {
 
 	ascii_links = [];
 	ascii_loop_draw = true;
-	rect_border_chars = DEFAULT_RECT_BORDER_CHARS;
-	rect_mode = DEFAULT_RECT_MODE;
-	line_char = DEFAULT_LINE_CHAR;
+	rect_border_chars = RECT_DEFAULT_BORDER_CHARS;
+	rect_mode = RECT_DEFAULT_MODE;
+	line_char = LINE_DEFAULT_CHAR;
+	text_mode = TEXT_DEFAULT_MODE;
+	text_wrap = TEXT_DEFAULT_WRAP;
 	mouse_x = 0;
 	mouse_y = 0;
 	/// INSERT STYLE
