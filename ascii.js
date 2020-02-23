@@ -18,16 +18,18 @@ const	DEFAULT_RECT_MODE			= RECT_CORNER;
 const	DEFAULT_LINE_CHAR			= ".";
 const	ascii_style = ``;
 
-let	dom_ascii;
-let	dom_spans;
-let	current_layer;
-let	rect_border_chars;
-let	rect_mode;
-let	line_char;
+let		dom_ascii;
+let		dom_spans;
+let		current_layer;
+let		rect_border_chars;
+let		rect_mode;
+let		line_char;
+let		ascii_loop_draw;
+let		ascii_links;
 
-let	ascii;
-let	canvas_width, canvas_height;
-let	mouse_x, mouse_y;
+let		ascii;
+let		canvas_width, canvas_height;
+let		mouse_x, mouse_y;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// FUNCTIONS
@@ -136,6 +138,14 @@ function	clear(to_draw = null) {
 			layer[y][x] = " ";
 		}
 	}
+}
+
+function	no_loop() {
+	ascii_loop_draw = false;
+}
+
+function	loop() {
+	ascii_loop_draw = true;
 }
 
 ////////////////////
@@ -247,32 +257,16 @@ function	border(char) {
 /// LINE
 ////////////////////
 
-function		set_line_char(char = null) {
+function	set_line_char(char = null) {
 	line_char = char || DEFAULT_LINE_CHAR;
 }
 
-function		line(x0, y0, x1, y1, char = null) {
-	if (Math.abs(y1 - y0) < Math.abs(x1 - x0)) {
-		if (x0 > x1) {
-			ascii_draw_line_low(x1, y1, x0, y0, char || line_char);
-		} else {
-			ascii_draw_line_low(x0, y0, x1, y1, char || line_char);
-		}
-	} else {
-		if (y0 > y1) {
-			ascii_draw_line_high(x1, y1, x0, y0, char || line_char);
-		} else {
-			ascii_draw_line_high(x0, y0, x1, y1, char || line_char);
-		}
-	}
-}
-
-function		line(x0, y0, x1, y1, char = null) {
-	let			layer;
-	let			x, y;
-	let			dx, dy;
-	let			sx, sy;
-	let			err, err_2;
+function	line(x0, y0, x1, y1, char = null) {
+	let		layer;
+	let		x, y;
+	let		dx, dy;
+	let		sx, sy;
+	let		err, err_2;
 
 	layer = current_layer;
 	char = char || line_char;
@@ -300,9 +294,77 @@ function		line(x0, y0, x1, y1, char = null) {
 	}
 }
 
+function	link(url, x, y, option_1, option_2 = null) {
+	let		i;
+
+	/// IF LINK IS STRING
+	if (typeof(option_1) == "string") {
+		if (ascii_links[y] == null) {
+			ascii_links[y] = [];
+		}
+		ascii_links[y].push({"x": x, "url": url, "string": option_1, "w": option_1.length});
+	/// IF LINK IS RECT
+	} else {
+		for (i = 0; i < option_1; ++i) {
+			if (ascii_links[y + i] == null) {
+				ascii_links[y + i] = [];
+			}
+			ascii_links[y + i].push({"x": x, "url": url, "w": option_2});
+		}
+	}
+}
+
 //////////////////////////////////////////////////
 /// PRIVATE FUNCTIONS
 //////////////////////////////////////////////////
+
+function	ascii_put_links() {
+	let		i, j;
+	let		spans, span;
+	let		space;
+	let		before, between, after;
+	let		links, link;
+
+	/// LOOP THROUGH LINES
+	spans = dom_ascii.childNodes;
+	for (i = 0; i < spans.length; ++i) {
+		span = spans[i];
+		links = ascii_links[i];
+		/// IF LINE GOT LINKS
+		if (links != null) {
+			links.sort(function (a, b) {return (a.x - b.x);});
+			if (links.length > 1) {
+				/// CHECK SUPERPOSITION
+				for (j = 1; j < links.length; ++j) {
+					link = links[j];
+					space = link.x - (links[j - 1].x + links[j - 1].w);
+					/// IF SUPERPOSITION
+					if (space < 0) {
+						link.w += space;
+						link.x -= space;
+						/// TYPE STRING
+						if (link.string != null) {
+							link.string = link.string.substring(-space);
+						}
+					}
+					/// TYPE INVISIBLE
+					if (link.string == null) {
+						link.string = spans[i].innerHTML.substring(link.x, link.w);
+					}
+				}
+			}
+			/// UPDATE SPAN
+			for (j = links.length - 1; j >= 0; --j) {
+				link = links[j];
+				before = span.innerHTML.substring(0, link.x);
+				after = span.innerHTML.substring(link.x + link.w);
+				between = `<a href="${link.url}">${link.string}</a>`;
+				span.innerHTML = before + between + after;
+			}
+		}
+	}
+	ascii_links = [];
+}
 
 function	ascii_draw() {
 	let		x, y;
@@ -317,8 +379,12 @@ function	ascii_draw() {
 	for (y = 0; y < canvas_height; ++y) {
 		spans[y].textContent = ascii[y].join("");
 	}
+	/// PUT LINKS
+	ascii_put_links();
 	/// LOOP ANIMATION
-	window.requestAnimationFrame(ascii_draw);
+	if (ascii_loop_draw == true) {
+		window.requestAnimationFrame(ascii_draw);
+	}
 }
 
 function	ascii_mouse_move(e) {
@@ -338,6 +404,8 @@ window.addEventListener("load", function () {
 	let		style;
 	let		body;
 
+	ascii_links = [];
+	ascii_loop_draw = true;
 	rect_border_chars = DEFAULT_RECT_BORDER_CHARS;
 	rect_mode = DEFAULT_RECT_MODE;
 	line_char = DEFAULT_LINE_CHAR;
