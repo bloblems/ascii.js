@@ -53,10 +53,10 @@ function	create_canvas(width = null, height = null) {
 		span.textContent += " ".repeat(100);
 		num_char = window.innerWidth / (dom_ascii.offsetWidth / 100);
 		width = Math.ceil(num_char);
-		span.textContent = " ".repeat(width);
+		span.textContent = "-".repeat(width);
 	/// FIXED WIDTH
 	} else {
-		span.textContent += " ".repeat(width);
+		span.textContent += "-".repeat(width);
 	}
 	ascii = [span.textContent.split("")];
 	/// RESPONSIVE HEIGHT
@@ -68,7 +68,7 @@ function	create_canvas(width = null, height = null) {
 		height = dom_ascii.childNodes.length;
 	/// FIXED HEIGHT
 	} else {
-		for (i = 0; i < height; ++i) {
+		for (i = 1; i < height; ++i) {
 			dom_ascii.appendChild(span.cloneNode(true));
 			ascii.push(span.textContent.split(""));
 		}
@@ -282,7 +282,9 @@ function		line(x0, y0, x1, y1, char = null) {
 	sy = (y0 < y1) ? 1 : -1;
 	err = dx + dy;
 	while (true) {
-		layer[y0][x0] = char;
+		if (x0 >= 0 && x0 < canvas_width && y0 >= 0 && y0 < canvas_height) {
+			layer[y0][x0] = char;
+		}
 		if (x0 == x1 && y0 == y1) {
 			break;
 		}
@@ -307,7 +309,9 @@ function	ascii_draw() {
 	let		spans;
 
 	/// CALL USER draw()
-	draw();
+	if (typeof(draw) == "function") {
+		draw();
+	}
 	/// DRAW ARRAY TO DOM ASCII
 	spans = dom_ascii.childNodes;
 	for (y = 0; y < canvas_height; ++y) {
@@ -323,10 +327,10 @@ function	ascii_mouse_move(e) {
 
 	dom_rect = dom_ascii.getBoundingClientRect();
 	x = e.clientX - dom_rect.left;
-	x = Math.floor((x / dom_ascii.offsetWidth) * canvas_width);
+	x = Math.floor((x / dom_rect.width) * canvas_width);
 	mouse_x = Math.min(x, canvas_width - 1);
 	y = e.clientY - dom_rect.top;
-	y = Math.floor((y / dom_ascii.offsetHeight) * canvas_height);
+	y = Math.floor((y / dom_rect.height) * canvas_height);
 	mouse_y = Math.min(y, canvas_height - 1);
 }
 
@@ -350,7 +354,9 @@ window.addEventListener("load", function () {
 	dom_ascii.id = "ascii";
 	body.appendChild(dom_ascii);
 	/// CALL USER setup()
-	setup();
+	if (typeof(setup) == "function") {
+		setup();
+	}
 	/// CALL USER draw()
 	window.requestAnimationFrame(ascii_draw);
 	/// SET EVENTS

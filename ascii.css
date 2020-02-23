@@ -3,25 +3,19 @@ html, * {
 }
 
 #ascii {
-	position:			fixed;
-	display:			block;
-
-	left:				0;
-	/*right:				0;*/
-	top:				0;
+	display:			inline-block;
 	overflow-x:			hidden;
-
 	white-space:		pre;
-
-	margin:				0;
-	padding:			0;
+	
+	
+	position:			fixed;
+	left:				0;
+	top:				0;
+	/*
+	right:				0;
+	*/
 }
 
 #ascii span {
 	display:			block;
-	margin:				0;
-	margin-top:			0;
-	margin-bottom:		0;
-	padding:			0;
 }
-

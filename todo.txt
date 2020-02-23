@@ -1,3 +1,4 @@
+- make create_canvas(width, height, mode) with mode = true when width and height are given in pixels
 - key_pressed()		function for user
 - window_resized()	function for user
 - class link (<a href="...">...</a>) with x, y, url and text (content) to be printable
