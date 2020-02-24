@@ -11,8 +11,13 @@ html, * {
 	position:			fixed;
 	left:				0;
 	top:				0;
+
 	/*
 	right:				0;
+	*/
+
+	/* to avoid selection
+	user-select:		none;
 	*/
 }
 
