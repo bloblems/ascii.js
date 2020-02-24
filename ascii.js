@@ -66,10 +66,10 @@ function	create_canvas(width = null, height = null) {
 		span.textContent += " ".repeat(100);
 		num_char = window.innerWidth / (dom_ascii.offsetWidth / 100);
 		width = Math.ceil(num_char);
-		span.textContent = "-".repeat(width);
+		span.textContent = " ".repeat(width);
 	/// FIXED WIDTH
 	} else {
-		span.textContent += "-".repeat(width);
+		span.textContent += " ".repeat(width);
 	}
 	ascii = [span.textContent.split("")];
 	/// RESPONSIVE HEIGHT
@@ -135,30 +135,6 @@ function	draw_layer(to_draw) {
 			}
 		}
 	}
-}
-
-//////////////////////////////
-/// OTHER
-//////////////////////////////
-
-function	clear(to_draw = null) {
-	let		layer;
-	let		x, y;
-
-	layer = to_draw || current_layer;
-	for (y = 0; y < canvas_height; ++y) {
-		for (x = 0; x < canvas_width; ++x) {
-			layer[y][x] = " ";
-		}
-	}
-}
-
-function	no_loop() {
-	ascii_loop_draw = false;
-}
-
-function	loop() {
-	ascii_loop_draw = true;
 }
 
 ////////////////////
@@ -417,6 +393,46 @@ function	link(url, x, y, option_1, option_2 = null) {
 			ascii_links[y + i].push({"x": x, "url": url, "w": option_2});
 		}
 	}
+}
+
+//////////////////////////////
+/// OTHER
+//////////////////////////////
+
+function	clear(to_draw = null) {
+	let		layer;
+	let		layer_line;
+	let		x, y;
+
+	layer = to_draw || current_layer;
+	for (y = 0; y < canvas_height; ++y) {
+		layer_line = layer[y];
+		for (x = 0; x < canvas_width; ++x) {
+			layer_line[x] = " ";
+		}
+	}
+}
+
+function	fill(char) {
+	let		layer;
+	let		layer_line;
+	let		x, y;
+
+	layer = current_layer;
+	for (y = 0; y < canvas_height; ++y) {
+		layer_line = layer[y];
+		for (x = 0; x < canvas_width; ++x) {
+			layer_line[x] = char;
+		}
+	}
+}
+
+function	no_loop() {
+	ascii_loop_draw = false;
+}
+
+function	loop() {
+	ascii_loop_draw = true;
 }
 
 //////////////////////////////////////////////////
