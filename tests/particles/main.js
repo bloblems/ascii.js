@@ -13,6 +13,7 @@ window.requestAnimationFrame = window.requestAnimationFrame
 
 const	characters = ".,-*:;!ioea#IOXHM8&@";
 
+let		prev_x, prev_y;
 let		particles;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,6 +23,7 @@ let		particles;
 function	setup() {
 	create_canvas();
 	particles = [];
+	prev_x = prev_y = 0;
 }
 
 function	draw() {
@@ -41,8 +43,14 @@ function	draw() {
 			new_particles.push(particle);
 		}
 	}
-	/// ADD NEW PARTICLE
-	new_particles.push({"x": mouse_x, "y": mouse_y, "char": characters.length - 1});
+	/// ADD NEW PARTICLES
+	line_func(prev_x, prev_y, mouse_x, mouse_y, function (x, y, in_frame) {
+		if (in_frame == true) {
+			new_particles.push({"x": x, "y": y, "char": characters.length - 1});
+		}
+	});
+	prev_x = mouse_x;
+	prev_y = mouse_y;
 	/// UPDATE PARTICLE LIST
 	particles = new_particles;
 }

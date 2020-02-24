@@ -35,6 +35,6 @@ function	draw() {
 
 	/// TRIM & WRAP
 	text("another test", canvas_width - 3, 10);
-	set_text_wrap(TEXT_WRAP);
+	set_text_wrap(TEXT_WRAP_HARD);
 	text("another test", canvas_width - 3, 11);
 }

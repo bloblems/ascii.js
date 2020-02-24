@@ -20,6 +20,7 @@ const	RECT_DEFAULT_MODE			= RECT_CORNER;
 const	LINE_DEFAULT_CHAR			= ".";
 const	TEXT_TRIM					= 0;
 const	TEXT_WRAP					= 1;
+const	TEXT_WRAP_HARD				= 2;
 const	TEXT_LEFT					= 0;
 const	TEXT_CENTER					= 1;
 const	TEXT_DEFAULT_WRAP			= TEXT_TRIM;
@@ -282,15 +283,49 @@ function	line(x0, y0, x1, y1, char = null) {
 
 	layer = current_layer;
 	char = char || line_char;
+	/// INIT
 	dx =  Math.abs(x1 - x0);
 	sx = (x0 < x1) ? 1 : -1;
 	dy = -Math.abs( y1 - y0);
 	sy = (y0 < y1) ? 1 : -1;
 	err = dx + dy;
 	while (true) {
+		/// PUT CHARACTER
 		if (x0 >= 0 && x0 < canvas_width && y0 >= 0 && y0 < canvas_height) {
 			layer[y0][x0] = char;
 		}
+		if (x0 == x1 && y0 == y1) {
+			break;
+		}
+		err_2 = 2 * err;
+		if (err_2 >= dy) {
+			err += dy;
+			x0 += sx;
+		}
+		if (err_2 <= dx) {
+			err += dx;
+			y0 += sy;
+		}
+	}
+}
+
+function	line_func(x0, y0, x1, y1, func) {
+	let		layer;
+	let		x, y;
+	let		dx, dy;
+	let		sx, sy;
+	let		err, err_2;
+
+	layer = current_layer;
+	/// INIT
+	dx =  Math.abs(x1 - x0);
+	sx = (x0 < x1) ? 1 : -1;
+	dy = -Math.abs( y1 - y0);
+	sy = (y0 < y1) ? 1 : -1;
+	err = dx + dy;
+	while (true) {
+		/// CALL USER FUNCTION
+		func(x0, y0, (x0 >= 0 && x0 < canvas_width && y0 >= 0 && y0 < canvas_height));
 		if (x0 == x1 && y0 == y1) {
 			break;
 		}
@@ -340,7 +375,7 @@ function	text(string, x, y, vertical = false) {
 			/// OUT ON RIGHT
 			} else if (x + i >= canvas_width) {
 				/// WRAP
-				if (text_wrap == TEXT_WRAP) {
+				if (text_wrap == TEXT_WRAP_HARD) {
 					x = -i;
 					++y;
 				/// TRIM
