@@ -13,6 +13,9 @@ window.requestAnimationFrame = window.requestAnimationFrame
 
 const	ascii_style = ``;
 
+const	PI							= Math.PI;
+const	TWO_PI						= PI * 2;
+
 const	RECT_CORNER					= 0;
 const	RECT_CENTER					= 1;
 const	RECT_DEFAULT_BORDER_CHARS	= "|-|| ||-|";
@@ -398,6 +401,43 @@ function	link(url, x, y, option_1, option_2 = null) {
 //////////////////////////////
 /// OTHER
 //////////////////////////////
+
+function	shape(pos_x, pos_y, radius_w, radius_h, vertices, char, linked = true, offset = 0) {
+	let		layer;
+	let		angle;
+	let		step;
+	let		last_x, last_y;
+	let		x, y;
+	let		i;
+
+	last_x = null;
+	layer = current_layer;
+	step = TWO_PI / vertices;
+	/// LOOP THROUGH 2 PI
+	for (i = 0; i < TWO_PI; i += step) {
+		/// GET COORDS
+		angle = i + offset * step;
+		x = Math.round(pos_x + Math.cos(angle) * radius_w);
+		y = Math.round(pos_y + Math.sin(angle) * radius_h);
+		/// PRINT LINE
+		if (linked == true) {
+			if (last_x != null) {
+				line(x, y, last_x, last_y);
+			}
+			last_x = x;
+			last_y = y;
+		/// PRINT POINT
+		} else if (x >= 0 && x < canvas_width && y >= 0 && y < canvas_height) {
+			layer[y][x] = char;
+		}
+	}
+	/// PRINT LAST LINE
+	if (linked == true) {
+		x = Math.round(pos_x + Math.cos(offset * step) * radius_w);
+		y = Math.round(pos_y + Math.sin(offset * step) * radius_h);
+		line(x, y, last_x, last_y);
+	}
+}
 
 function	clear(to_draw = null) {
 	let		layer;

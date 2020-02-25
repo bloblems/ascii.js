@@ -24,6 +24,7 @@ Here's an exemple:
 ### Base
 
 Here's the ascii library base:
+Here's 
 ```javascript
 function	setup() {
 }
@@ -72,43 +73,56 @@ The Asci lib provides user some basic variables.
 - ascii
 - canvas_width
 - canvas_height
-- char_width
-- char_height
 - mouse_x
 - mouse_y
+- char_width
+- char_height
+
+#### ascii
+
+`ascii` is the most important variable. It is the character array that will be
+printed on screen. It is two dimentional array (x and y). You can access it
+like `ascii[y][x]`.
+
+#### canvas_width + canvas_height
+
+`canvas_width` and `canvas_height` give you the canvas format, the limit of the
+`ascii` array.
+
+#### mouse_x + mouse_y
+
+`mouse_x` and `mouse_y` give you the cursor coordinate on the canvas.
+
+#### char_width + char_height
+
+`char_width` and `char_height` give you the characters format in pixel.
 
 ### Functions
 
 - create_canvas([width, height]);
 
-
 - no_loop();
 - loop();
 
-
 - clear();
 - fill();
-
 
 - create_layer();
 - set_layer([layer]);
 - draw_layer(layer);
 
-
 - line(x0, y0, x1, y1[, character]);
 - set_line_char([character]);
 
-
 - line_func(x0, y0, x1, y1, function);
-
 
 - rect(x, y, width, height[, characters]);
 - set_rect_border([characters]);
 - set_rect_mode([mode]);
 
+- shape(x, y, rw, rh, vertices, character[, linked[, offset]]);
 
 - border(char);
-
 
 - text(string, x, y[, is_vertical]);
 - set_text_wrap([wrap_mode]);
