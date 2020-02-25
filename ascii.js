@@ -429,7 +429,7 @@ function	shape(pos_x, pos_y, radius_w, radius_h, vertices, char, linked = true, 
 		/// PRINT LINE
 		if (linked == true) {
 			if (last_x != null) {
-				line(x, y, last_x, last_y);
+				line(x, y, last_x, last_y, char);
 			}
 			last_x = x;
 			last_y = y;
@@ -442,7 +442,7 @@ function	shape(pos_x, pos_y, radius_w, radius_h, vertices, char, linked = true, 
 	if (linked == true) {
 		x = Math.round(pos_x + Math.cos(offset * step) * radius_w);
 		y = Math.round(pos_y + Math.sin(offset * step) * radius_h);
-		line(x, y, last_x, last_y);
+		line(x, y, last_x, last_y, char);
 	}
 }
 
@@ -460,7 +460,7 @@ function	clear(to_draw = null) {
 	}
 }
 
-function	fill(char) {
+function	background(char) {
 	let		layer;
 	let		layer_line;
 	let		x, y;
@@ -470,6 +470,27 @@ function	fill(char) {
 		layer_line = layer[y];
 		for (x = 0; x < canvas_width; ++x) {
 			layer_line[x] = char;
+		}
+	}
+}
+
+function	fill(x, y, char) {
+	let		layer;
+
+	layer = current_layer;
+	if (layer[y][x] == " ") {
+		layer[y][x] = char;
+		if (x > 0 && layer[y][x - 1] == " ") {
+			fill(x - 1, y, char);
+		}
+		if (x < canvas_width - 1 && layer[y][x + 1] == " ") {
+			fill(x + 1, y, char);
+		}
+		if (y > 0 && layer[y - 1][x] == " ") {
+			fill(x, y - 1, char);
+		}
+		if (y < canvas_height - 1 && layer[y + 1][x] == " ") {
+			fill(x, y + 1, char);
 		}
 	}
 }

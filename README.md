@@ -105,7 +105,8 @@ like `ascii[y][x]`.
 - loop();
 
 - clear();
-- fill();
+- background(character);
+- fill(x, y, character);
 
 - create_layer();
 - set_layer([layer]);
