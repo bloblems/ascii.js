@@ -5,3 +5,7 @@
 - class Link (<a href="...">...</a>) with x, y, url and text (content) to be printable
 - Link -> instead of giving x, y... give a drawn layer. The link will be created
   from non null characters.
+
+- fill() -> background(); fill() should act like photoshop fill tool. You give
+  it a point and a character and it recursively fill the space until border are
+  reached.

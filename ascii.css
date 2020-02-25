@@ -7,11 +7,14 @@ html, * {
 	overflow-x:			hidden;
 	white-space:		pre;
 	
-	
+	/*
+	 * To handle text (#ascii_array) and links (#ascii_links) superposition,
+	 * #ascii needs to be positioned either "relative" or "fixed" but not
+	 * let default (static).
+	 */
 	position:			fixed;
 	left:				0;
 	top:				0;
-
 	/*
 	right:				0;
 	*/
@@ -25,9 +28,9 @@ html, * {
 	display:			block;
 }
 
-.ascii_link {
-	position:	absolute;
-	margin:		0;
-	display:	block;
-	background:	#00ff0050;
+#ascii_links {
+}
+
+#ascii_links a {
+	position:			absolute;
 }

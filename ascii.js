@@ -68,6 +68,7 @@ class		Link {
 		dom.style.height = char_height * h + "px";
 		dom_links.appendChild(dom);
 		this.dom = dom;
+
 	}
 }
 
@@ -486,7 +487,7 @@ function	loop() {
 //////////////////////////////////////////////////
 
 function	ascii_draw() {
-	let		x, y;
+	let		y;
 	let		spans;
 
 	/// CALL USER draw()
