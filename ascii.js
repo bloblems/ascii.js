@@ -46,6 +46,31 @@ let		char_width, char_height;
 let		mouse_x, mouse_y;
 
 ////////////////////////////////////////////////////////////////////////////////
+/// CLASSES
+////////////////////////////////////////////////////////////////////////////////
+
+class		Link {
+	constructor(url, x, y, w, h) {
+		let	dom;
+
+		this.url = url;
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+		dom = document.createElement("a");
+		dom.className = "ascii_link";
+		dom.style.left = char_width * x + "px";
+		dom.style.top = char_height * y + "px";
+		dom.style.width = char_width * w + "px";
+		dom.style.height = char_height * w + "px";
+		dom.style.background = "blue";
+		document.getElementsByTagName("body")[0].appendChild(dom);
+		this.dom = dom;
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////
 /// FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 

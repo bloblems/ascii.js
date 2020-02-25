@@ -24,3 +24,10 @@ html, * {
 #ascii span {
 	display:			block;
 }
+
+.ascii_link, a {
+	position:	absolute;
+	margin:		0;
+	display:	block;
+	background:	red;
+}

@@ -17,12 +17,10 @@ window.requestAnimationFrame = window.requestAnimationFrame
 
 function	setup() {
 	create_canvas();
+	new Link("https://sebhue.com", 10, 10, 10, 10);
+	new Link("https://instagram.com/seb.hue", 20, 20, 10, 10);
 }
 
 function	draw() {
 	clear();
-	link("https://sebhue.com", 10, 10, "my website !");
-	link("https://instagram.com/seb.hue", 23, 10, "my insta !");
-	link("https://colorkidsgames.tumblr.com", 30, 30, 10, 10);
-	link("https://colorkidsgames.tumblr.com", 0, 30, 10);
 }
