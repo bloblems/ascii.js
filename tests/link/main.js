@@ -17,10 +17,10 @@ window.requestAnimationFrame = window.requestAnimationFrame
 
 function	setup() {
 	create_canvas();
-	new Link("https://sebhue.com", 10, 10, 10, 10);
-	new Link("https://instagram.com/seb.hue", 20, 20, 10, 10);
+	new Link("https://sebhue.com", 10, 10, 6, 1);
 }
 
 function	draw() {
 	clear();
+	text("coucou", 10, 10);
 }

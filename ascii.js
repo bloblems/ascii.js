@@ -30,6 +30,8 @@ const	TEXT_DEFAULT_WRAP			= TEXT_TRIM;
 const	TEXT_DEFAULT_MODE			= TEXT_LEFT;
 
 let		dom_ascii;
+let		dom_array;
+let		dom_links;
 let		dom_spans;
 let		current_layer;
 let		rect_border_chars;
@@ -38,7 +40,6 @@ let		line_char;
 let		text_mode;
 let		text_wrap;
 let		ascii_loop_draw;
-let		ascii_links;
 
 let		ascii;
 let		canvas_width, canvas_height;
@@ -59,13 +60,13 @@ class		Link {
 		this.w = w;
 		this.h = h;
 		dom = document.createElement("a");
+		dom.href = url;
 		dom.className = "ascii_link";
 		dom.style.left = char_width * x + "px";
 		dom.style.top = char_height * y + "px";
 		dom.style.width = char_width * w + "px";
-		dom.style.height = char_height * w + "px";
-		dom.style.background = "blue";
-		document.getElementsByTagName("body")[0].appendChild(dom);
+		dom.style.height = char_height * h + "px";
+		dom_links.appendChild(dom);
 		this.dom = dom;
 	}
 }
@@ -88,11 +89,11 @@ function	create_canvas(width = null, height = null) {
 	let		num_char;
 
 	span = document.createElement("span");
-	dom_ascii.appendChild(span);
+	dom_array.appendChild(span);
 	/// RESPONSIVE WIDTH
 	if (width == 0 || width == null) {
 		span.textContent += " ".repeat(100);
-		num_char = window.innerWidth / (dom_ascii.offsetWidth / 100);
+		num_char = window.innerWidth / (dom_array.offsetWidth / 100);
 		width = Math.ceil(num_char);
 		span.textContent = " ".repeat(width);
 	/// FIXED WIDTH
@@ -102,21 +103,21 @@ function	create_canvas(width = null, height = null) {
 	ascii = [span.textContent.split("")];
 	/// RESPONSIVE HEIGHT
 	if (height == 0 || height == null) {
-		while (dom_ascii.offsetHeight <= window.innerHeight) {
-			dom_ascii.appendChild(span.cloneNode(true));
+		while (dom_array.offsetHeight <= window.innerHeight) {
+			dom_array.appendChild(span.cloneNode(true));
 			ascii.push(span.textContent.split(""));
 		}
-		height = dom_ascii.childNodes.length;
+		height = dom_array.childNodes.length;
 	/// FIXED HEIGHT
 	} else {
 		for (i = 1; i < height; ++i) {
-			dom_ascii.appendChild(span.cloneNode(true));
+			dom_array.appendChild(span.cloneNode(true));
 			ascii.push(span.textContent.split(""));
 		}
 	}
 	/// SAVE 
-	char_width = dom_ascii.offsetWidth / width;
-	char_height = dom_ascii.offsetHeight / height;
+	char_width = dom_array.offsetWidth / width;
+	char_height = dom_array.offsetHeight / height;
 	canvas_width = width;
 	canvas_height = height;
 	current_layer = ascii;
@@ -403,26 +404,6 @@ function	text(string, x, y, vertical = false) {
 	}
 }
 
-function	link(url, x, y, option_1, option_2 = null) {
-	let		i;
-
-	/// IF LINK IS STRING
-	if (typeof(option_1) == "string") {
-		if (ascii_links[y] == null) {
-			ascii_links[y] = [];
-		}
-		ascii_links[y].push({"x": x, "url": url, "string": option_1, "w": option_1.length});
-	/// IF LINK IS RECT
-	} else {
-		for (i = 0; i < option_1; ++i) {
-			if (ascii_links[y + i] == null) {
-				ascii_links[y + i] = [];
-			}
-			ascii_links[y + i].push({"x": x, "url": url, "w": option_2});
-		}
-	}
-}
-
 //////////////////////////////
 /// OTHER
 //////////////////////////////
@@ -504,54 +485,6 @@ function	loop() {
 /// PRIVATE FUNCTIONS
 //////////////////////////////////////////////////
 
-function	ascii_put_links() {
-	let		i, j;
-	let		spans, span;
-	let		space;
-	let		before, between, after;
-	let		links, link;
-
-	/// LOOP THROUGH LINES
-	spans = dom_ascii.childNodes;
-	for (i = 0; i < spans.length; ++i) {
-		span = spans[i];
-		links = ascii_links[i];
-		/// IF LINE GOT LINKS
-		if (links != null) {
-			links.sort(function (a, b) {return (a.x - b.x);});
-			if (links.length > 1) {
-				/// CHECK SUPERPOSITION
-				for (j = 1; j < links.length; ++j) {
-					link = links[j];
-					space = link.x - (links[j - 1].x + links[j - 1].w);
-					/// IF SUPERPOSITION
-					if (space < 0) {
-						link.w += space;
-						link.x -= space;
-						/// TYPE STRING
-						if (link.string != null) {
-							link.string = link.string.substring(-space);
-						}
-					}
-					/// TYPE INVISIBLE
-					if (link.string == null) {
-						link.string = spans[i].innerHTML.substring(link.x, link.w);
-					}
-				}
-			}
-			/// UPDATE SPAN
-			for (j = links.length - 1; j >= 0; --j) {
-				link = links[j];
-				before = span.innerHTML.substring(0, link.x);
-				after = span.innerHTML.substring(link.x + link.w);
-				between = `<a href="${link.url}">${link.string}</a>`;
-				span.innerHTML = before + between + after;
-			}
-		}
-	}
-	ascii_links = [];
-}
-
 function	ascii_draw() {
 	let		x, y;
 	let		spans;
@@ -561,12 +494,10 @@ function	ascii_draw() {
 		draw();
 	}
 	/// DRAW ARRAY TO DOM ASCII
-	spans = dom_ascii.childNodes;
+	spans = dom_array.childNodes;
 	for (y = 0; y < canvas_height; ++y) {
 		spans[y].textContent = ascii[y].join("");
 	}
-	/// PUT LINKS
-	ascii_put_links();
 	/// LOOP ANIMATION
 	if (ascii_loop_draw == true) {
 		window.requestAnimationFrame(ascii_draw);
@@ -577,7 +508,7 @@ function	ascii_mouse_move(e) {
 	let		dom_rect;
 	let		x, y;
 
-	dom_rect = dom_ascii.getBoundingClientRect();
+	dom_rect = dom_array.getBoundingClientRect();
 	x = e.clientX - dom_rect.left;
 	x = Math.floor((x / dom_rect.width) * canvas_width);
 	mouse_x = Math.min(x, canvas_width - 1);
@@ -590,7 +521,6 @@ window.addEventListener("load", function () {
 	let		style;
 	let		body;
 
-	ascii_links = [];
 	ascii_loop_draw = true;
 	rect_border_chars = RECT_DEFAULT_BORDER_CHARS;
 	rect_mode = RECT_DEFAULT_MODE;
@@ -604,11 +534,19 @@ window.addEventListener("load", function () {
 	style.type = "text/css";
 	style.innerText = ascii_style;
 	document.head.appendChild(style);
-	/// CREATE BASE DOM
+	/// CREATE ASCII BASE DOM
 	body = document.getElementsByTagName("body")[0];
 	dom_ascii = document.createElement("div");
 	dom_ascii.id = "ascii";
 	body.appendChild(dom_ascii);
+	/// CREATE ASCII ARRAY DOM
+	dom_array = document.createElement("div");
+	dom_array.id = "ascii_array";
+	dom_ascii.appendChild(dom_array);
+	/// CREATE ASCII LINKS DOM
+	dom_links = document.createElement("div");
+	dom_links.id = "ascii_links";
+	dom_ascii.appendChild(dom_links);
 	/// CALL USER setup()
 	if (typeof(setup) == "function") {
 		setup();

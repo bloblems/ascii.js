@@ -2,4 +2,6 @@
 - make create_canvas(width, height, mode) with mode = true when width and height are given in pixels || or from css ?
 - key_pressed()		function for user
 - window_resized()	function for user
-- class link (<a href="...">...</a>) with x, y, url and text (content) to be printable
+- class Link (<a href="...">...</a>) with x, y, url and text (content) to be printable
+- Link -> instead of giving x, y... give a drawn layer. The link will be created
+  from non null characters.
