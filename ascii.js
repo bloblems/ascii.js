@@ -51,14 +51,20 @@ let		mouse_x, mouse_y;
 ////////////////////////////////////////////////////////////////////////////////
 
 class		Link {
-	constructor(url, x, y, w, h) {
+	constructor(url, x, y, option_1, option_2 = 1) {
 		let	dom;
+		let	w, h;
 
-		this.url = url;
-		this.x = x;
-		this.y = y;
-		this.w = w;
-		this.h = h;
+		/// MODE STRING
+		if (typeof(option_1) == "string") {
+			this.string = option_1;
+			w = option_1.length;
+			h = 1;
+		/// MODE RECT
+		} else {
+			w = option_1;
+			h = option_2;
+		}
 		dom = document.createElement("a");
 		dom.href = url;
 		dom.className = "ascii_link";
@@ -68,7 +74,38 @@ class		Link {
 		dom.style.height = char_height * h + "px";
 		dom_links.appendChild(dom);
 		this.dom = dom;
+		this.url = url;
+		this.x = x;
+		this.y = y;
+		this.w = w;
+		this.h = h;
+	}
 
+	print() {
+		let	i;
+		let	layer;
+
+		layer = current_layer;
+		if (this.string != null) {
+			for (i = 0; i < this.string.length; ++i) {
+				if (this.x + i >= canvas_width) {
+					return;
+				}
+				current_layer[this.y][this.x + i] = this.string[i];
+			}
+		}
+	}
+
+	remove() {
+		if (dom_links.contains(this.dom) == true) {
+			dom_links.removeChild(this.dom);
+		}
+	}
+
+	activate() {
+		if (dom_links.contains(this.dom) == false) {
+			dom_links.appendChild(this.dom);
+		}
 	}
 }
 
