@@ -96,6 +96,13 @@ class		Link {
 		}
 	}
 
+	move_to(x, y) {
+		this.x = x;
+		this.dom.style.left = char_width * x + "px";
+		this.y = y;
+		this.dom.style.top = char_height * y + "px";
+	}
+
 	remove() {
 		if (dom_links.contains(this.dom) == true) {
 			dom_links.removeChild(this.dom);
