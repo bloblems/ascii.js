@@ -520,22 +520,22 @@ function	background(char) {
 
 function	fill(x, y, char) {
 	let		layer;
+	let		to_change;
 
 	layer = current_layer;
-	if (layer[y][x] == " ") {
-		layer[y][x] = char;
-		if (x > 0 && layer[y][x - 1] == " ") {
-			fill(x - 1, y, char);
-		}
-		if (x < canvas_width - 1 && layer[y][x + 1] == " ") {
-			fill(x + 1, y, char);
-		}
-		if (y > 0 && layer[y - 1][x] == " ") {
-			fill(x, y - 1, char);
-		}
-		if (y < canvas_height - 1 && layer[y + 1][x] == " ") {
-			fill(x, y + 1, char);
-		}
+	to_change = layer[y][x];
+	layer[y][x] = char;
+	if (x > 0 && layer[y][x - 1] == to_change) {
+		fill(x - 1, y, char);
+	}
+	if (x < canvas_width - 1 && layer[y][x + 1] == to_change) {
+		fill(x + 1, y, char);
+	}
+	if (y > 0 && layer[y - 1][x] == to_change) {
+		fill(x, y - 1, char);
+	}
+	if (y < canvas_height - 1 && layer[y + 1][x] == to_change) {
+		fill(x, y + 1, char);
 	}
 }
 

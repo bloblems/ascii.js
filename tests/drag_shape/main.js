@@ -40,13 +40,16 @@ function	setup() {
 }
 
 function	draw() {
-	hover = ascii[mouse_y][mouse_x] != " ";
 	clear();
+	/// CREATE SHAPE
 	shape(x, y, WIDTH, HEIGHT, VERTICES, "#", true, angle);
+	/// FILL SHAPE TO CHECK HOVER
+	fill(x, y, "?");
+	hover = ascii[mouse_y][mouse_x] != " ";
 	/// IF CLICKED
 	if (locked == true) {
 		angle_acc = Math.min(angle_acc + ROTATION_ACC, ROTATION_MAX);
-		fill(x, y, "#");
+		fill(x, y, ":");
 	} else {
 		/// SLOW DOWN
 		if (angle_acc > 0) {
@@ -54,10 +57,10 @@ function	draw() {
 		}
 		/// IF HOVER
 		if (hover == true) {
-			fill(x, y, ":");
+			fill(x, y, ".");
 		/// IF OUT
 		} else {
-			fill(x, y, ".");
+			fill(x, y, " ");
 		}
 	}
 	/// UPDATE SHAPE ANGLE
