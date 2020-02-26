@@ -587,6 +587,7 @@ window.addEventListener("load", function () {
 	let		style;
 	let		body;
 
+	/// INIT VARIABLES
 	ascii_loop_draw = true;
 	rect_border_chars = RECT_DEFAULT_BORDER_CHARS;
 	rect_mode = RECT_DEFAULT_MODE;
@@ -621,4 +622,28 @@ window.addEventListener("load", function () {
 	window.requestAnimationFrame(ascii_draw);
 	/// SET EVENTS
 	dom_ascii.addEventListener("mousemove", ascii_mouse_move);
+	if (typeof(mouse_clicked) == "function") {
+		dom_ascii.addEventListener("click", mouse_clicked);
+	}
+	if (typeof(mouse_double_clicked) == "function") {
+		dom_ascii.addEventListener("dblclick", mouse_double_clicked);
+	}
+	if (typeof(mouse_down) == "function") {
+		dom_ascii.addEventListener("mousedown", mouse_down);
+	}
+	if (typeof(mouse_up) == "function") {
+		dom_ascii.addEventListener("mouseup", mouse_up);
+	}
+	if (typeof(mouse_move) == "function") {
+		dom_ascii.addEventListener("mousemove", mouse_move);
+	}
+	if (typeof(key_down) == "function") {
+		document.body.addEventListener("keydown", key_down);
+	}
+	if (typeof(key_up) == "function") {
+		document.body.addEventListener("keyup", key_up);
+	}
+	if (typeof(key_pressed) == "function") {
+		document.body.addEventListener("keypress", key_pressed);
+	}
 });
