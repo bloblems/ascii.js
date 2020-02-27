@@ -431,6 +431,9 @@ function	text(string, x, y, w = null) {
 	let		i, j;
 
 	layer = current_layer;
+	if (y >= canvas_height) {
+		return;
+	}
 	/// TRIM MODE
 	if (text_wrap == TEXT_TRIM) {
 		if (text_mode == TEXT_CENTER) {
@@ -467,6 +470,9 @@ function	text(string, x, y, w = null) {
 			if (x + pos_x > max) {
 				pos_x = 0;
 				++y;
+				if (y >= canvas_height) {
+					return;
+				}
 			}
 		}
 	/// WRAP MODE
@@ -493,11 +499,16 @@ function	text(string, x, y, w = null) {
 					while (x + word.length - 1 >= max) {
 						next_line = word.substr(0, max - (x + line.length) + 0);
 						for (j = 0; j < next_line.length; ++j) {
-							layer[y][x + j] = next_line[j];
+							if (x + j >= 0 && x + j < canvas_width) {
+								layer[y][x + j] = next_line[j];
+							}
 						}
 						word = word.substr(max - (x + line.length));
 						line = "";
 						++y;
+						if (y >= canvas_height) {
+							return;
+						}
 					}
 					++i;
 				/// NORMAL SIZE
@@ -511,11 +522,16 @@ function	text(string, x, y, w = null) {
 					}
 					/// PUT LINE
 					for (j = 0; j < line.length - 1; ++j) {
-						layer[y][pos_x + j] = line[j];
+						if (x >= 0 && x < canvas_width) {
+							layer[y][pos_x + j] = line[j];
+						}
 					}
 					/// GO TO NEXT LINE
 					line = "";
 					++y;
+					if (y >= canvas_height) {
+						return;
+					}
 				}
 			}
 			line += word + " ";
