@@ -26,6 +26,7 @@ const	TEXT_WRAP					= 1;
 const	TEXT_WRAP_HARD				= 2;
 const	TEXT_LEFT					= 0;
 const	TEXT_CENTER					= 1;
+const	TEXT_RIGHT					= 2;
 const	TEXT_ALIGN_LEFT				= 0;
 const	TEXT_ALIGN_CENTER			= 1;
 const	TEXT_ALIGN_RIGHT			= 2;
@@ -424,6 +425,8 @@ function	text(string, x, y, w = null) {
 	let		layer;
 	let		split;
 	let		pos_x;
+	let		line, next_line;
+	let		word;
 	let		max;
 	let		i, j;
 
@@ -432,6 +435,8 @@ function	text(string, x, y, w = null) {
 	if (text_wrap == TEXT_TRIM) {
 		if (text_mode == TEXT_CENTER) {
 			x -= Math.floor(string.length / 2);
+		} else if (text_mode == TEXT_RIGHT) {
+			x -= string.length;
 		}
 		for (i = 0; i < string.length; ++i) {
 			if (x < 0) {
@@ -444,8 +449,12 @@ function	text(string, x, y, w = null) {
 		}
 	/// HARD WRAP MODE
 	} else if (text_wrap == TEXT_WRAP_HARD) {
-		if (text_mode == TEXT_CENTER && w != null) {
-			x -= Math.floor(w / 2);
+		if (w != null) {
+			if (text_mode == TEXT_CENTER) {
+				x -= Math.floor(w / 2);
+			} else if (text_mode == TEXT_RIGHT) {
+				x -= w;
+			}
 		}
 		max = (w == null) ? canvas_width - 1 : x + w;
 		pos_x = 0;
@@ -462,73 +471,68 @@ function	text(string, x, y, w = null) {
 		}
 	/// WRAP MODE
 	} else {
-		if (text_mode == TEXT_CENTER && w != null) {
-			x -= Math.floor(w / 2);
+		if (w != null) {
+			if (text_mode == TEXT_CENTER) {
+				x -= Math.floor(w / 2);
+			} else if (text_mode == TEXT_RIGHT) {
+				x -= w;
+			}
 		}
 		split = string.split(" ");
 		max = (w == null) ? canvas_width - 1 : x + w;
 		pos_x = 0;
 		/// LOOP THROUGH WORDS
+		line = "";
 		for (i = 0; i < split.length; ++i) {
-			if (x + pos_x + split[i].length - 1 > max) {
-				pos_x = 0;
-				++y;
+			word = split[i];
+			/// NEXT WORD OUT OF LIMIT
+			if (x + line.length + word.length - 1 > max) {
+				/// WORD TOO BIG
+				if (x + word.length - 1 > max) {
+					/// TRUNCATE WORD
+					while (x + word.length - 1 >= max) {
+						next_line = word.substr(0, max - (x + line.length) + 0);
+						for (j = 0; j < next_line.length; ++j) {
+							layer[y][x + j] = next_line[j];
+						}
+						word = word.substr(max - (x + line.length));
+						line = "";
+						++y;
+					}
+					++i;
+				/// NORMAL SIZE
+				} else {
+					if (w == null || text_align == TEXT_ALIGN_LEFT) {
+						pos_x = x;
+					} else if (text_align == TEXT_ALIGN_CENTER) {
+						pos_x = x + Math.round((w - line.length) / 2);
+					} else if (text_align == TEXT_ALIGN_RIGHT) {
+						pos_x = x + w - line.length + 1;
+					}
+					/// PUT LINE
+					for (j = 0; j < line.length - 1; ++j) {
+						layer[y][pos_x + j] = line[j];
+					}
+					/// GO TO NEXT LINE
+					line = "";
+					++y;
+				}
 			}
-			/// PRINT WORD
-			for (j = 0; j < split[i].length; ++j) {
-				layer[y][x + pos_x] = split[i][j];
-				++pos_x;
-			}
-			++pos_x;
+			line += word + " ";
+		}
+		/// PUT REST OF STRING
+		if (w == null || text_align == TEXT_ALIGN_LEFT) {
+			pos_x = x;
+		} else if (text_align == TEXT_ALIGN_CENTER) {
+			pos_x = x + Math.round((w - line.length) / 2);
+		} else if (text_align == TEXT_ALIGN_RIGHT) {
+			pos_x = x + w - line.length + 1;
+		}
+		for (j = 0; j < line.length; ++j) {
+			layer[y][pos_x + j] = line[j];
 		}
 	}
 }
-
-//function	text(string, x, y, vertical = false) {
-//	let		layer;
-//	let		i;
-//
-//	layer = current_layer;
-//	if (text_mode == TEXT_CENTER) {
-//		x -= Math.floor(string.length / 2);
-//	}
-//	/// HORIZONTAL
-//	if (vertical == false) {
-//		/// OUT OF FRAME
-//		if (y < 0 || y >= canvas_height) {
-//			return;
-//		}
-//		/// PUT CHARACTERS
-//		for (i = 0; i < string.length; ++i) {
-//			/// OUT ON LEFT
-//			if (x + i < 0) {
-//				continue;
-//			/// OUT ON RIGHT
-//			} else if (x + i >= canvas_width) {
-//				/// WRAP
-//				if (text_wrap == TEXT_WRAP_HARD) {
-//					x = -i;
-//					++y;
-//				/// TRIM
-//				} else {
-//					return;
-//				}
-//			}
-//			layer[y][x + i] = string[i];
-//		}
-//	/// VERTICAL
-//	} else {
-//		/// OUT OF FRAME
-//		if (x < 0 || x >= canvas_width) {
-//			return;
-//		}
-//		for (i = 0; i < string.length; ++i) {
-//			if (y + i >= 0 && y + i < canvas_height) {
-//				layer[y + i][x] = string[i];
-//			}
-//		}
-//	}
-//}
 
 //////////////////////////////
 /// OTHER
@@ -693,6 +697,7 @@ window.addEventListener("load", function () {
 	line_char = LINE_DEFAULT_CHAR;
 	text_mode = TEXT_DEFAULT_MODE;
 	text_wrap = TEXT_DEFAULT_WRAP;
+	text_align = TEXT_DEFAULT_ALIGN;
 	mouse_x = 0;
 	mouse_y = 0;
 	touches = [];

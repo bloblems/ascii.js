@@ -42,5 +42,18 @@ function	draw() {
 	text("test on how text does wrap", canvas_width - 11, 16);
 
 	/// PARAGRAPH
-	text("this is a simple string which aims to show how paragraphs and wrap do work", Math.floor(canvas_width / 2), 13, 20);
+	text("this is a simple string which aims to show how paragraphs and wrap do work", Math.floor(canvas_width / 2), 14, 20);
+	set_text_align(TEXT_ALIGN_CENTER);
+	set_text_mode(TEXT_CENTER);
+	text("this is a simple string which aims to show how paragraphs and wrap do work", Math.floor(canvas_width / 2), 20, 20);
+	set_text_align(TEXT_ALIGN_RIGHT);
+	set_text_mode(TEXT_RIGHT)
+	text("this is a simple string which aims to show how paragraphs and wrap do work", Math.floor(canvas_width / 2), 26, 20);
+
+	/// WORD TRUNCATE IF TOO BIG
+	set_text_align(TEXT_ALIGN_CENTER);
+	set_text_mode(TEXT_CENTER)
+	text("abcdefghijklmnopqrstuvwxyz", Math.floor(canvas_width / 2), 32, 5);
+
+	no_loop();
 }
