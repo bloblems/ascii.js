@@ -19,7 +19,7 @@ let		y;
 ////////////////////////////////////////////////////////////////////////////////
 
 function	setup() {
-	create_canvas(100, 50);
+	create_canvas();
 	y = -3;
 	x = -5;
 }
@@ -27,15 +27,19 @@ function	setup() {
 function	draw() {
 	clear();
 	set_rect_mode(RECT_CORNER);
-	rect(0, 0, 100, 50);
+	rect(0, 0, canvas_width, canvas_height);
 	set_rect_mode(RECT_CENTER);
 	rect(x, y, 10, 6);
 	++x;
-	if (x >= 105) {
+	if (x >= canvas_width + 5) {
 		x = -5;
 	}
 	++y;
-	if (y >= 53) {
+	if (y >= canvas_height + 3) {
 		y = -3;
 	}
+}
+
+function	window_resized() {
+	resize_canvas();
 }

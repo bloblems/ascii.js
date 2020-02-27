@@ -169,6 +169,13 @@ function	create_canvas(width = null, height = null) {
 	current_layer = ascii;
 }
 
+function	resize_canvas(width = null, height = null) {
+	while (dom_array.firstChild) {
+		dom_array.removeChild(dom_array.lastChild);
+	}
+	create_canvas(width, height);
+}
+
 //////////////////////////////
 /// LAYER
 //////////////////////////////
