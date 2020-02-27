@@ -646,4 +646,7 @@ window.addEventListener("load", function () {
 	if (typeof(key_pressed) == "function") {
 		document.body.addEventListener("keypress", key_pressed);
 	}
+	if (typeof(window_resized) == "function") {
+		window.addEventListener("resize", window_resized);
+	}
 });

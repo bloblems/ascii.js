@@ -52,3 +52,7 @@ function	key_up(event) {
 function	key_pressed(event) {
 	console.log("key pressed", event);
 }
+
+function	window_resized(event) {
+	console.log("resize !", event);
+}

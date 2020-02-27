@@ -128,3 +128,7 @@ like `ascii[y][x]`.
 - text(string, x, y[, is_vertical]);
 - set_text_wrap([wrap_mode]);
 - set_text_mode([mode]);
+
+### Classes
+
+- Link(x, y, width, height); || Link(x, y, string);
