@@ -75,6 +75,7 @@ The Asci lib provides user some basic variables.
 - canvas_height
 - mouse_x
 - mouse_y
+- touches
 - char_width
 - char_height
 
@@ -99,7 +100,8 @@ like `ascii[y][x]`.
 
 ### Functions
 
-- create_canvas([width, height]);
+- create_canvas([width[, height]]);
+- resize_canvas([width[, height]]);
 
 - no_loop();
 - loop();
@@ -128,6 +130,24 @@ like `ascii[y][x]`.
 - text(string, x, y[, is_vertical]);
 - set_text_wrap([wrap_mode]);
 - set_text_mode([mode]);
+
+#### Event functions
+
+- mouse_clicked();
+- mouse_double_clicked();
+- mouse_down();
+- mouse_up();
+- mouse_move();
+
+- key_down();
+- key_up();
+- key_pressed();
+
+- touch_start();
+- touch_end();
+- touch_move();
+
+- window_resized();
 
 ### Classes
 
