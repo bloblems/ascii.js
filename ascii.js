@@ -45,6 +45,7 @@ let		ascii;
 let		canvas_width, canvas_height;
 let		char_width, char_height;
 let		mouse_x, mouse_y;
+let		touches;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// CLASSES
@@ -570,7 +571,7 @@ function	ascii_draw() {
 	}
 }
 
-function	ascii_mouse_move(e) {
+function	ascii_handle_mouse(e) {
 	let		dom_rect;
 	let		x, y;
 
@@ -581,6 +582,24 @@ function	ascii_mouse_move(e) {
 	y = e.clientY - dom_rect.top;
 	y = Math.floor((y / dom_rect.height) * canvas_height);
 	mouse_y = Math.min(y, canvas_height - 1);
+}
+
+function	ascii_handle_touch(e) {
+	let		i;
+	let		dom_rect;
+	let		x, y;
+
+	touches = [];
+	if (e.touches.length > 0) {
+		dom_rect = dom_array.getBoundingClientRect();
+		for (i = 0; i < e.touches.length; ++i) {
+			x = e.touches[i].clientX - dom_rect.left;
+			x = Math.floor((x / dom_rect.width) * canvas_width);
+			y = e.touches[i].clientY - dom_rect.top;
+			y = Math.floor((y / dom_rect.height) * canvas_height);
+			touches.push({"x": x, "y": y});
+		}
+	}
 }
 
 window.addEventListener("load", function () {
@@ -596,6 +615,7 @@ window.addEventListener("load", function () {
 	text_wrap = TEXT_DEFAULT_WRAP;
 	mouse_x = 0;
 	mouse_y = 0;
+	touches = [];
 	/// INSERT STYLE
 	style = document.createElement("style");
 	style.type = "text/css";
@@ -621,32 +641,24 @@ window.addEventListener("load", function () {
 	/// CALL USER draw()
 	window.requestAnimationFrame(ascii_draw);
 	/// SET EVENTS
-	dom_ascii.addEventListener("mousemove", ascii_mouse_move);
-	if (typeof(mouse_clicked) == "function") {
-		dom_ascii.addEventListener("click", mouse_clicked);
-	}
-	if (typeof(mouse_double_clicked) == "function") {
-		dom_ascii.addEventListener("dblclick", mouse_double_clicked);
-	}
-	if (typeof(mouse_down) == "function") {
-		dom_ascii.addEventListener("mousedown", mouse_down);
-	}
-	if (typeof(mouse_up) == "function") {
-		dom_ascii.addEventListener("mouseup", mouse_up);
-	}
-	if (typeof(mouse_move) == "function") {
-		dom_ascii.addEventListener("mousemove", mouse_move);
-	}
-	if (typeof(key_down) == "function") {
-		document.body.addEventListener("keydown", key_down);
-	}
-	if (typeof(key_up) == "function") {
-		document.body.addEventListener("keyup", key_up);
-	}
-	if (typeof(key_pressed) == "function") {
-		document.body.addEventListener("keypress", key_pressed);
-	}
-	if (typeof(window_resized) == "function") {
-		window.addEventListener("resize", window_resized);
-	}
+	window.addEventListener("mousemove", ascii_handle_mouse);
+	window.addEventListener("touchstart", ascii_handle_touch);
+	window.addEventListener("touchmove", ascii_handle_touch);
+	window.addEventListener("touchend", ascii_handle_touch);
+	/// MOUSE EVENTS
+	if (typeof(mouse_clicked) == "function") { window.addEventListener("click", mouse_clicked); }
+	if (typeof(mouse_double_clicked) == "function") { window.addEventListener("dblclick", mouse_double_clicked); }
+	if (typeof(mouse_down) == "function") { window.addEventListener("mousedown", mouse_down); }
+	if (typeof(mouse_up) == "function") { window.addEventListener("mouseup", mouse_up); }
+	if (typeof(mouse_move) == "function") { window.addEventListener("mousemove", mouse_move); }
+	/// KEYBOARD EVENTS
+	if (typeof(key_down) == "function") { window.addEventListener("keydown", key_down); }
+	if (typeof(key_up) == "function") { window.addEventListener("keyup", key_up); }
+	if (typeof(key_pressed) == "function") { window.addEventListener("keypress", key_pressed); }
+	/// TOUCH EVENTS
+	if (typeof(touch_start) == "function") { window.addEventListener("touchstart", touch_start); }
+	if (typeof(touch_end) == "function") { window.addEventListener("touchend", touch_end); }
+	if (typeof(touch_move) == "function") { window.addEventListener("touchmove", touch_move); }
+	/// WINDOW EVENT
+	if (typeof(window_resized) == "function") { window.addEventListener("resize", window_resized); }
 });
