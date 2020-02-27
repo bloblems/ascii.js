@@ -13,8 +13,52 @@ window.requestAnimationFrame = window.requestAnimationFrame
 
 const	ascii_style = ``;
 
+//////////////////////////////////////////////////
+/// GENERAL
+//////////////////////////////////////////////////
+
+const	round						= Math.round;
+const	floor						= Math.floor;
+const	ceil						= Math.ceil;
+const	rand						= Math.random;
+const	abs							= Math.abs;
+const	cos							= Math.cos;
+const	sin							= Math.sin;
+const	acos						= Math.acos;
+const	asin						= Math.asin;
+const	acosh						= Math.acosh;
+const	asinh						= Math.asinh;
+const	atan						= Math.atan;
+const	atan2						= Math.atan2;
+const	atanh						= Math.atanh;
+const	cbrt						= Math.cbrt;
+const	exp							= Math.exp;
+const	log							= Math.log;
+const	max							= Math.max;
+const	min							= Math.min;
+const	pow							= Math.pow;
+const	sqrt						= Math.sqrt;
+const	tan							= Math.tan;
+const	tanh						= Math.tanh;
+const	trunc						= Math.trunc;
+const	is_int						= Number.isInteger;
+const	is_array					= Array.isArray;
+
 const	PI							= Math.PI;
 const	TWO_PI						= PI * 2;
+const	HALF_PI						= PI / 2;
+const	QUARTER_PI					= PI / 4;
+const	E							= Math.E;
+const	SQRT2						= Math.SQRT2;
+const	SQRT1_2						= Math.SQRT1_2;
+const	LN2							= Math.LN2;
+const	LN10						= Math.LN10;
+const	LOG2E						= Math.LOG2E;
+const	LOG10E						= Math.LOG10E;
+
+//////////////////////////////////////////////////
+/// ASCII
+//////////////////////////////////////////////////
 
 const	RECT_CORNER					= 0;
 const	RECT_CENTER					= 1;
@@ -62,6 +106,8 @@ class		Link {
 		let	dom;
 		let	w, h;
 
+		if (is_int(x) == false) { x = round(x); }
+		if (is_int(y) == false) { y = round(y); }
 		/// MODE STRING
 		if (typeof(option_1) == "string") {
 			this.string = option_1;
@@ -69,8 +115,8 @@ class		Link {
 			h = 1;
 		/// MODE RECT
 		} else {
-			w = option_1;
-			h = option_2;
+			w = round(option_1);
+			h = round(option_2);
 		}
 		dom = document.createElement("a");
 		dom.href = url;
@@ -104,6 +150,8 @@ class		Link {
 	}
 
 	move_to(x, y) {
+		if (is_int(x) == false) { x = round(x); }
+		if (is_int(y) == false) { y = round(y); }
 		this.x = x;
 		this.dom.style.left = char_width * x + "px";
 		this.y = y;
@@ -146,10 +194,11 @@ function	create_canvas(width = null, height = null) {
 	if (width == 0 || width == null) {
 		span.textContent += " ".repeat(100);
 		num_char = window.innerWidth / (dom_array.offsetWidth / 100);
-		width = Math.ceil(num_char);
+		width = ceil(num_char);
 		span.textContent = " ".repeat(width);
 	/// FIXED WIDTH
 	} else {
+		if (is_int(width) == false) { width = round(width); }
 		span.textContent += " ".repeat(width);
 	}
 	ascii = [span.textContent.split("")];
@@ -162,6 +211,7 @@ function	create_canvas(width = null, height = null) {
 		height = dom_array.childNodes.length;
 	/// FIXED HEIGHT
 	} else {
+		if (is_int(height) == false) { height = round(height); }
 		for (i = 1; i < height; ++i) {
 			dom_array.appendChild(span.cloneNode(true));
 			ascii.push(span.textContent.split(""));
@@ -176,6 +226,8 @@ function	create_canvas(width = null, height = null) {
 }
 
 function	resize_canvas(width = null, height = null) {
+	if (is_int(width) == false) { width = round(width); }
+	if (is_int(height) == false) { height = round(height); }
 	while (dom_array.firstChild) {
 		dom_array.removeChild(dom_array.lastChild);
 	}
@@ -242,10 +294,14 @@ function	rect(pos_x, pos_y, width, height = width, border_chars = null) {
 	let		chars;
 	let		x, y;
 
+	if (is_int(pos_x) == false) { pos_x = round(pos_x); }
+	if (is_int(pos_y) == false) { pos_y = round(pos_y); }
+	if (is_int(width) == false) { width = round(width); }
+	if (is_int(height) == false) { height = round(height); }
 	/// HANDLE RECT MODE
 	if (rect_mode == RECT_CENTER) {
-		pos_x -= Math.round(width / 2);
-		pos_y -= Math.round(height / 2);
+		pos_x -= round(width / 2);
+		pos_y -= round(height / 2);
 	}
 	/// CHECK OUTSIDE DRAWING
 	if (pos_x >= canvas_width || pos_x + width < 0 || pos_y >= canvas_height
@@ -345,12 +401,16 @@ function	line(x0, y0, x1, y1, char = null) {
 	let		sx, sy;
 	let		err, err_2;
 
+	if (is_int(x0) == false) { x0 = round(x0); }
+	if (is_int(y0) == false) { y0 = round(y0); }
+	if (is_int(x1) == false) { x1 = round(x1); }
+	if (is_int(y1) == false) { y1 = round(y1); }
 	layer = current_layer;
 	char = char || line_char;
 	/// INIT
-	dx =  Math.abs(x1 - x0);
+	dx =  abs(x1 - x0);
 	sx = (x0 < x1) ? 1 : -1;
-	dy = -Math.abs( y1 - y0);
+	dy = -abs( y1 - y0);
 	sy = (y0 < y1) ? 1 : -1;
 	err = dx + dy;
 	while (true) {
@@ -380,11 +440,15 @@ function	line_func(x0, y0, x1, y1, func) {
 	let		sx, sy;
 	let		err, err_2;
 
+	if (is_int(x0) == false) { x0 = round(x0); }
+	if (is_int(y0) == false) { y0 = round(y0); }
+	if (is_int(x1) == false) { x1 = round(x1); }
+	if (is_int(y1) == false) { y1 = round(y1); }
 	layer = current_layer;
 	/// INIT
-	dx =  Math.abs(x1 - x0);
+	dx =  abs(x1 - x0);
 	sx = (x0 < x1) ? 1 : -1;
-	dy = -Math.abs( y1 - y0);
+	dy = -abs( y1 - y0);
 	sy = (y0 < y1) ? 1 : -1;
 	err = dx + dy;
 	while (true) {
@@ -430,6 +494,9 @@ function	text(string, x, y, w = null) {
 	let		max;
 	let		i, j;
 
+	if (is_int(x) == false) { x = round(x); }
+	if (is_int(y) == false) { y = round(y); }
+	if (w != null && is_int(w) == false) { w = round(w); }
 	layer = current_layer;
 	if (y >= canvas_height) {
 		return;
@@ -437,7 +504,7 @@ function	text(string, x, y, w = null) {
 	/// TRIM MODE
 	if (text_wrap == TEXT_TRIM) {
 		if (text_mode == TEXT_CENTER) {
-			x -= Math.floor(string.length / 2);
+			x -= floor(string.length / 2);
 		} else if (text_mode == TEXT_RIGHT) {
 			x -= string.length;
 		}
@@ -454,7 +521,7 @@ function	text(string, x, y, w = null) {
 	} else if (text_wrap == TEXT_WRAP_HARD) {
 		if (w != null) {
 			if (text_mode == TEXT_CENTER) {
-				x -= Math.floor(w / 2);
+				x -= floor(w / 2);
 			} else if (text_mode == TEXT_RIGHT) {
 				x -= w;
 			}
@@ -479,7 +546,7 @@ function	text(string, x, y, w = null) {
 	} else {
 		if (w != null) {
 			if (text_mode == TEXT_CENTER) {
-				x -= Math.floor(w / 2);
+				x -= floor(w / 2);
 			} else if (text_mode == TEXT_RIGHT) {
 				x -= w;
 			}
@@ -516,7 +583,7 @@ function	text(string, x, y, w = null) {
 					if (w == null || text_align == TEXT_ALIGN_LEFT) {
 						pos_x = x;
 					} else if (text_align == TEXT_ALIGN_CENTER) {
-						pos_x = x + Math.round((w - line.length) / 2);
+						pos_x = x + round((w - line.length) / 2);
 					} else if (text_align == TEXT_ALIGN_RIGHT) {
 						pos_x = x + w - line.length + 1;
 					}
@@ -540,7 +607,7 @@ function	text(string, x, y, w = null) {
 		if (w == null || text_align == TEXT_ALIGN_LEFT) {
 			pos_x = x;
 		} else if (text_align == TEXT_ALIGN_CENTER) {
-			pos_x = x + Math.round((w - line.length) / 2);
+			pos_x = x + round((w - line.length) / 2);
 		} else if (text_align == TEXT_ALIGN_RIGHT) {
 			pos_x = x + w - line.length + 1;
 		}
@@ -562,6 +629,8 @@ function	shape(pos_x, pos_y, radius_w, radius_h, vertices, char, linked = true, 
 	let		x, y;
 	let		i;
 
+	if (is_int(pos_x) == false) { pos_x = round(pos_x); }
+	if (is_int(pos_y) == false) { pos_y = round(pos_y); }
 	last_x = null;
 	layer = current_layer;
 	step = TWO_PI / vertices;
@@ -569,8 +638,8 @@ function	shape(pos_x, pos_y, radius_w, radius_h, vertices, char, linked = true, 
 	for (i = 0; i < TWO_PI; i += step) {
 		/// GET COORDS
 		angle = i + offset * step;
-		x = Math.round(pos_x + Math.cos(angle) * radius_w);
-		y = Math.round(pos_y + Math.sin(angle) * radius_h);
+		x = round(pos_x + cos(angle) * radius_w);
+		y = round(pos_y + sin(angle) * radius_h);
 		/// PRINT LINE
 		if (linked == true) {
 			if (last_x != null) {
@@ -585,8 +654,8 @@ function	shape(pos_x, pos_y, radius_w, radius_h, vertices, char, linked = true, 
 	}
 	/// PRINT LAST LINE
 	if (linked == true) {
-		x = Math.round(pos_x + Math.cos(offset * step) * radius_w);
-		y = Math.round(pos_y + Math.sin(offset * step) * radius_h);
+		x = round(pos_x + cos(offset * step) * radius_w);
+		y = round(pos_y + sin(offset * step) * radius_h);
 		line(x, y, last_x, last_y, char);
 	}
 }
@@ -623,6 +692,8 @@ function	fill(x, y, char) {
 	let		layer;
 	let		to_change;
 
+	if (is_int(x) == false) { x = round(x); }
+	if (is_int(y) == false) { y = round(y); }
 	layer = current_layer;
 	to_change = layer[y][x];
 	layer[y][x] = char;
@@ -646,6 +717,33 @@ function	no_loop() {
 
 function	loop() {
 	ascii_loop_draw = true;
+}
+
+function	random(option_1 = null, option_2 = null) {
+	/// MODE ARRAY
+	if (is_array(option_1) == true) {
+		return (option_1[floor(rand() * option_1.length)]);
+	/// MODE BOUND
+	} else {
+		/// 0 -> 1
+		if (option_1 == null) {
+			return (rand());
+		}
+		/// 0 -> option_1
+		if (option_2 == null) {
+			return (rand() * option_1);
+		}
+		/// option_1 -> option_2
+		if (option_1 < option_2) {
+			return (rand() * (option_2 - option_1) + option_1);
+		}
+		/// option_2 -> option_1
+		return (rand() * (option_1 - option_2) + option_2);
+	}
+}
+
+function	is_float(number) {
+	return (typeof(number) == "number" && number % 1 != 0);
 }
 
 //////////////////////////////////////////////////
@@ -677,11 +775,11 @@ function	ascii_handle_mouse(e) {
 
 	dom_rect = dom_array.getBoundingClientRect();
 	x = e.clientX - dom_rect.left;
-	x = Math.floor((x / dom_rect.width) * canvas_width);
-	mouse_x = Math.min(x, canvas_width - 1);
+	x = round((x / dom_rect.width) * canvas_width);
+	mouse_x = min(x, canvas_width - 1);
 	y = e.clientY - dom_rect.top;
-	y = Math.floor((y / dom_rect.height) * canvas_height);
-	mouse_y = Math.min(y, canvas_height - 1);
+	y = round((y / dom_rect.height) * canvas_height);
+	mouse_y = min(y, canvas_height - 1);
 }
 
 function	ascii_handle_touch(e) {
@@ -694,9 +792,9 @@ function	ascii_handle_touch(e) {
 		dom_rect = dom_array.getBoundingClientRect();
 		for (i = 0; i < e.touches.length; ++i) {
 			x = e.touches[i].clientX - dom_rect.left;
-			x = Math.floor((x / dom_rect.width) * canvas_width);
+			x = floor((x / dom_rect.width) * canvas_width);
 			y = e.touches[i].clientY - dom_rect.top;
-			y = Math.floor((y / dom_rect.height) * canvas_height);
+			y = floor((y / dom_rect.height) * canvas_height);
 			touches.push({"x": x, "y": y});
 		}
 	}

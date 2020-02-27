@@ -59,7 +59,7 @@ Here's a small example:
 
 ```javascript
 function	draw() {
-	line(0, 0, canvas_width, canvas_height);
+	line(0, 0, canvas_width - 1, canvas_height - 1);
 }
 ```
 
@@ -68,7 +68,7 @@ the bottom right one.
 
 ### Variables
 
-The Asci lib provides user some basic variables.
+The Asci lib provides user some environment variables.
 
 - ascii
 - canvas_width
@@ -87,68 +87,103 @@ like `ascii[y][x]`.
 
 #### canvas_width + canvas_height
 
-`canvas_width` and `canvas_height` give you the canvas format, the limit of the
-`ascii` array.
+The canvas format in characters, the limits of the `ascii` array.
 
 #### mouse_x + mouse_y
 
-`mouse_x` and `mouse_y` give you the cursor coordinate on the canvas.
+The cursor coordinates on the canvas.
+
+#### touches
+
+A list which contains current touch points and their coordinates.
 
 #### char_width + char_height
 
-`char_width` and `char_height` give you the characters format in pixel.
+The characters format in pixel.
 
 ### Functions
 
-- create_canvas([width[, height]]);
-- resize_canvas([width[, height]]);
+- create_canvas([width[, height]])
+- resize_canvas([width[, height]])
 
-- no_loop();
-- loop();
+- no_loop()
+- loop()
 
-- clear();
-- background(character);
-- fill(x, y, character);
+- clear()
+- background(character)
+- fill(x, y, character)
 
-- create_layer();
-- set_layer([layer]);
-- draw_layer(layer);
+- create_layer()
+- set_layer([layer])
+- draw_layer(layer)
 
-- line(x0, y0, x1, y1[, character]);
-- set_line_char([character]);
+- line(x0, y0, x1, y1[, character])
+- set_line_char([character])
 
-- line_func(x0, y0, x1, y1, function);
+- line_func(x0, y0, x1, y1, function)
 
-- rect(x, y, width, height[, characters]);
-- set_rect_border([characters]);
-- set_rect_mode([mode]);
+- rect(x, y, width, height[, characters])
+- set_rect_border([characters])
+- set_rect_mode([mode])
 
-- shape(x, y, rw, rh, vertices, character[, linked[, offset]]);
+- shape(x, y, rw, rh, vertices, character[, linked[, offset]])
 
-- border(char);
+- border(char)
 
-- text(string, x, y[, is_vertical]);
-- set_text_wrap([wrap_mode]);
-- set_text_mode([mode]);
+- text(string, x, y[, is_vertical])
+- set_text_wrap([wrap_mode])
+- set_text_mode([mode])
+
+- random([max]) || random(from, to) || random(list)
+
+#### Minor
+
+- is_int(x)
+- is_float(x)
+- is_array(x)
+- round(x)
+- floor(x)
+- ceil(x)
+- rand()
+- abs(x)
+- min(x, y[, z[, ... n]])
+- max(x, y[, z[, ... n]])
+- cos(x)
+- sin(x)
+- acos(x)
+- asin(x)
+- acosh(x)
+- asinh(x)
+- atan(x)
+- atan2(y, x)
+- atanh(x)
+- cbrt(x)
+- exp(x)
+- log(x)
+- pow(x)
+- sqrt(x)
+- tan(x)
+- tanh(x)
+- trunc(x)
 
 #### Event functions
 
-- mouse_clicked();
-- mouse_double_clicked();
-- mouse_down();
-- mouse_up();
-- mouse_move();
+- mouse_clicked()
+- mouse_double_clicked()
+- mouse_down()
+- mouse_up()
+- mouse_move()
 
-- key_down();
-- key_up();
-- key_pressed();
+- key_down()
+- key_up()
+- key_pressed()
 
-- touch_start();
-- touch_end();
-- touch_move();
+- touch_start()
+- touch_end()
+- touch_move()
 
-- window_resized();
+- window_resized()
 
 ### Classes
 
-- Link(x, y, width, height); || Link(x, y, string);
+- Link(x, y, width, height) || Link(x, y, string)
