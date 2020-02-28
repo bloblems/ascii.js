@@ -1,7 +1,4 @@
-- text(x, y, string)
 - make create_canvas(width, height, mode) with mode = true when width and height are given in pixels || or from css ?
 
 - Link -> instead of giving x, y... give a drawn layer. The link will be created
   from non null characters.
-
-- Math.round() on each given variable which is non integer
