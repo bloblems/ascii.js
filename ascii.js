@@ -60,6 +60,9 @@ const	LOG10E						= Math.LOG10E;
 /// ASCII
 //////////////////////////////////////////////////
 
+const	CANVAS_FIT					= 0;
+const	CANVAS_COVER				= 1;
+const	CANVAS_DEFAULT_MODE			= CANVAS_FIT;
 const	RECT_CORNER					= 0;
 const	RECT_CENTER					= 1;
 const	RECT_DEFAULT_BORDER_CHARS	= "|-|| ||-|";
@@ -83,6 +86,7 @@ let		dom_array;
 let		dom_links;
 let		dom_spans;
 let		current_layer;
+let		canvas_mode;
 let		rect_border_chars;
 let		rect_mode;
 let		line_char;
@@ -186,18 +190,29 @@ class		Link {
 /// CANVAS
 //////////////////////////////
 
-function	create_canvas(width = null, height = null) {
+function	create_canvas(width = null, height = null, dom_mother = null) {
 	let		i;
 	let		span;
 	let		num_char;
+	let		width_px, height_px;
 
+	if (dom_mother == null) {
+		document.body.appendChild(dom_ascii);
+		width_px = window.innerWidth;
+		height_px = window.innerHeight;
+	} else if (typeof(dom_mother) == "string") {
+		dom_mother = document.getElementById(dom_mother);
+		dom_mother.appendChild(dom_ascii);
+		width_px = dom_mother.offsetWidth;
+		height_px = dom_mother.offsetHeight;
+	}
 	span = document.createElement("span");
 	dom_array.appendChild(span);
 	/// RESPONSIVE WIDTH
 	if (width == 0 || width == null) {
 		span.textContent += " ".repeat(100);
-		num_char = window.innerWidth / (dom_array.offsetWidth / 100);
-		width = ceil(num_char);
+		num_char = width_px / (dom_array.offsetWidth / 100);
+		width = floor(num_char) - ((canvas_mode == CANVAS_FIT) ? 1 : 0);
 		span.textContent = " ".repeat(width);
 	/// FIXED WIDTH
 	} else {
@@ -207,9 +222,13 @@ function	create_canvas(width = null, height = null) {
 	ascii = [span.textContent.split("")];
 	/// RESPONSIVE HEIGHT
 	if (height == 0 || height == null) {
-		while (dom_array.offsetHeight <= window.innerHeight) {
+		while (dom_array.offsetHeight <= height_px) {
 			dom_array.appendChild(span.cloneNode(true));
 			ascii.push(span.textContent.split(""));
+		}
+		if (canvas_mode == CANVAS_FIT
+		&& dom_array.offsetHeight > height_px) {
+			dom_array.removeChild(dom_array.firstChild);
 		}
 		height = dom_array.childNodes.length;
 	/// FIXED HEIGHT
@@ -236,7 +255,11 @@ function	resize_canvas(width = null, height = null) {
 	while (dom_array.firstChild) {
 		dom_array.removeChild(dom_array.lastChild);
 	}
-	create_canvas(width, height);
+	create_canvas(width, height, dom_ascii.parentNode);
+}
+
+function	set_canvas_mode(mode = DEFAULT_CANVAS_MODE) {
+	canvas_mode = mode;
 }
 
 //////////////////////////////
@@ -836,6 +859,7 @@ window.addEventListener("load", function () {
 
 	/// INIT VARIABLES
 	ascii_loop_draw = true;
+	canvas_mode = CANVAS_DEFAULT_MODE;
 	rect_border_chars = RECT_DEFAULT_BORDER_CHARS;
 	rect_mode = RECT_DEFAULT_MODE;
 	line_char = LINE_DEFAULT_CHAR;
@@ -851,10 +875,10 @@ window.addEventListener("load", function () {
 	style.innerText = ascii_style;
 	document.head.appendChild(style);
 	/// CREATE ASCII BASE DOM
-	body = document.getElementsByTagName("body")[0];
+	//body = document.body;
 	dom_ascii = document.createElement("div");
 	dom_ascii.id = "ascii";
-	body.appendChild(dom_ascii);
+	//body.appendChild(dom_ascii);
 	/// CREATE ASCII ARRAY DOM
 	dom_array = document.createElement("div");
 	dom_array.id = "ascii_array";

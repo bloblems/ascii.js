@@ -31,6 +31,7 @@ let			angle_acc;
 ////////////////////////////////////////////////////////////////////////////////
 
 function	setup() {
+	set_canvas_mode(CANVAS_COVER);
 	create_canvas();
 	layer = create_layer(canvas_width + WIDTH * 2, canvas_height + HEIGHT * 2);
 	set_layer(layer);

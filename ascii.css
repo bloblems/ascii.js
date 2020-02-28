@@ -12,9 +12,14 @@ html, * {
 	 * #ascii needs to be positioned either "relative" or "fixed" but not
 	 * let default (static).
 	 */
+	/*
+	position:			relative;
+	*/
+	/*
 	position:			fixed;
 	left:				0;
 	top:				0;
+	*/
 	/*
 	right:				0;
 	*/

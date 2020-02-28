@@ -2,3 +2,5 @@
 
 - Link -> instead of giving x, y... give a drawn layer. The link will be created
   from non null characters.
+
+- shuffle(array, force)
