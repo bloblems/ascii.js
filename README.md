@@ -2,13 +2,15 @@
 
 ## About
 
-This is a javascript library that aims to help artists and developers create ascii (text only) creative coding sketches.
+This is a javascript library that aims to help artists and developers create
+light weight ascii (text only) creative coding sketches or websites.
 
 ## Learn
 
 ### Use it
 
-Once you got the ascii.js file, you just have to link it into your HTML page. Just like any other javascript library.
+Once you got the ascii.js file, you just have to link it into your HTML page.
+Just like any other javascript library.
 Here's an exemple:
 ```html
 <html>
