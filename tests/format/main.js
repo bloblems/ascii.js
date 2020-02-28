@@ -11,8 +11,10 @@ window.requestAnimationFrame = window.requestAnimationFrame
 /// DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-let	x, y;
-let	acc_x, acc_y;
+let			points;
+let			x, y;
+let			acc_x, acc_y;
+let			link;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// FUNCTIONS
@@ -27,14 +29,19 @@ function	setup() {
 	y = floor(random(canvas_height));
 	acc_x = 1;
 	acc_y = 1;
+	link = new Link("https://sebhue.com", canvas_width / 2 - "my website".length / 2, canvas_height / 2 - 1, "my website");
 }
 
 function	draw() {
 	clear();
+	/// DRAW BORDER
 	rect(0, 0, canvas_width, canvas_height);
+	/// DRAW BALL
 	ascii[y][x] = "o";
+	/// HANDLE BALL POSITION
 	x += acc_x;
 	y += acc_y;
+	/// HANDLE BALL COLLISION
 	if (x >= canvas_width - 1) {
 		acc_x = -1;
 		x = canvas_width - 2;
@@ -49,6 +56,8 @@ function	draw() {
 		acc_y = 1;
 		y = 1;
 	}
+	/// PRINT LINK
+	link.print();
 }
 
 function	window_resized() {

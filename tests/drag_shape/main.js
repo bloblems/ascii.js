@@ -52,7 +52,6 @@ function	draw() {
 	/// FILL SHAPE TO CHECK HOVER
 	fill(x, y, "?");
 	hover = layer[mouse_y + HEIGHT][mouse_x + WIDTH] != " ";
-	layer[mouse_y + HEIGHT][mouse_x + WIDTH] = "o";
 	/// IF CLICKED
 	if (locked == true) {
 		angle_acc = min(angle_acc + ROTATION_ACC, ROTATION_MAX);
