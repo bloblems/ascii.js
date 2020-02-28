@@ -18,6 +18,7 @@ const		ROTATION_ACC	= 0.01;
 const		ROTATION_SLOW	= 0.005;
 const		ROTATION_MAX	= 0.2;
 
+let			layer;
 let			x, y;
 let			press_x, press_y;
 let			locked;
@@ -31,24 +32,29 @@ let			angle_acc;
 
 function	setup() {
 	create_canvas();
+	layer = create_layer(canvas_width + WIDTH * 2, canvas_height + HEIGHT * 2);
+	set_layer(layer);
 	locked = false;
 	hover = false;
 	angle = 0;
 	angle_acc = 0;
-	x = Math.round(canvas_width / 2);
-	y = Math.round(canvas_height / 2);
+	x = round(layer_width / 2);
+	y = round(layer_height / 2);
 }
 
 function	draw() {
 	clear();
+	clear(layer);
+	set_layer(layer);
 	/// CREATE SHAPE
 	shape(x, y, WIDTH, HEIGHT, VERTICES, "#", true, angle);
 	/// FILL SHAPE TO CHECK HOVER
 	fill(x, y, "?");
-	hover = ascii[mouse_y][mouse_x] != " ";
+	hover = layer[mouse_y + HEIGHT][mouse_x + WIDTH] != " ";
+	layer[mouse_y + HEIGHT][mouse_x + WIDTH] = "o";
 	/// IF CLICKED
 	if (locked == true) {
-		angle_acc = Math.min(angle_acc + ROTATION_ACC, ROTATION_MAX);
+		angle_acc = min(angle_acc + ROTATION_ACC, ROTATION_MAX);
 		fill(x, y, ":");
 	} else {
 		/// SLOW DOWN
@@ -68,6 +74,9 @@ function	draw() {
 	while (angle >= 1) {
 		angle -= 1;
 	}
+	/// DRAW LAYER TO SCREEN
+	set_layer();
+	draw_layer(layer, - WIDTH, - HEIGHT);
 }
 
 function	mouse_down(event) {

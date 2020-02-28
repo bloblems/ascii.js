@@ -73,6 +73,8 @@ The Asci lib provides user some environment variables.
 - ascii
 - canvas_width
 - canvas_height
+- layer_width
+- layer_height
 - mouse_x
 - mouse_y
 - touches
@@ -88,6 +90,11 @@ like `ascii[y][x]`.
 #### canvas_width + canvas_height
 
 The canvas format in characters, the limits of the `ascii` array.
+
+#### layer_width + layer_height
+
+These act like `canvas_width` and `canvas_height` but for the layer in use
+(which can also be `ascii`).
 
 #### mouse_x + mouse_y
 
@@ -130,9 +137,10 @@ The characters format in pixel.
 
 - border(char)
 
-- text(string, x, y[, is_vertical])
-- set_text_wrap([wrap_mode])
+- text(string, x, y[, width])
 - set_text_mode([mode])
+- set_text_wrap([wrap_mode])
+- set_text_align([align_mode])
 
 - random([max]) || random(from, to) || random(list)
 

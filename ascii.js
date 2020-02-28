@@ -93,6 +93,7 @@ let		ascii_loop_draw;
 
 let		ascii;
 let		canvas_width, canvas_height;
+let		layer_width, layer_height;
 let		char_width, char_height;
 let		mouse_x, mouse_y;
 let		touches;
@@ -141,7 +142,9 @@ class		Link {
 		layer = current_layer;
 		if (this.string != null) {
 			for (i = 0; i < this.string.length; ++i) {
-				if (this.x + i >= canvas_width) {
+				if (this.x + i < 0) {
+					continue
+				} else if (this.x + i >= layer_width) {
 					return;
 				}
 				current_layer[this.y][this.x + i] = this.string[i];
@@ -222,6 +225,8 @@ function	create_canvas(width = null, height = null) {
 	char_height = dom_array.offsetHeight / height;
 	canvas_width = width;
 	canvas_height = height;
+	layer_width = width;
+	layer_height = height;
 	current_layer = ascii;
 }
 
@@ -238,13 +243,15 @@ function	resize_canvas(width = null, height = null) {
 /// LAYER
 //////////////////////////////
 
-function	create_layer() {
+function	create_layer(width = canvas_width, height = canvas_height) {
 	let		layer;
 	let		y;
 
+	if (is_int(width) == false) { width = round(width); }
+	if (is_int(height) == false) { height = round(height); }
 	layer = [];
-	for (y = 0; y < canvas_height; ++y) {
-		layer.push(" ".repeat(canvas_width).split(""));
+	for (y = 0; y < height; ++y) {
+		layer.push(" ".repeat(width).split(""));
 	}
 	return (layer);
 }
@@ -252,26 +259,46 @@ function	create_layer() {
 function	set_layer(layer = null) {
 	if (layer == null) {
 		current_layer = ascii;
+		layer_width = canvas_width;
+		layer_height = canvas_height;
 	} else {
 		current_layer = layer;
+		layer_width = layer[0].length;
+		layer_height = layer.length;
 	}
 }
 
-function	draw_layer(to_draw) {
+function	draw_layer(to_draw, pos_x = 0, pos_y = 0) {
 	let		layer;
 	let		layer_line;
 	let		to_draw_line;
 	let		to_draw_cell;
+	let		width, height;
+	let		off_x, off_y;
 	let		x, y;
 
+	if (is_int(pos_x) == false) { pos_x = round(pos_x); }
+	if (is_int(pos_y) == false) { pos_y = round(pos_y); }
+	width = to_draw[0].length;
+	height = to_draw.length;
 	layer = current_layer;
-	for (y = 0; y < canvas_height; ++y) {
-		layer_line = layer[y];
+	for (y = 0; y < height; ++y) {
+		off_y = pos_y + y;
+		if (off_y < 0) {
+			continue;
+		} else if (off_y >= layer_height) {
+			return;
+		}
+		layer_line = layer[off_y];
 		to_draw_line = to_draw[y];
-		for (x = 0; x < canvas_width; ++x) {
+		for (x = 0; x < width; ++x) {
+			off_x = pos_x + x;
+			if (off_x < 0 || off_x >= layer_width) {
+				continue;
+			}
 			to_draw_cell = to_draw_line[x];
 			if (to_draw_cell != " ") {
-				layer_line[x] = to_draw_cell;
+				layer_line[off_x] = to_draw_cell;
 			}
 		}
 	}
@@ -304,7 +331,7 @@ function	rect(pos_x, pos_y, width, height = width, border_chars = null) {
 		pos_y -= round(height / 2);
 	}
 	/// CHECK OUTSIDE DRAWING
-	if (pos_x >= canvas_width || pos_x + width < 0 || pos_y >= canvas_height
+	if (pos_x >= layer_width || pos_x + width < 0 || pos_y >= layer_height
 	|| pos_y + height < 0) {
 		return;
 	}
@@ -329,25 +356,25 @@ function	rect(pos_x, pos_y, width, height = width, border_chars = null) {
 	/// TOP
 	if (height > 1 && pos_y >= 0) {
 		for (x = 0; x < width; ++x) {
-			if (pos_x + x >= 0 && pos_x + x < canvas_width) {
+			if (pos_x + x >= 0 && pos_x + x < layer_width) {
 				layer[pos_y][pos_x + x] = (x == 0) ? chars[0] : (x == width - 1) ? chars[2] : chars[1];
 			}
 		}
 	}
 	/// CENTER
 	for (y = 1; y < height - 1; ++y) {
-		if (pos_y + y >= 0 && pos_y + y < canvas_height) {
+		if (pos_y + y >= 0 && pos_y + y < layer_height) {
 			for (x = 0; x < width; ++x) {
-				if (pos_x + x >= 0 && pos_x + x < canvas_width) {
+				if (pos_x + x >= 0 && pos_x + x < layer_width) {
 					layer[pos_y + y][pos_x + x] = (x == 0) ? chars[3] : (x == width - 1) ? chars[5] : chars[4];
 				}
 			}
 		}
 	}
 	/// BOTTOM
-	if (pos_y + height - 1 >= 0 && pos_y + height - 1 < canvas_height) {
+	if (pos_y + height - 1 >= 0 && pos_y + height - 1 < layer_height) {
 		for (x = 0; x < width; ++x) {
-			if (pos_x + x >= 0 && pos_x + x < canvas_width) {
+			if (pos_x + x >= 0 && pos_x + x < layer_width) {
 				layer[pos_y + height - 1][pos_x + x] = (x == 0) ? chars[6] : (x == width - 1) ? chars[8] : chars[7];
 			}
 		}
@@ -364,19 +391,19 @@ function	border(char) {
 
 	/// DRAW ON A NEW LAYER
 	border_layer = create_layer();
-	for (y = 0; y < canvas_height; ++y) {
-		for (x = 0; x < canvas_width; ++x) {
+	for (y = 0; y < layer_height; ++y) {
+		for (x = 0; x < layer_width; ++x) {
 			if (layer[y][x] != " ") {
 				continue;
 			}
 			if ((x > 0 && layer[y][x - 1] != " ")
-			|| (x + 1 < canvas_width && layer[y][x + 1] != " ")
+			|| (x + 1 < layer_width && layer[y][x + 1] != " ")
 			|| (y > 0 && layer[y - 1][x] != " ")
-			|| (y + 1 < canvas_height && layer[y + 1][x] != " ")
+			|| (y + 1 < layer_height && layer[y + 1][x] != " ")
 			|| (x > 0 && y > 0 && layer[y - 1][x - 1] != " ")
-			|| (x + 1 < canvas_width && y > 0 && layer[y - 1][x + 1] != " ")
-			|| (x + 1 < canvas_width && y + 1 < canvas_height && layer[y + 1][x + 1] != " ")
-			|| (x > 0 && y + 1 < canvas_height && layer[y + 1][x - 1] != " ")
+			|| (x + 1 < layer_width && y > 0 && layer[y - 1][x + 1] != " ")
+			|| (x + 1 < layer_width && y + 1 < layer_height && layer[y + 1][x + 1] != " ")
+			|| (x > 0 && y + 1 < layer_height && layer[y + 1][x - 1] != " ")
 			) {
 				border_layer[y][x] = char;
 			}
@@ -415,7 +442,7 @@ function	line(x0, y0, x1, y1, char = null) {
 	err = dx + dy;
 	while (true) {
 		/// PUT CHARACTER
-		if (x0 >= 0 && x0 < canvas_width && y0 >= 0 && y0 < canvas_height) {
+		if (x0 >= 0 && x0 < layer_width && y0 >= 0 && y0 < layer_height) {
 			layer[y0][x0] = char;
 		}
 		if (x0 == x1 && y0 == y1) {
@@ -453,7 +480,7 @@ function	line_func(x0, y0, x1, y1, func) {
 	err = dx + dy;
 	while (true) {
 		/// CALL USER FUNCTION
-		func(x0, y0, (x0 >= 0 && x0 < canvas_width && y0 >= 0 && y0 < canvas_height));
+		func(x0, y0, (x0 >= 0 && x0 < layer_width && y0 >= 0 && y0 < layer_height));
 		if (x0 == x1 && y0 == y1) {
 			break;
 		}
@@ -498,7 +525,7 @@ function	text(string, x, y, w = null) {
 	if (is_int(y) == false) { y = round(y); }
 	if (w != null && is_int(w) == false) { w = round(w); }
 	layer = current_layer;
-	if (y >= canvas_height) {
+	if (y >= layer_height) {
 		return;
 	}
 	/// TRIM MODE
@@ -511,7 +538,7 @@ function	text(string, x, y, w = null) {
 		for (i = 0; i < string.length; ++i) {
 			if (x < 0) {
 				continue;
-			} else if (x >= canvas_width) {
+			} else if (x >= layer_width) {
 				return;
 			}
 			layer[y][x] = string[i];
@@ -526,10 +553,10 @@ function	text(string, x, y, w = null) {
 				x -= w;
 			}
 		}
-		max = (w == null) ? canvas_width - 1 : x + w;
+		max = (w == null) ? layer_width - 1 : x + w;
 		pos_x = 0;
 		for (i = 0; i < string.length; ++i) {
-			if (x + pos_x < 0 || x + pos_x >= canvas_width) {
+			if (x + pos_x < 0 || x + pos_x >= layer_width) {
 				continue;
 			}
 			layer[y][x + pos_x] = string[i];
@@ -537,7 +564,7 @@ function	text(string, x, y, w = null) {
 			if (x + pos_x > max) {
 				pos_x = 0;
 				++y;
-				if (y >= canvas_height) {
+				if (y >= layer_height) {
 					return;
 				}
 			}
@@ -552,7 +579,7 @@ function	text(string, x, y, w = null) {
 			}
 		}
 		split = string.split(" ");
-		max = (w == null) ? canvas_width - 1 : x + w;
+		max = (w == null) ? layer_width - 1 : x + w;
 		pos_x = 0;
 		/// LOOP THROUGH WORDS
 		line = "";
@@ -566,14 +593,14 @@ function	text(string, x, y, w = null) {
 					while (x + word.length - 1 >= max) {
 						next_line = word.substr(0, max - (x + line.length) + 0);
 						for (j = 0; j < next_line.length; ++j) {
-							if (x + j >= 0 && x + j < canvas_width) {
+							if (x + j >= 0 && x + j < layer_width) {
 								layer[y][x + j] = next_line[j];
 							}
 						}
 						word = word.substr(max - (x + line.length));
 						line = "";
 						++y;
-						if (y >= canvas_height) {
+						if (y >= layer_height) {
 							return;
 						}
 					}
@@ -589,14 +616,14 @@ function	text(string, x, y, w = null) {
 					}
 					/// PUT LINE
 					for (j = 0; j < line.length - 1; ++j) {
-						if (x >= 0 && x < canvas_width) {
+						if (x >= 0 && x < layer_width) {
 							layer[y][pos_x + j] = line[j];
 						}
 					}
 					/// GO TO NEXT LINE
 					line = "";
 					++y;
-					if (y >= canvas_height) {
+					if (y >= layer_height) {
 						return;
 					}
 				}
@@ -648,7 +675,7 @@ function	shape(pos_x, pos_y, radius_w, radius_h, vertices, char, linked = true, 
 			last_x = x;
 			last_y = y;
 		/// PRINT POINT
-		} else if (x >= 0 && x < canvas_width && y >= 0 && y < canvas_height) {
+		} else if (x >= 0 && x < layer_width && y >= 0 && y < layer_height) {
 			layer[y][x] = char;
 		}
 	}
@@ -663,12 +690,15 @@ function	shape(pos_x, pos_y, radius_w, radius_h, vertices, char, linked = true, 
 function	clear(to_draw = null) {
 	let		layer;
 	let		layer_line;
+	let		width, height;
 	let		x, y;
 
 	layer = to_draw || current_layer;
-	for (y = 0; y < canvas_height; ++y) {
+	width = layer[0].length;
+	height = layer.length;
+	for (y = 0; y < height; ++y) {
 		layer_line = layer[y];
-		for (x = 0; x < canvas_width; ++x) {
+		for (x = 0; x < width; ++x) {
 			layer_line[x] = " ";
 		}
 	}
@@ -680,9 +710,9 @@ function	background(char) {
 	let		x, y;
 
 	layer = current_layer;
-	for (y = 0; y < canvas_height; ++y) {
+	for (y = 0; y < layer_height; ++y) {
 		layer_line = layer[y];
-		for (x = 0; x < canvas_width; ++x) {
+		for (x = 0; x < layer_width; ++x) {
 			layer_line[x] = char;
 		}
 	}
@@ -700,13 +730,13 @@ function	fill(x, y, char) {
 	if (x > 0 && layer[y][x - 1] == to_change) {
 		fill(x - 1, y, char);
 	}
-	if (x < canvas_width - 1 && layer[y][x + 1] == to_change) {
+	if (x < layer_width - 1 && layer[y][x + 1] == to_change) {
 		fill(x + 1, y, char);
 	}
 	if (y > 0 && layer[y - 1][x] == to_change) {
 		fill(x, y - 1, char);
 	}
-	if (y < canvas_height - 1 && layer[y + 1][x] == to_change) {
+	if (y < layer_height - 1 && layer[y + 1][x] == to_change) {
 		fill(x, y + 1, char);
 	}
 }
