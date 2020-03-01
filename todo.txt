@@ -6,3 +6,5 @@
 - talk about canvas in css into readme
 
 - loop() function does not really re-activate loop
+
+- put all window load content into create_canvas() function
