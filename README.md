@@ -145,6 +145,7 @@ The characters format in pixel.
 - set_text_align([align_mode])
 
 - random([max]) || random(from, to) || random(list)
+- shuffle(list[, force])
 
 #### Minor
 

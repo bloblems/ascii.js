@@ -795,6 +795,23 @@ function	random(option_1 = null, option_2 = null) {
 	}
 }
 
+function	shuffle(list, force = false) {
+	let		i;
+	let		rand_i;
+	let		tmp;
+
+	if (force == false) {
+		list = list.slice();
+	}
+	for (i = list.length - 1; i >= 1; --i) {
+		rand_i = floor(random(i));
+		tmp = list[i];
+		list[i] = list[rand_i];
+		list[rand_i] = tmp;
+	}
+	return (list);
+}
+
 function	is_float(number) {
 	return (typeof(number) == "number" && number % 1 != 0);
 }

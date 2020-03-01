@@ -4,3 +4,5 @@
 - shuffle(array, force)
 
 - talk about canvas in css into readme
+
+- loop() function does not really re-activate loop
