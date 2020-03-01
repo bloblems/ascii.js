@@ -141,20 +141,15 @@ function	is_float(number) {
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-function	create_ascii(g) {
-	g.dom_ascii				= null;
-	g.dom_array				= null;
-	g.dom_links				= null;
-	g.dom_spans				= null;
-	g.current_layer			= null;
-	g.canvas_mode			= CANVAS_DEFAULT_MODE;
-	g.rect_border_chars		= RECT_DEFAULT_BORDER_CHARS;
-	g.rect_mode				= RECT_DEFAULT_MODE;
-	g.line_char				= LINE_DEFAULT_CHAR;
-	g.text_mode				= TEXT_DEFAULT_MODE;
-	g.text_wrap				= TEXT_DEFAULT_WRAP;
-	g.text_align			= TEXT_DEFAULT_ALIGN;
-	g.ascii_loop_draw		= true;
+function	create_ascii(g = window) {
+
+////////////////////////////////////////////////////////////////////////////////
+/// DATA
+////////////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////
+/// PUBLIC
+//////////////////////////////////////////////////
 
 	g.ascii					= null;
 	g.canvas_width			= 0;
@@ -166,6 +161,24 @@ function	create_ascii(g) {
 	g.mouse_x				= 0;
 	g.mouse_y				= 0;
 	g.touches				= null;
+
+//////////////////////////////////////////////////
+/// PRIVATE
+//////////////////////////////////////////////////
+
+	let	dom_ascii			= null;
+	let	dom_array			= null;
+	let	dom_links			= null;
+	let	dom_spans			= null;
+	let	current_layer		= null;
+	let	canvas_mode			= CANVAS_DEFAULT_MODE;
+	let	rect_border_chars	= RECT_DEFAULT_BORDER_CHARS;
+	let	rect_mode			= RECT_DEFAULT_MODE;
+	let	line_char			= LINE_DEFAULT_CHAR;
+	let	text_mode			= TEXT_DEFAULT_MODE;
+	let	text_wrap			= TEXT_DEFAULT_WRAP;
+	let	text_align			= TEXT_DEFAULT_ALIGN;
+	let	ascii_loop_draw		= true;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// CLASSES
@@ -191,10 +204,10 @@ function	create_ascii(g) {
 			dom = document.createElement("a");
 			dom.href = url;
 			dom.className = "ascii_link";
-			dom.style.left = char_width * x + "px";
-			dom.style.top = char_height * y + "px";
-			dom.style.width = char_width * w + "px";
-			dom.style.height = char_height * h + "px";
+			dom.style.left = g.char_width * x + "px";
+			dom.style.top = g.char_height * y + "px";
+			dom.style.width = g.char_width * w + "px";
+			dom.style.height = g.char_height * h + "px";
 			g.dom_links.appendChild(dom);
 			this.dom = dom;
 			this.url = url;
@@ -213,7 +226,7 @@ function	create_ascii(g) {
 				for (i = 0; i < this.string.length; ++i) {
 					if (this.x + i < 0) {
 						continue
-					} else if (this.x + i >= layer_width) {
+					} else if (this.x + i >= g.layer_width) {
 						return;
 					}
 					layer[this.y][this.x + i] = this.string[i];
@@ -225,9 +238,9 @@ function	create_ascii(g) {
 			if (is_int(x) == false) { x = round(x); }
 			if (is_int(y) == false) { y = round(y); }
 			this.x = x;
-			this.dom.style.left = char_width * x + "px";
+			this.dom.style.left = g.char_width * x + "px";
 			this.y = y;
-			this.dom.style.top = char_height * y + "px";
+			this.dom.style.top = g.char_height * y + "px";
 		}
 
 		remove() {
@@ -261,22 +274,39 @@ function	create_ascii(g) {
 		let		num_char;
 		let		width_px, height_px;
 
+		/// CREATE DOM
+		if (document.getElementById("ascii") == null) {
+			/// CREATE ASCII BASE DOM
+			g.dom_ascii = document.createElement("div");
+			g.dom_ascii.id = "ascii";
+			/// CREATE ASCII ARRAY DOM
+			g.dom_array = document.createElement("div");
+			g.dom_array.id = "ascii_array";
+			g.dom_ascii.appendChild(g.dom_array);
+			/// CREATE ASCII LINKS DOM
+			g.dom_links = document.createElement("div");
+			g.dom_links.id = "ascii_links";
+			g.dom_ascii.appendChild(g.dom_links);
+		}
+		/// HANDLE MOTHER DOM
 		if (dom_mother == null) {
-			document.body.appendChild(dom_ascii);
+			document.body.appendChild(g.dom_ascii);
 			width_px = window.innerWidth;
 			height_px = window.innerHeight;
-		} else if (typeof(dom_mother) == "string") {
-			dom_mother = document.getElementById(dom_mother);
-			dom_mother.appendChild(dom_ascii);
+		} else {
+			if (typeof(dom_mother) == "string") {
+				dom_mother = document.getElementById(dom_mother);
+			}
+			dom_mother.appendChild(g.dom_ascii);
 			width_px = dom_mother.offsetWidth;
 			height_px = dom_mother.offsetHeight;
 		}
 		span = document.createElement("span");
-		dom_array.appendChild(span);
+		g.dom_array.appendChild(span);
 		/// RESPONSIVE WIDTH
 		if (width == 0 || width == null) {
 			span.textContent += " ".repeat(100);
-			num_char = width_px / (dom_array.offsetWidth / 100);
+			num_char = width_px / (g.dom_array.offsetWidth / 100);
 			width = floor(num_char) - ((canvas_mode == CANVAS_FIT) ? 1 : 0);
 			span.textContent = " ".repeat(width);
 		/// FIXED WIDTH
@@ -284,34 +314,34 @@ function	create_ascii(g) {
 			if (is_int(width) == false) { width = round(width); }
 			span.textContent += " ".repeat(width);
 		}
-		ascii = [span.textContent.split("")];
+		g.ascii = [span.textContent.split("")];
 		/// RESPONSIVE HEIGHT
 		if (height == 0 || height == null) {
-			while (dom_array.offsetHeight <= height_px) {
-				dom_array.appendChild(span.cloneNode(true));
-				ascii.push(span.textContent.split(""));
+			while (g.dom_array.offsetHeight <= height_px) {
+				g.dom_array.appendChild(span.cloneNode(true));
+				g.ascii.push(span.textContent.split(""));
 			}
 			if (canvas_mode == CANVAS_FIT
-			&& dom_array.offsetHeight > height_px) {
-				dom_array.removeChild(dom_array.firstChild);
+			&& g.dom_array.offsetHeight > height_px) {
+				g.dom_array.removeChild(g.dom_array.firstChild);
 			}
-			height = dom_array.childNodes.length;
+			height = g.dom_array.childNodes.length;
 		/// FIXED HEIGHT
 		} else {
 			if (is_int(height) == false) { height = round(height); }
 			for (i = 1; i < height; ++i) {
-				dom_array.appendChild(span.cloneNode(true));
-				ascii.push(span.textContent.split(""));
+				g.dom_array.appendChild(span.cloneNode(true));
+				g.ascii.push(span.textContent.split(""));
 			}
 		}
 		/// SAVE 
-		char_width = dom_array.offsetWidth / width;
-		char_height = dom_array.offsetHeight / height;
-		canvas_width = width;
-		canvas_height = height;
-		layer_width = width;
-		layer_height = height;
-		current_layer = ascii;
+		g.char_width = g.dom_array.offsetWidth / width;
+		g.char_height = g.dom_array.offsetHeight / height;
+		g.canvas_width = width;
+		g.canvas_height = height;
+		g.layer_width = width;
+		g.layer_height = height;
+		current_layer = g.ascii;
 	}
 
 	g.resize_canvas = function(width = null, height = null) {
@@ -320,7 +350,7 @@ function	create_ascii(g) {
 		while (dom_array.firstChild) {
 			dom_array.removeChild(dom_array.lastChild);
 		}
-		create_canvas(width, height, dom_ascii.parentNode);
+		create_canvas(width, height, g.dom_ascii.parentNode);
 	}
 
 	g.set_canvas_mode = function(mode = DEFAULT_CANVAS_MODE) {
@@ -331,7 +361,7 @@ function	create_ascii(g) {
 	/// LAYER
 	//////////////////////////////
 
-	g.create_layer = function(width = canvas_width, height = canvas_height) {
+	g.create_layer = function(width = g.canvas_width, height = g.canvas_height) {
 		let		layer;
 		let		y;
 
@@ -346,13 +376,13 @@ function	create_ascii(g) {
 
 	g.set_layer = function(layer = null) {
 		if (layer == null) {
-			current_layer = ascii;
-			layer_width = canvas_width;
-			layer_height = canvas_height;
+			current_layer = g.ascii;
+			g.layer_width = g.canvas_width;
+			g.layer_height = g.canvas_height;
 		} else {
 			current_layer = layer;
-			layer_width = layer[0].length;
-			layer_height = layer.length;
+			g.layer_width = layer[0].length;
+			g.layer_height = layer.length;
 		}
 	}
 
@@ -374,14 +404,14 @@ function	create_ascii(g) {
 			off_y = pos_y + y;
 			if (off_y < 0) {
 				continue;
-			} else if (off_y >= layer_height) {
+			} else if (off_y >= g.layer_height) {
 				return;
 			}
 			layer_line = layer[off_y];
 			to_draw_line = to_draw[y];
 			for (x = 0; x < width; ++x) {
 				off_x = pos_x + x;
-				if (off_x < 0 || off_x >= layer_width) {
+				if (off_x < 0 || off_x >= g.layer_width) {
 					continue;
 				}
 				to_draw_cell = to_draw_line[x];
@@ -419,7 +449,7 @@ function	create_ascii(g) {
 			pos_y -= round(height / 2);
 		}
 		/// CHECK OUTSIDE DRAWING
-		if (pos_x >= layer_width || pos_x + width < 0 || pos_y >= layer_height
+		if (pos_x >= g.layer_width || pos_x + width < 0 || pos_y >= g.layer_height
 		|| pos_y + height < 0) {
 			return;
 		}
@@ -444,25 +474,25 @@ function	create_ascii(g) {
 		/// TOP
 		if (height > 1 && pos_y >= 0) {
 			for (x = 0; x < width; ++x) {
-				if (pos_x + x >= 0 && pos_x + x < layer_width) {
+				if (pos_x + x >= 0 && pos_x + x < g.layer_width) {
 					layer[pos_y][pos_x + x] = (x == 0) ? chars[0] : (x == width - 1) ? chars[2] : chars[1];
 				}
 			}
 		}
 		/// CENTER
 		for (y = 1; y < height - 1; ++y) {
-			if (pos_y + y >= 0 && pos_y + y < layer_height) {
+			if (pos_y + y >= 0 && pos_y + y < g.layer_height) {
 				for (x = 0; x < width; ++x) {
-					if (pos_x + x >= 0 && pos_x + x < layer_width) {
+					if (pos_x + x >= 0 && pos_x + x < g.layer_width) {
 						layer[pos_y + y][pos_x + x] = (x == 0) ? chars[3] : (x == width - 1) ? chars[5] : chars[4];
 					}
 				}
 			}
 		}
 		/// BOTTOM
-		if (pos_y + height - 1 >= 0 && pos_y + height - 1 < layer_height) {
+		if (pos_y + height - 1 >= 0 && pos_y + height - 1 < g.layer_height) {
 			for (x = 0; x < width; ++x) {
-				if (pos_x + x >= 0 && pos_x + x < layer_width) {
+				if (pos_x + x >= 0 && pos_x + x < g.layer_width) {
 					layer[pos_y + height - 1][pos_x + x] = (x == 0) ? chars[6] : (x == width - 1) ? chars[8] : chars[7];
 				}
 			}
@@ -479,19 +509,19 @@ function	create_ascii(g) {
 
 		/// DRAW ON A NEW LAYER
 		border_layer = create_layer();
-		for (y = 0; y < layer_height; ++y) {
-			for (x = 0; x < layer_width; ++x) {
+		for (y = 0; y < g.layer_height; ++y) {
+			for (x = 0; x < g.layer_width; ++x) {
 				if (layer[y][x] != " ") {
 					continue;
 				}
 				if ((x > 0 && layer[y][x - 1] != " ")
-				|| (x + 1 < layer_width && layer[y][x + 1] != " ")
+				|| (x + 1 < g.layer_width && layer[y][x + 1] != " ")
 				|| (y > 0 && layer[y - 1][x] != " ")
-				|| (y + 1 < layer_height && layer[y + 1][x] != " ")
+				|| (y + 1 < g.layer_height && layer[y + 1][x] != " ")
 				|| (x > 0 && y > 0 && layer[y - 1][x - 1] != " ")
-				|| (x + 1 < layer_width && y > 0 && layer[y - 1][x + 1] != " ")
-				|| (x + 1 < layer_width && y + 1 < layer_height && layer[y + 1][x + 1] != " ")
-				|| (x > 0 && y + 1 < layer_height && layer[y + 1][x - 1] != " ")
+				|| (x + 1 < g.layer_width && y > 0 && layer[y - 1][x + 1] != " ")
+				|| (x + 1 < g.layer_width && y + 1 < g.layer_height && layer[y + 1][x + 1] != " ")
+				|| (x > 0 && y + 1 < g.layer_height && layer[y + 1][x - 1] != " ")
 				) {
 					border_layer[y][x] = char;
 				}
@@ -530,7 +560,7 @@ function	create_ascii(g) {
 		err = dx + dy;
 		while (true) {
 			/// PUT CHARACTER
-			if (x0 >= 0 && x0 < layer_width && y0 >= 0 && y0 < layer_height) {
+			if (x0 >= 0 && x0 < g.layer_width && y0 >= 0 && y0 < g.layer_height) {
 				layer[y0][x0] = char;
 			}
 			if (x0 == x1 && y0 == y1) {
@@ -568,7 +598,7 @@ function	create_ascii(g) {
 		err = dx + dy;
 		while (true) {
 			/// CALL USER FUNCTION
-			func(x0, y0, (x0 >= 0 && x0 < layer_width && y0 >= 0 && y0 < layer_height));
+			func(x0, y0, (x0 >= 0 && x0 < g.layer_width && y0 >= 0 && y0 < g.layer_height));
 			if (x0 == x1 && y0 == y1) {
 				break;
 			}
@@ -613,7 +643,7 @@ function	create_ascii(g) {
 		if (is_int(y) == false) { y = round(y); }
 		if (w != null && is_int(w) == false) { w = round(w); }
 		layer = current_layer;
-		if (y >= layer_height) {
+		if (y >= g.layer_height) {
 			return;
 		}
 		/// TRIM MODE
@@ -626,7 +656,7 @@ function	create_ascii(g) {
 			for (i = 0; i < string.length; ++i) {
 				if (x < 0) {
 					continue;
-				} else if (x >= layer_width) {
+				} else if (x >= g.layer_width) {
 					return;
 				}
 				layer[y][x] = string[i];
@@ -641,10 +671,10 @@ function	create_ascii(g) {
 					x -= w;
 				}
 			}
-			max = (w == null) ? layer_width - 1 : x + w;
+			max = (w == null) ? g.layer_width - 1 : x + w;
 			pos_x = 0;
 			for (i = 0; i < string.length; ++i) {
-				if (x + pos_x < 0 || x + pos_x >= layer_width) {
+				if (x + pos_x < 0 || x + pos_x >= g.layer_width) {
 					continue;
 				}
 				layer[y][x + pos_x] = string[i];
@@ -652,7 +682,7 @@ function	create_ascii(g) {
 				if (x + pos_x > max) {
 					pos_x = 0;
 					++y;
-					if (y >= layer_height) {
+					if (y >= g.layer_height) {
 						return;
 					}
 				}
@@ -667,7 +697,7 @@ function	create_ascii(g) {
 				}
 			}
 			split = string.split(" ");
-			max = (w == null) ? layer_width - 1 : x + w;
+			max = (w == null) ? g.layer_width - 1 : x + w;
 			pos_x = 0;
 			/// LOOP THROUGH WORDS
 			line = "";
@@ -681,14 +711,14 @@ function	create_ascii(g) {
 						while (x + word.length - 1 >= max) {
 							next_line = word.substr(0, max - (x + line.length) + 0);
 							for (j = 0; j < next_line.length; ++j) {
-								if (x + j >= 0 && x + j < layer_width) {
+								if (x + j >= 0 && x + j < g.layer_width) {
 									layer[y][x + j] = next_line[j];
 								}
 							}
 							word = word.substr(max - (x + line.length));
 							line = "";
 							++y;
-							if (y >= layer_height) {
+							if (y >= g.layer_height) {
 								return;
 							}
 						}
@@ -704,14 +734,14 @@ function	create_ascii(g) {
 						}
 						/// PUT LINE
 						for (j = 0; j < line.length - 1; ++j) {
-							if (x >= 0 && x < layer_width) {
+							if (x >= 0 && x < g.layer_width) {
 								layer[y][pos_x + j] = line[j];
 							}
 						}
 						/// GO TO NEXT LINE
 						line = "";
 						++y;
-						if (y >= layer_height) {
+						if (y >= g.layer_height) {
 							return;
 						}
 					}
@@ -763,7 +793,7 @@ function	create_ascii(g) {
 				last_x = x;
 				last_y = y;
 			/// PRINT POINT
-			} else if (x >= 0 && x < layer_width && y >= 0 && y < layer_height) {
+			} else if (x >= 0 && x < g.layer_width && y >= 0 && y < g.layer_height) {
 				layer[y][x] = char;
 			}
 		}
@@ -798,9 +828,9 @@ function	create_ascii(g) {
 		let		x, y;
 
 		layer = current_layer;
-		for (y = 0; y < layer_height; ++y) {
+		for (y = 0; y < g.layer_height; ++y) {
 			layer_line = layer[y];
-			for (x = 0; x < layer_width; ++x) {
+			for (x = 0; x < g.layer_width; ++x) {
 				layer_line[x] = char;
 			}
 		}
@@ -818,13 +848,13 @@ function	create_ascii(g) {
 		if (x > 0 && layer[y][x - 1] == to_change) {
 			fill(x - 1, y, char);
 		}
-		if (x < layer_width - 1 && layer[y][x + 1] == to_change) {
+		if (x < g.layer_width - 1 && layer[y][x + 1] == to_change) {
 			fill(x + 1, y, char);
 		}
 		if (y > 0 && layer[y - 1][x] == to_change) {
 			fill(x, y - 1, char);
 		}
-		if (y < layer_height - 1 && layer[y + 1][x] == to_change) {
+		if (y < g.layer_height - 1 && layer[y + 1][x] == to_change) {
 			fill(x, y + 1, char);
 		}
 	}
@@ -846,13 +876,13 @@ function	create_ascii(g) {
 		let		spans;
 
 		/// CALL USER draw()
-		if (typeof(draw) == "function") {
-			draw();
+		if (typeof(g.draw) == "function") {
+			g.draw();
 		}
 		/// DRAW ARRAY TO DOM ASCII
-		spans = dom_array.childNodes;
-		for (y = 0; y < canvas_height; ++y) {
-			spans[y].textContent = ascii[y].join("");
+		spans = g.dom_array.childNodes;
+		for (y = 0; y < g.canvas_height; ++y) {
+			spans[y].textContent = g.ascii[y].join("");
 		}
 		/// LOOP ANIMATION
 		if (ascii_loop_draw == true) {
@@ -866,11 +896,11 @@ function	create_ascii(g) {
 
 		dom_rect = dom_array.getBoundingClientRect();
 		x = e.clientX - dom_rect.left;
-		x = round((x / dom_rect.width) * canvas_width);
-		mouse_x = min(x, canvas_width - 1);
+		x = round((x / dom_rect.width) * g.canvas_width);
+		mouse_x = min(x, g.canvas_width - 1);
 		y = e.clientY - dom_rect.top;
-		y = round((y / dom_rect.height) * canvas_height);
-		mouse_y = min(y, canvas_height - 1);
+		y = round((y / dom_rect.height) * g.canvas_height);
+		mouse_y = min(y, g.canvas_height - 1);
 	}
 
 	function	ascii_handle_touch(e) {
@@ -878,19 +908,42 @@ function	create_ascii(g) {
 		let		dom_rect;
 		let		x, y;
 
-		touches = [];
+		g.touches = [];
 		if (e.touches.length > 0) {
 			dom_rect = dom_array.getBoundingClientRect();
 			for (i = 0; i < e.touches.length; ++i) {
 				x = e.touches[i].clientX - dom_rect.left;
-				x = floor((x / dom_rect.width) * canvas_width);
+				x = floor((x / dom_rect.width) * g.canvas_width);
 				y = e.touches[i].clientY - dom_rect.top;
-				y = floor((y / dom_rect.height) * canvas_height);
-				touches.push({"x": x, "y": y});
+				y = floor((y / dom_rect.height) * g.canvas_height);
+				g.touches.push({"x": x, "y": y});
 			}
 		}
 	}
 
+////////////////////////////////////////////////////////////////////////////////
+/// MAIN
+////////////////////////////////////////////////////////////////////////////////
+
+	if (window.readyState == "complete") {
+		if (g.setup != null) {
+			g.setup();
+			if (g.dom_ascii != null) {
+				window.requestAnimationFrame(ascii_draw);
+			}
+		}
+	} else {
+		window.onload = function () {
+			if (g.setup != null) {
+				g.setup();
+				if (g.dom_ascii != null) {
+					window.requestAnimationFrame(ascii_draw);
+				}
+			}
+		};
+	}
+
+	/*
 	window.addEventListener("load", function () {
 		/// CREATE ASCII BASE DOM
 		dom_ascii = document.createElement("div");
@@ -931,6 +984,7 @@ function	create_ascii(g) {
 		/// WINDOW EVENT
 		if (typeof(window_resized) == "function") { window.addEventListener("resize", window_resized); }
 	});
+	*/
 }
 
 /// LOAD STYLE
