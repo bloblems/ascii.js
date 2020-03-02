@@ -703,7 +703,7 @@ function	create_ascii(g = window) {
 		if (w != null && is_int(w) == false) { w = round(w); }
 		layer = current_layer;
 		if (y >= g.layer_height) {
-			return;
+			return (null);
 		}
 		/// TRIM MODE
 		if (text_wrap == TEXT_TRIM) {
@@ -716,11 +716,12 @@ function	create_ascii(g = window) {
 				if (x < 0) {
 					continue;
 				} else if (x >= g.layer_width) {
-					return;
+					return ([x, y]);
 				}
 				layer[y][x] = string[i];
 				++x;
 			}
+			return ([x, y]);
 		/// HARD WRAP MODE
 		} else if (text_wrap == TEXT_WRAP_HARD) {
 			if (w != null) {
@@ -742,10 +743,11 @@ function	create_ascii(g = window) {
 					pos_x = 0;
 					++y;
 					if (y >= g.layer_height) {
-						return;
+						return ([x + pos_x, y]);
 					}
 				}
 			}
+			return ([x + pos_x, y]);
 		/// WRAP MODE
 		} else {
 			if (w != null) {
@@ -778,7 +780,7 @@ function	create_ascii(g = window) {
 							line = "";
 							++y;
 							if (y >= g.layer_height) {
-								return;
+								return ([x, y]);
 							}
 						}
 						++i;
@@ -805,7 +807,11 @@ function	create_ascii(g = window) {
 						}
 					}
 				}
-				line += word + " ";
+				if (i < split.length - 1) {
+					line += word + " ";
+				} else {
+					line += word;
+				}
 			}
 			/// PUT REST OF STRING
 			if (w == null || text_align == TEXT_ALIGN_LEFT) {
@@ -818,6 +824,7 @@ function	create_ascii(g = window) {
 			for (j = 0; j < line.length; ++j) {
 				layer[y][pos_x + j] = line[j];
 			}
+			return ([pos_x + j, y]);
 		}
 	}
 
@@ -916,6 +923,14 @@ function	create_ascii(g = window) {
 		if (y < g.layer_height - 1 && layer[y + 1][x] == to_change) {
 			fill(x, y + 1, char);
 		}
+	}
+
+	g.is_on_canvas = function(x, y) {
+		return (x >= 0 && x < canvas_width && y >= 0 && y < canvas_height);
+	}
+
+	g.is_on_layer = function(x, y) {
+		return (x >= 0 && x < layer_width && y >= 0 && y < layer_height);
 	}
 
 	g.no_loop = function() {
