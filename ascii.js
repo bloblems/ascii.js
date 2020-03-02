@@ -972,7 +972,7 @@ function	create_ascii(g = window) {
 	if (document.readyState == "complete") {
 		ascii_setup();
 	} else {
-		window.onload = ascii_setup;
+		window.addEventListener("load", ascii_setup);
 	}
 }
 
