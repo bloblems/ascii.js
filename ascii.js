@@ -68,7 +68,7 @@ const	LOG10E						= Math.LOG10E;
 
 const	CANVAS_FIT					= 0;
 const	CANVAS_COVER				= 1;
-const	CANVAS_DEFAULT_MODE			= CANVAS_FIT;
+const	CANVAS_DEFAULT_FIT			= CANVAS_FIT;
 const	RECT_CORNER					= 0;
 const	RECT_CENTER					= 1;
 const	RECT_DEFAULT_BORDER_CHARS	= "|-|| ||-|";
@@ -171,7 +171,7 @@ function	create_ascii(g = window) {
 	let	dom_links			= null;
 	let	dom_spans			= null;
 	let	current_layer		= null;
-	let	canvas_mode			= CANVAS_DEFAULT_MODE;
+	let	canvas_fit			= CANVAS_DEFAULT_FIT;
 	let	rect_border_chars	= RECT_DEFAULT_BORDER_CHARS;
 	let	rect_mode			= RECT_DEFAULT_MODE;
 	let	line_char			= LINE_DEFAULT_CHAR;
@@ -208,7 +208,7 @@ function	create_ascii(g = window) {
 			dom.style.top = g.char_height * y + "px";
 			dom.style.width = g.char_width * w + "px";
 			dom.style.height = g.char_height * h + "px";
-			g.dom_links.appendChild(dom);
+			dom_links.appendChild(dom);
 			this.dom = dom;
 			this.url = url;
 			this.x = x;
@@ -247,14 +247,14 @@ function	create_ascii(g = window) {
 		}
 
 		remove() {
-			if (g.dom_links.contains(this.dom) == true) {
-				g.dom_links.removeChild(this.dom);
+			if (dom_links.contains(this.dom) == true) {
+				dom_links.removeChild(this.dom);
 			}
 		}
 
 		activate() {
-			if (g.dom_links.contains(this.dom) == false) {
-				g.dom_links.appendChild(this.dom);
+			if (dom_links.contains(this.dom) == false) {
+				dom_links.appendChild(this.dom);
 			}
 		}
 	}
@@ -278,39 +278,39 @@ function	create_ascii(g = window) {
 		let		width_px, height_px;
 
 		/// CREATE DOM
-		if (document.getElementById("ascii") == null) {
+		if (dom_ascii == null) {
 			/// CREATE ASCII BASE DOM
-			g.dom_ascii = document.createElement("div");
-			g.dom_ascii.id = "ascii";
+			dom_ascii = document.createElement("div");
+			dom_ascii.className = "ascii";
 			/// CREATE ASCII ARRAY DOM
-			g.dom_array = document.createElement("div");
-			g.dom_array.id = "ascii_array";
-			g.dom_ascii.appendChild(g.dom_array);
+			dom_array = document.createElement("div");
+			dom_array.className = "ascii_array";
+			dom_ascii.appendChild(dom_array);
 			/// CREATE ASCII LINKS DOM
-			g.dom_links = document.createElement("div");
-			g.dom_links.id = "ascii_links";
-			g.dom_ascii.appendChild(g.dom_links);
+			dom_links = document.createElement("div");
+			dom_links.className = "ascii_links";
+			dom_ascii.appendChild(dom_links);
 		}
-		/// HANDLE MOTHER DOM
+		/// HANDLE MOTHER DOM SOURCE
 		if (dom_mother == null) {
-			document.body.appendChild(g.dom_ascii);
-			width_px = window.innerWidth;
-			height_px = window.innerHeight;
-		} else {
-			if (typeof(dom_mother) == "string") {
-				dom_mother = document.getElementById(dom_mother);
-			}
-			dom_mother.appendChild(g.dom_ascii);
-			width_px = dom_mother.offsetWidth;
-			height_px = dom_mother.offsetHeight;
+			dom_mother = document.body;
+		} else if (typeof(dom_mother) == "string") {
+			dom_mother = document.getElementById(dom_mother);
 		}
+		/// ADD ASCII TO MOTHER DOM
+		if (dom_mother.contains(dom_ascii) == false) {
+			dom_mother.appendChild(dom_ascii);
+		}
+		/// GET WIDTH AND HEIGHT
+		width_px = dom_mother.offsetWidth;
+		height_px = dom_mother.offsetHeight;
 		span = document.createElement("span");
-		g.dom_array.appendChild(span);
+		dom_array.appendChild(span);
 		/// RESPONSIVE WIDTH
 		if (width == 0 || width == null) {
 			span.textContent += " ".repeat(100);
-			num_char = width_px / (g.dom_array.offsetWidth / 100);
-			width = floor(num_char) - ((canvas_mode == CANVAS_FIT) ? 1 : 0);
+			num_char = width_px / (dom_array.offsetWidth / 100);
+			width = floor(num_char) - ((canvas_fit == CANVAS_FIT) ? 1 : 0);
 			span.textContent = " ".repeat(width);
 		/// FIXED WIDTH
 		} else {
@@ -320,26 +320,26 @@ function	create_ascii(g = window) {
 		g.ascii = [span.textContent.split("")];
 		/// RESPONSIVE HEIGHT
 		if (height == 0 || height == null) {
-			while (g.dom_array.offsetHeight <= height_px) {
-				g.dom_array.appendChild(span.cloneNode(true));
+			while (dom_array.offsetHeight <= height_px) {
+				dom_array.appendChild(span.cloneNode(true));
 				g.ascii.push(span.textContent.split(""));
 			}
-			if (canvas_mode == CANVAS_FIT
-			&& g.dom_array.offsetHeight > height_px) {
-				g.dom_array.removeChild(g.dom_array.firstChild);
+			if (canvas_fit == CANVAS_FIT
+			&& dom_array.offsetHeight > height_px) {
+				dom_array.removeChild(dom_array.firstChild);
 			}
-			height = g.dom_array.childNodes.length;
+			height = dom_array.childNodes.length;
 		/// FIXED HEIGHT
 		} else {
 			if (is_int(height) == false) { height = round(height); }
 			for (i = 1; i < height; ++i) {
-				g.dom_array.appendChild(span.cloneNode(true));
+				dom_array.appendChild(span.cloneNode(true));
 				g.ascii.push(span.textContent.split(""));
 			}
 		}
 		/// SAVE 
-		g.char_width = g.dom_array.offsetWidth / width;
-		g.char_height = g.dom_array.offsetHeight / height;
+		g.char_width = dom_array.offsetWidth / width;
+		g.char_height = dom_array.offsetHeight / height;
 		g.canvas_width = width;
 		g.canvas_height = height;
 		g.layer_width = width;
@@ -353,11 +353,11 @@ function	create_ascii(g = window) {
 		while (dom_array.firstChild) {
 			dom_array.removeChild(dom_array.lastChild);
 		}
-		create_canvas(width, height, g.dom_ascii.parentNode);
+		create_canvas(width, height, dom_ascii.parentNode);
 	}
 
-	g.set_canvas_mode = function(mode = DEFAULT_CANVAS_MODE) {
-		canvas_mode = mode;
+	g.set_canvas_fit = function(mode = CANVAS_DEFAULT_FIT) {
+		canvas_fit = mode;
 	}
 
 //////////////////////////////
@@ -924,7 +924,7 @@ function	create_ascii(g = window) {
 		/// CALL draw()
 		g.draw();
 		/// DRAW ARRAY TO DOM ASCII
-		spans = g.dom_array.childNodes;
+		spans = dom_array.childNodes;
 		for (y = 0; y < g.canvas_height; ++y) {
 			spans[y].textContent = g.ascii[y].join("");
 		}
@@ -938,7 +938,7 @@ function	create_ascii(g = window) {
 		let		dom_rect;
 		let		x, y;
 
-		dom_rect = g.dom_array.getBoundingClientRect();
+		dom_rect = dom_array.getBoundingClientRect();
 		x = e.clientX - dom_rect.left;
 		x = round((x / dom_rect.width) * g.canvas_width);
 		mouse_x = min(x, g.canvas_width - 1);

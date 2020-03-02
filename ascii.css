@@ -2,7 +2,7 @@ html, * {
 	font-family:		"Lucida Console", Monaco, monospace;
 }
 
-#ascii {
+.ascii {
 	display:			inline-block;
 	overflow-x:			hidden;
 	white-space:		pre;
@@ -29,13 +29,13 @@ html, * {
 	*/
 }
 
-#ascii_array span {
+.ascii_array span {
 	display:			block;
 }
 
-#ascii_links {
+.ascii_links {
 }
 
-#ascii_links a {
+.ascii_links a {
 	position:			absolute;
 }
