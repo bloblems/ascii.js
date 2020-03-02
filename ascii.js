@@ -86,6 +86,9 @@ const	TEXT_ALIGN_RIGHT			= 2;
 const	TEXT_DEFAULT_WRAP			= TEXT_TRIM;
 const	TEXT_DEFAULT_MODE			= TEXT_LEFT;
 const	TEXT_DEFAULT_ALIGN			= TEXT_ALIGN_LEFT;
+const	DRAW_TEXT					= 0;
+const	DRAW_HTML					= 1;
+const	DRAW_DEFAULT_MODE			= DRAW_TEXT;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// FUNCTIONS
@@ -178,6 +181,7 @@ function	create_ascii(g = window) {
 	let	text_mode			= TEXT_DEFAULT_MODE;
 	let	text_wrap			= TEXT_DEFAULT_WRAP;
 	let	text_align			= TEXT_DEFAULT_ALIGN;
+	let	draw_mode			= DRAW_DEFAULT_MODE;
 	let	ascii_loop_draw		= true;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -928,6 +932,10 @@ function	create_ascii(g = window) {
 		}
 	}
 
+	g.set_draw_mode = function(mode = DRAW_DEFAULT_MODE) {
+		draw_mode = mode;
+	}
+
 //////////////////////////////////////////////////
 /// PRIVATE FUNCTIONS
 //////////////////////////////////////////////////
@@ -977,8 +985,14 @@ function	create_ascii(g = window) {
 		g.draw();
 		/// DRAW ARRAY TO DOM ASCII
 		spans = dom_array.childNodes;
-		for (y = 0; y < g.canvas_height; ++y) {
-			spans[y].textContent = g.ascii[y].join("");
+		if (draw_mode == DRAW_TEXT) {
+			for (y = 0; y < g.canvas_height; ++y) {
+				spans[y].textContent = g.ascii[y].join("");
+			}
+		} else {
+			for (y = 0; y < g.canvas_height; ++y) {
+				spans[y].innerHTML = g.ascii[y].join("");
+			}
 		}
 		/// LOOP ANIMATION
 		if (ascii_loop_draw == true) {

@@ -112,7 +112,9 @@ The characters format in pixel.
 
 ### Functions
 
-- create_canvas([width[, height]])
+- create_ascii([object])
+
+- create_canvas([width[, height[, dom]]])
 - resize_canvas([width[, height]])
 
 - no_loop()
@@ -143,6 +145,8 @@ The characters format in pixel.
 - set_text_mode([mode])
 - set_text_wrap([wrap_mode])
 - set_text_align([align_mode])
+
+- set_draw_mode([mode])
 
 - random([max]) || random(from, to) || random(list)
 - shuffle(list[, force])

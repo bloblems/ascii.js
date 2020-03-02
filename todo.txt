@@ -2,5 +2,3 @@
   from non null characters.
 
 - talk about canvas in css into readme
-
-- add draw mode which let the user the possibility to update page content with textContent or innerHTML
