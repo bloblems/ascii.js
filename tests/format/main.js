@@ -21,7 +21,6 @@ let			link;
 ////////////////////////////////////////////////////////////////////////////////
 
 function	setup() {
-	set_canvas_mode(CANVAS_FIT);
 	create_canvas(null, null, "my_header");
 	set_rect_mode(RECT_CORNER);
 	set_rect_border("**** ****");

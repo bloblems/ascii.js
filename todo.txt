@@ -3,6 +3,4 @@
 
 - talk about canvas in css into readme
 
-- loop() function does not really re-activate loop
-
-- !! ID of ascii, ascii_array and ascii_links must be switched to class (for multiple canvas)
+- add draw mode which let the user the possibility to update page content with textContent or innerHTML

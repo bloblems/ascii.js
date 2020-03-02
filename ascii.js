@@ -271,12 +271,47 @@ function	create_ascii(g = window) {
 /// CANVAS
 //////////////////////////////
 
-	g.create_canvas = function(width = null, height = null, dom_mother = null) {
+	// > create_canvas()
+	// > create_canvas(width, height, dom)
+	// > create_canvas(width, height, "dom")
+	// > create_canvas(dom)
+	// > create_canvas("dom")
+	//
+	// Creates ascii base:
+	//  - ascii dom elements
+	//  - ascii array
+	// By default, the canvas will be created to fill it's mother dom but
+	//  dimensions can also be passed by user via 'width' and 'height'.
+	// By default, the mother dom is document.body but it can also be passed by
+	//  the user via 'dom'.
+	g.create_canvas = function(option_1 = null, option_2 = null, option_3 = null) {
 		let		i;
 		let		span;
 		let		num_char;
+		let		dom_mother;
+		let		width, height;
 		let		width_px, height_px;
 
+		/// -> create_canvas(dom)
+		if (option_1 && option_1.appendChild) {
+			dom_mother = option_1;
+		/// -> create_canvas("dom")
+		} else if (typeof(option_1) == "string") {
+			dom_mother = document.getElementById(option_1);
+		/// -> create_canvas([width[, height[, dom || "dom"]]])
+		} else {
+			width = option_1;
+			height = option_2;
+			if (typeof(option_3) == "string") {
+				dom_mother = document.getElementById(option_3);
+			} else {
+				dom_mother = option_3;
+			}
+		}
+		/// USE BODY BY DEFAULT
+		if (dom_mother == null) {
+			dom_mother = document.body;
+		}
 		/// CREATE DOM
 		if (dom_ascii == null) {
 			/// CREATE ASCII BASE DOM
@@ -290,12 +325,6 @@ function	create_ascii(g = window) {
 			dom_links = document.createElement("div");
 			dom_links.className = "ascii_links";
 			dom_ascii.appendChild(dom_links);
-		}
-		/// HANDLE MOTHER DOM SOURCE
-		if (dom_mother == null) {
-			dom_mother = document.body;
-		} else if (typeof(dom_mother) == "string") {
-			dom_mother = document.getElementById(dom_mother);
 		}
 		/// ADD ASCII TO MOTHER DOM
 		if (dom_mother.contains(dom_ascii) == false) {
@@ -347,6 +376,12 @@ function	create_ascii(g = window) {
 		current_layer = g.ascii;
 	}
 
+	// > resize_canvas()
+	// > resize_canvas(width, height)
+	//
+	// Resizes ascii canvas (and ascii array).
+	// By default, the canvas will be resized to fill mother dom but dimensions
+	//  can be passed by user via 'width' and 'height'.
 	g.resize_canvas = function(width = null, height = null) {
 		if (is_int(width) == false) { width = round(width); }
 		if (is_int(height) == false) { height = round(height); }
@@ -364,6 +399,12 @@ function	create_ascii(g = window) {
 /// LAYER
 //////////////////////////////
 
+	// > create_layer()
+	// > create_layer(width, height)
+	//
+	// Creates a layer. A layer is a 2D array.
+	// By default, the layer will take the canvas dimensions but it's dimensions
+	//  can also be passed by user via 'width' and 'height'.
 	g.create_layer = function(width = g.canvas_width, height = g.canvas_height) {
 		let		layer;
 		let		y;
@@ -377,6 +418,11 @@ function	create_ascii(g = window) {
 		return (layer);
 	}
 
+	// > set_layer()
+	// > set_layer(layer)
+	//
+	// Set the layer next ascii functions will draw on.
+	// If no layer is passed, the canvas layer will be used.
 	g.set_layer = function(layer = null) {
 		if (layer == null) {
 			current_layer = g.ascii;
@@ -389,6 +435,12 @@ function	create_ascii(g = window) {
 		}
 	}
 
+	// > draw_layer(layer)
+	// > draw_layer(layer, x, y)
+	//
+	// Draw the given layer to the active layer.
+	// By default, layer is drawn to [0, 0] but it's positions can be passed
+	//  via 'x' and 'y'.
 	g.draw_layer = function(to_draw, pos_x = 0, pos_y = 0) {
 		let		layer;
 		let		layer_line;
