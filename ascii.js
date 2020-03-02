@@ -221,8 +221,11 @@ function	create_ascii(g = window) {
 			let	i;
 			let	layer;
 
-			layer = g.current_layer;
+			layer = current_layer;
 			if (this.string != null) {
+				if (this.y < 0 || this.y >= g.layer_height) {
+					return;
+				}
 				for (i = 0; i < this.string.length; ++i) {
 					if (this.x + i < 0) {
 						continue
@@ -357,9 +360,9 @@ function	create_ascii(g = window) {
 		canvas_mode = mode;
 	}
 
-	//////////////////////////////
-	/// LAYER
-	//////////////////////////////
+//////////////////////////////
+/// LAYER
+//////////////////////////////
 
 	g.create_layer = function(width = g.canvas_width, height = g.canvas_height) {
 		let		layer;
@@ -422,9 +425,9 @@ function	create_ascii(g = window) {
 		}
 	}
 
-	////////////////////
-	/// RECT
-	////////////////////
+////////////////////
+/// RECT
+////////////////////
 
 	g.set_rect_border = function(characters = null) {
 		rect_border_chars = characters || RECT_DEFAULT_BORDER_CHARS;
@@ -499,9 +502,9 @@ function	create_ascii(g = window) {
 		}
 	}
 
-	////////////////////
-	/// BORDER
-	////////////////////
+////////////////////
+/// BORDER
+////////////////////
 
 	g.border = function(char) {
 		let		border_layer;
@@ -531,9 +534,9 @@ function	create_ascii(g = window) {
 		draw_layer(border_layer);
 	}
 
-	////////////////////
-	/// LINE
-	////////////////////
+////////////////////
+/// LINE
+////////////////////
 
 	g.set_line_char = function(char = null) {
 		line_char = char || LINE_DEFAULT_CHAR;
@@ -614,9 +617,9 @@ function	create_ascii(g = window) {
 		}
 	}
 
-	////////////////////
-	/// TEXT
-	////////////////////
+////////////////////
+/// TEXT
+////////////////////
 
 	g.set_text_wrap = function(mode = TEXT_DEFAULT_WRAP) {
 		text_wrap = mode;
@@ -762,9 +765,9 @@ function	create_ascii(g = window) {
 		}
 	}
 
-	//////////////////////////////
-	/// OTHER
-	//////////////////////////////
+//////////////////////////////
+/// OTHER
+//////////////////////////////
 
 	g.shape = function(pos_x, pos_y, radius_w, radius_h, vertices, char, linked = true, offset = 0) {
 		let		layer;
@@ -864,21 +867,62 @@ function	create_ascii(g = window) {
 	}
 
 	g.loop = function() {
-		ascii_loop_draw = true;
+		if (ascii_loop_draw = false) {
+			ascii_loop_draw = true;
+			if (typeof(g.draw) == "function") {
+				/// CALL draw()
+				window.requestAnimationFrame(ascii_draw);
+			}
+		}
 	}
 
-	//////////////////////////////////////////////////
-	/// PRIVATE FUNCTIONS
-	//////////////////////////////////////////////////
+//////////////////////////////////////////////////
+/// PRIVATE FUNCTIONS
+//////////////////////////////////////////////////
+
+	function	ascii_init_events() {
+		/// SET EVENTS
+		document.addEventListener("mousemove", ascii_handle_mouse);
+		document.addEventListener("touchstart", ascii_handle_touch);
+		document.addEventListener("touchmove", ascii_handle_touch);
+		document.addEventListener("touchend", ascii_handle_touch);
+		/// MOUSE EVENTS
+		if (typeof(g.mouse_clicked) == "function") { document.addEventListener("click", g.mouse_clicked); }
+		if (typeof(g.mouse_double_clicked) == "function") { document.addEventListener("dblclick", g.mouse_double_clicked); }
+		if (typeof(g.mouse_down) == "function") { document.addEventListener("mousedown", g.mouse_down); }
+		if (typeof(g.mouse_up) == "function") { document.addEventListener("mouseup", g.mouse_up); }
+		if (typeof(g.mouse_move) == "function") { document.addEventListener("mousemove", g.mouse_move); }
+		/// KEYBOARD EVENTS
+		if (typeof(g.key_down) == "function") { document.addEventListener("keydown", g.key_down); }
+		if (typeof(g.key_up) == "function") { document.addEventListener("keyup", g.key_up); }
+		if (typeof(g.key_pressed) == "function") { document.addEventListener("keypress", g.key_pressed); }
+		/// TOUCH EVENTS
+		if (typeof(g.touch_start) == "function") { document.addEventListener("touchstart", g.touch_start); }
+		if (typeof(g.touch_end) == "function") { document.addEventListener("touchend", g.touch_end); }
+		if (typeof(g.touch_move) == "function") { document.addEventListener("touchmove", g.touch_move); }
+		/// WINDOW EVENT
+		if (typeof(g.window_resized) == "function") { window.addEventListener("resize", g.window_resized); }
+	}
+
+	function	ascii_setup() {
+		if (typeof(g.setup) == "function") {
+			/// CALL setup()
+			g.setup();
+			if (typeof(g.draw) == "function") {
+				/// INIT EVENTS
+				ascii_init_events();
+				/// CALL draw()
+				window.requestAnimationFrame(ascii_draw);
+			}
+		}
+	}
 
 	function	ascii_draw() {
 		let		y;
 		let		spans;
 
-		/// CALL USER draw()
-		if (typeof(g.draw) == "function") {
-			g.draw();
-		}
+		/// CALL draw()
+		g.draw();
 		/// DRAW ARRAY TO DOM ASCII
 		spans = g.dom_array.childNodes;
 		for (y = 0; y < g.canvas_height; ++y) {
@@ -894,7 +938,7 @@ function	create_ascii(g = window) {
 		let		dom_rect;
 		let		x, y;
 
-		dom_rect = dom_array.getBoundingClientRect();
+		dom_rect = g.dom_array.getBoundingClientRect();
 		x = e.clientX - dom_rect.left;
 		x = round((x / dom_rect.width) * g.canvas_width);
 		mouse_x = min(x, g.canvas_width - 1);
@@ -925,67 +969,18 @@ function	create_ascii(g = window) {
 /// MAIN
 ////////////////////////////////////////////////////////////////////////////////
 
-	if (window.readyState == "complete") {
-		if (g.setup != null) {
-			g.setup();
-			if (g.dom_ascii != null) {
-				window.requestAnimationFrame(ascii_draw);
-			}
-		}
+	if (document.readyState == "complete") {
+		ascii_setup();
 	} else {
-		window.onload = function () {
-			if (g.setup != null) {
-				g.setup();
-				if (g.dom_ascii != null) {
-					window.requestAnimationFrame(ascii_draw);
-				}
-			}
-		};
+		window.onload = ascii_setup;
 	}
-
-	/*
-	window.addEventListener("load", function () {
-		/// CREATE ASCII BASE DOM
-		dom_ascii = document.createElement("div");
-		dom_ascii.id = "ascii";
-		/// CREATE ASCII ARRAY DOM
-		dom_array = document.createElement("div");
-		dom_array.id = "ascii_array";
-		dom_ascii.appendChild(dom_array);
-		/// CREATE ASCII LINKS DOM
-		dom_links = document.createElement("div");
-		dom_links.id = "ascii_links";
-		dom_ascii.appendChild(dom_links);
-		/// CALL USER setup()
-		if (typeof(setup) == "function") {
-			setup();
-		}
-		/// CALL USER draw()
-		window.requestAnimationFrame(ascii_draw);
-		/// SET EVENTS
-		document.addEventListener("mousemove", ascii_handle_mouse);
-		document.addEventListener("touchstart", ascii_handle_touch);
-		document.addEventListener("touchmove", ascii_handle_touch);
-		document.addEventListener("touchend", ascii_handle_touch);
-		/// MOUSE EVENTS
-		if (typeof(mouse_clicked) == "function") { document.addEventListener("click", mouse_clicked); }
-		if (typeof(mouse_double_clicked) == "function") { document.addEventListener("dblclick", mouse_double_clicked); }
-		if (typeof(mouse_down) == "function") { document.addEventListener("mousedown", mouse_down); }
-		if (typeof(mouse_up) == "function") { document.addEventListener("mouseup", mouse_up); }
-		if (typeof(mouse_move) == "function") { document.addEventListener("mousemove", mouse_move); }
-		/// KEYBOARD EVENTS
-		if (typeof(key_down) == "function") { document.addEventListener("keydown", key_down); }
-		if (typeof(key_up) == "function") { document.addEventListener("keyup", key_up); }
-		if (typeof(key_pressed) == "function") { document.addEventListener("keypress", key_pressed); }
-		/// TOUCH EVENTS
-		if (typeof(touch_start) == "function") { document.addEventListener("touchstart", touch_start); }
-		if (typeof(touch_end) == "function") { document.addEventListener("touchend", touch_end); }
-		if (typeof(touch_move) == "function") { document.addEventListener("touchmove", touch_move); }
-		/// WINDOW EVENT
-		if (typeof(window_resized) == "function") { window.addEventListener("resize", window_resized); }
-	});
-	*/
 }
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/// LOAD
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /// LOAD STYLE
 window.addEventListener("load", function () {
@@ -997,3 +992,6 @@ window.addEventListener("load", function () {
 	style.innerText = ascii_style;
 	document.head.appendChild(style);
 });
+
+/// LOAD ASCII
+create_ascii();

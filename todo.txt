@@ -5,6 +5,4 @@
 
 - loop() function does not really re-activate loop
 
-- put all window load content into create_canvas() function
-- put all events into just after setup() call
 - !! ID of ascii, ascii_array and ascii_links must be switched to class (for multiple canvas)
