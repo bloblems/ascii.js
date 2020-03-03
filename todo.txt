@@ -4,5 +4,4 @@
 
 - talk about canvas in css into readme
 
-- text() -> returns last character position
 - text() -> spaces in text should be transparent and not draw on background

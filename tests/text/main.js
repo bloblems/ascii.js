@@ -17,12 +17,14 @@ window.requestAnimationFrame = window.requestAnimationFrame
 
 function	setup() {
 	create_canvas();
+	set_rect_border("*********");
 }
 
 function	draw() {
 	let		last;
 
 	clear();
+	rect(0, 0, canvas_width, canvas_height);
 	line(Math.floor(canvas_width / 2), 0, Math.floor(canvas_width / 2), canvas_height);
 	set_text_mode();
 	set_text_wrap();

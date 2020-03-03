@@ -713,7 +713,7 @@ function	create_ascii(g = window) {
 				x -= string.length;
 			}
 			for (i = 0; i < string.length; ++i) {
-				if (x < 0) {
+				if (x < 0 || string[i] == " ") {
 					continue;
 				} else if (x >= g.layer_width) {
 					return (null);
@@ -734,7 +734,7 @@ function	create_ascii(g = window) {
 			max = (w == null) ? g.layer_width - 1 : x + w;
 			pos_x = 0;
 			for (i = 0; i < string.length; ++i) {
-				if (x + pos_x < 0 || x + pos_x >= g.layer_width) {
+				if (x + pos_x < 0 || x + pos_x >= g.layer_width || string[i] == " ") {
 					continue;
 				}
 				layer[y][x + pos_x] = string[i];
@@ -801,6 +801,9 @@ function	create_ascii(g = window) {
 						}
 						/// PUT LINE
 						for (j = 0; j < line.length - 1; ++j) {
+							if (line[j] == " ") {
+								continue;
+							}
 							if (x >= 0 && x < g.layer_width) {
 								layer[y][pos_x + j] = line[j];
 							}
@@ -828,6 +831,9 @@ function	create_ascii(g = window) {
 				pos_x = x + w - line.length + 1;
 			}
 			for (j = 0; j < line.length; ++j) {
+				if (line[j] == " ") {
+					continue;
+				}
 				layer[y][pos_x + j] = line[j];
 			}
 			return ([pos_x + j, y]);
