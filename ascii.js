@@ -716,7 +716,7 @@ function	create_ascii(g = window) {
 				if (x < 0) {
 					continue;
 				} else if (x >= g.layer_width) {
-					return ([x, y]);
+					return (null);
 				}
 				layer[y][x] = string[i];
 				++x;
@@ -743,7 +743,7 @@ function	create_ascii(g = window) {
 					pos_x = 0;
 					++y;
 					if (y >= g.layer_height) {
-						return ([x + pos_x, y]);
+						return (null);
 					}
 				}
 			}
@@ -758,12 +758,18 @@ function	create_ascii(g = window) {
 				}
 			}
 			split = string.split(" ");
+			if (split[split.length - 1].length == 0) {
+				split = split.slice(0, -1);
+			}
 			max = (w == null) ? g.layer_width - 1 : x + w;
 			pos_x = 0;
 			/// LOOP THROUGH WORDS
 			line = "";
 			for (i = 0; i < split.length; ++i) {
 				word = split[i];
+				if (word.length == 0) {
+					continue;
+				}
 				/// NEXT WORD OUT OF LIMIT
 				if (x + line.length + word.length - 1 > max) {
 					/// WORD TOO BIG
@@ -780,7 +786,7 @@ function	create_ascii(g = window) {
 							line = "";
 							++y;
 							if (y >= g.layer_height) {
-								return ([x, y]);
+								return (null);
 							}
 						}
 						++i;
@@ -803,7 +809,7 @@ function	create_ascii(g = window) {
 						line = "";
 						++y;
 						if (y >= g.layer_height) {
-							return;
+							return (null);
 						}
 					}
 				}
