@@ -344,6 +344,12 @@ function	create_ascii(g = window) {
 		/// GET WIDTH AND HEIGHT
 		width_px = dom_mother.offsetWidth;
 		height_px = dom_mother.offsetHeight;
+		if (width_px == 0 || width_px == undefined) {
+			width_px = 1;
+		}
+		if (height_px == 0 || height_px == undefined) {
+			height_px = 1;
+		}
 		span = document.createElement("span");
 		dom_array.appendChild(span);
 		/// RESPONSIVE WIDTH
