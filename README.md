@@ -9,7 +9,7 @@ Index:
 >	- [Introduction](#Introduction)
 >	>	- [Initialize ascii environment](#Initialize-ascii-environment)
 >	>	- [Start drawing](#Start-drawing)
->	>	- [Style the canvas](#Style-the-canvas)
+>	>	- [Understand canvas format](#Understand-canvas-format)
 >	- [Go further](#Go-further)
 >	>	- [Make the canvas fill the window](#Make-the-canvas-fill-the-window)
 >	>	- [Make the canvas responsive](#Make-the-canvas-responsive)
@@ -176,9 +176,52 @@ canvas characters. You access it with a `y` index (line) and with a `x` index
 `mouse_x` and `mouse_y` are other environment variables which give you the mouse
 coordinates.
 
-#### Style canvas
+#### Understand canvas format
 
-css info
+By default, the library put the canvas at the end of the `body` dom element but
+another dom element can be set as a mother (see [Put the canvas into another dom element](#Put-the-canvas-into-another-dom-ement)).
+
+To style the canvas, you need to style it's mother element (`body` by default).
+
+In CSS, to be sure that the canvas is well synchronised with the other ascii
+elements, it is important to set the mother element's `position` attribute to
+either `fixed` or `relative`.
+
+##### Make the canvas fill the window (or the mother dom element)
+
+`create_canvas()` does not require any parameter. By default, when no parameter
+is passed (or if dimensions are set to `null`) it will try to fill the mother
+element. But it is really important to notice that in that case, the mother
+must have `width` and `height` set into the CSS.
+
+Here is an example where the canvas will fill the whole window:
+
+```css
+body {
+	/* Position fixed or relative */
+	position:	fixed;
+	/* To fill the whole page, avoid margins */
+	margin:		0;
+	/* width to 100% of the page width */
+	width:		100vw;
+	/* height to 100% of the page height */
+	height:		100vh;
+}
+```
+
+```javascript
+function	setup() {
+	/// Create canvas without any parameter means that the canvas will try to
+	/// fill the mother element.
+	/// alternative: create_canvas(null, null);
+	create_canvas();
+}
+
+function	draw() {
+	/// Draw a rectangle on the whole screen to show that it fills the window.
+	rect(0, 0, canvas_width - 1, canvas_height - 1);
+}
+```
 
 ### Go further
 
