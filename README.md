@@ -3,15 +3,14 @@
 This is a javascript library that aims to help artists and developers create
 lightweight ascii (text only) creative coding sketches or websites.
 
+## Index:
 
-Index:
 - [How to](#How-to)
 >	- [Introduction](#Introduction)
 >	>	- [Initialize ascii environment](#Initialize-ascii-environment)
 >	>	- [Start drawing](#Start-drawing)
 >	>	- [Understand canvas format](#Understand-canvas-format)
 >	- [Go further](#Go-further)
->	>	- [Make the canvas fill the window](#Make-the-canvas-fill-the-window)
 >	>	- [Make the canvas responsive](#Make-the-canvas-responsive)
 >	>	- [Put the canvas into another dom element](#Put-the-canvas-into-another-dom-element)
 >	>	- [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)
@@ -22,22 +21,22 @@ Index:
 >	- [Functions](#Functions)
 >	>	- [Environment functions](#Environment-functions)
 >	>	- [Drawing functions](#Drawing-functions)
->	>	- [Other functions](#Other-functions)
+>	>	- [External functions](#External-functions)
 >	>	- [Event functions](#Event-functions)
 >	- [Classes](#Classes)
 
-## How to
+# How to
 
-### Introduction
+## Introduction
 
-#### Initialize ascii environment
+### Initialize ascii environment
 
 To use the library, you got two options. Download the lib and use its file
 (which is the simplest way to test it localy) or use the lib's file url.
 
 [ascii.min.js](https://gitlab.com/cactusfluo/lib-ascii/-/raw/release/ascii.min.js)
 
-##### Download
+#### Download
 
 To download the lib, you simply need to open 'ascii.min.js' and download it into
 your computer. Once you got the .js file, you add it to your HTML page.
@@ -55,7 +54,7 @@ your computer. Once you got the .js file, you add it to your HTML page.
 </html>
 ```
 
-##### Url
+#### Url
 
 Or you can simply insert the library via it's url
 
@@ -72,7 +71,7 @@ Or you can simply insert the library via it's url
 </html>
 ```
 
-##### Create a canvas
+#### Create a canvas
 
 Once you added the library to your environment, you already can jump to JS !
 
@@ -86,7 +85,7 @@ function	draw() {
 }
 ```
 
-###### setup()
+##### setup()
 
 The `setup()` function is called once when the page's loading is done. This is
 where you create the main canvas and initialize your own variables for further
@@ -109,7 +108,7 @@ function	setup() {
 In this example, the `setup()` function creates a canvas of `15` (width) x `10`
 (height) characters.
 
-###### draw()
+##### draw()
 
 The `draw()` function is called each frame. This is where you put the drawing
 part of your code.
@@ -124,7 +123,7 @@ In this example, `draw()` will draw a diagonal line from the top left border to
 the bottom right one (`canvas_width` and `canvas_height` being two environment
 variables you can use anytime).
 
-#### Start drawing
+### Start drawing
 
 The following example draws a vertical line which moves indefinitely from left
 to right.
@@ -176,7 +175,7 @@ canvas characters. You access it with a `y` index (line) and with a `x` index
 `mouse_x` and `mouse_y` are other environment variables which give you the mouse
 coordinates.
 
-#### Understand canvas format
+### Understand canvas format
 
 By default, the library put the canvas at the end of the `body` dom element but
 another dom element can be set as a mother (see [Put the canvas into another dom element](#Put-the-canvas-into-another-dom-ement)).
@@ -187,7 +186,7 @@ In CSS, to be sure that the canvas is well synchronised with the other ascii
 elements, it is important to set the mother element's `position` attribute to
 either `fixed` or `relative`.
 
-##### Make the canvas fill the window (or the mother dom element)
+#### Make the canvas fill the window
 
 `create_canvas()` does not require any parameter. By default, when a dimension
 is not passed or set to `null`, this dimension will try to fill the mother
@@ -205,9 +204,9 @@ body {
 	position:	fixed;
 	/* To fill the whole page, avoid margins */
 	margin:		0;
-	/* width to 100% of the page width */
+	/* width to 100% of the window width */
 	width:		100vw;
-	/* height to 100% of the page height */
+	/* height to 100% of the window height */
 	height:		100vh;
 }
 ```
@@ -226,55 +225,187 @@ function	draw() {
 }
 ```
 
-### Go further
+## Go further
 
-## Manual
+### Make the canvas responsive
 
-### Environment variables
+The code example given into the [Make the canvas fill the window](#Make-the-canvas-fill-the-window)
+section can be extended to be responsive with the `window_resized()` event
+function which is called each time the window is resized and `resize_canvas()`
+which simply resizes the canvas created by `create_canvas()`. The dimensions
+passed to `resize_canvas()` act just like `create_canvas()` ones. Here, no
+dimension is passed to make it fill the mother element.
+
+```javascript
+function	setup() {
+	/// Create canvas without any dimension means that the canvas will try to
+	/// fill the mother element.
+	/// alternative: create_canvas(null, null);
+	create_canvas();
+}
+
+function	draw() {
+	/// Draw a rectangle on the whole screen to show that it fills the window.
+	rect(0, 0, canvas_width - 1, canvas_height - 1);
+}
+
+function	window_resized() {
+	/// Resize canvas without any dimension means that the canvas will try to
+	/// fill the mother element.
+	/// alernative: resize_canvas(null, null);
+	resize_canvas();
+}
+```
+
+### Put the canvas into another dom element
+
+The `create_canvas()` function can take, with the dimensions, an additional
+parameter which would be the mother element ID (as string) or the element
+itself.
+When dimensions are not passed, the mother element can also be passed through
+the first parameter.
+
+```javascript
+/// Dom ID passed through 3rd parameter as string...
+create_canvas(10, 10, "my_dom_id");
+/// ...or element itself.
+create_canvas(null, null, document.getElementById("my_dom_id"));
+/// Dom ID passed through 1st parameter. Dimensions are then set to null.
+create_canvas("my_dom_id");
+```
+
+### Set the ascii environment into an object
+
+When you do not want to initialize the library directly into the `window`
+object, you can use the `create_ascii()` function which takes as parameter an
+object which would contains the basic ascii function (such as `setup()` or
+`draw()`). Each ascii function should then be called through this object.
+
+Here is an example:
+```javascript
+/// Create the object
+let		obj = {};
+
+/// Create setup() through obj
+obj.setup = function() {
+	/// Call create_canvas() through obj
+	obj.create_canvas();
+}
+
+/// Create draw() through obj
+obj.draw = function() {
+	/// Call rect() through obj
+	obj.rect(0, 0, obj.canvas_width - 1, obj.canvas_height - 1);
+	/// Here, ascii it used through obj
+	/// but not floor which is an external function
+	obj.ascii[floor(obj.canvas_width / 2)][floor(obj.canvas_height / 2)] = '#';
+}
+
+/// Initialize ascii library into obj
+create_ascii(obj);
+```
+
+### Create multiple canvas
+
+To create multiple canvas, you need to know how to use the `create_ascii()`
+function (see [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)).
+
+Creating two canvas requires two environments.
+
+Here is an example which creates two canvas. One for the page's header and an
+other for the page's body. These two canvas are responsive.
+
+```javascript
+/// Create header and body objects
+let		header = {};
+let		body = {};
+
+/// Handle header functions
+
+header.setup = function() {
+	/// Create the canvas into the dom element "my_header"
+	header.create_canvas("my_header");
+}
+
+header.draw = function() {
+	/// header got it's own canvas_width and canvas_height
+	header.rect(0, 0, obj.canvas_width - 1, obj.canvas_height - 1);
+}
+
+header.window_resized = function() {
+	header.resize_canvas();
+}
+
+/// Handle body functions
+
+body.setup = function() {
+	/// Create the canvas into the dom element "my_body"
+	body.create_canvas("my_body");
+}
+
+body.draw = function() {
+	/// body got it's own canvas_width and canvas_height
+	body.rect(0, 0, obj.canvas_width - 1, obj.canvas_height - 1);
+}
+
+body.window_resized = function() {
+	body.resize_canvas();
+}
+
+/// Create environment for both objects
+create_ascii(header);
+create_ascii(body);
+
+```
+
+
+# Manual
+
+## Environment variables
 
 The Ascii lib provides user some environment variables.
 
-- ascii
-- canvas_width
-- canvas_height
-- layer_width
-- layer_height
-- mouse_x
-- mouse_y
-- touches
-- char_width
-- char_height
+- [ascii](#ascii)
+- [canvas_width](#canvas_width--canvas_height)
+- [canvas_height](#canvas_width--canvas_height)
+- [layer_width](#layer_width--layer_height)
+- [layer_height](#layer_width--layer_height)
+- [mouse_x](#mouse_x--mouse_y)
+- [mouse_y](#mouse_x--mouse_y)
+- [touches](#touches)
+- [char_width](#char_width--char_height)
+- [char_height](#char_width--char_height)
 
-#### ascii
+### ascii
 
 `ascii` is the most important variable. It is the character array that will be
 printed on screen. It is two dimentional array (x and y). You can access it
 like `ascii[y][x]`.
 
-#### canvas_width + canvas_height
+### canvas_width + canvas_height
 
 The canvas dimensions in characters, the limits of the `ascii` array.
 
-#### layer_width + layer_height
+### layer_width + layer_height
 
 These act like `canvas_width` and `canvas_height` but for the layer in use
 (which can also be `ascii`).
 
-#### mouse_x + mouse_y
+### mouse_x + mouse_y
 
 The cursor coordinates on the canvas.
 
-#### touches
+### touches
 
 A list which contains current touch points and their coordinates.
 
-#### char_width + char_height
+### char_width + char_height
 
 The characters dimensions in pixel.
 
-### Functions
+## Functions
 
-#### Environment functions
+### Environment functions
 
 - create_ascii(object)
 
@@ -288,7 +419,7 @@ The characters dimensions in pixel.
 - no_loop()
 - loop()
 
-#### Drawing functions
+### Drawing functions
 
 - clear()
 - background(character)
@@ -314,7 +445,7 @@ The characters dimensions in pixel.
 
 - set_draw_mode([mode])
 
-#### Other functions
+### External functions
 
 - random([max]) || random(from, to) || random(list)
 - shuffle(list[, force])
@@ -346,7 +477,7 @@ The characters dimensions in pixel.
 - tanh(x)
 - trunc(x)
 
-#### Event functions
+### Event functions
 
 - mouse_clicked()
 - mouse_double_clicked()
@@ -364,7 +495,7 @@ The characters dimensions in pixel.
 
 - window_resized()
 
-### Classes
+## Classes
 
 - Link(url || callback, x, y, string) || Link(url || callback, x, y, width, height)
 > - print()
