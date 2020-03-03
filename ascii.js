@@ -714,6 +714,7 @@ function	create_ascii(g = window) {
 			}
 			for (i = 0; i < string.length; ++i) {
 				if (x < 0 || string[i] == " ") {
+					++x;
 					continue;
 				} else if (x >= g.layer_width) {
 					return (null);
@@ -735,6 +736,7 @@ function	create_ascii(g = window) {
 			pos_x = 0;
 			for (i = 0; i < string.length; ++i) {
 				if (x + pos_x < 0 || x + pos_x >= g.layer_width || string[i] == " ") {
+					++pos_x;
 					continue;
 				}
 				layer[y][x + pos_x] = string[i];
