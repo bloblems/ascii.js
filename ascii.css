@@ -33,9 +33,10 @@ html, * {
 	display:			block;
 }
 
-.ascii_links {
-}
-
 .ascii_links a {
 	position:			absolute;
+}
+
+.ascii_links a:hover {
+	cursor:				pointer;
 }

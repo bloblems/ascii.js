@@ -205,14 +205,21 @@ function	create_ascii(g = window) {
 				w = round(option_1);
 				h = round(option_2);
 			}
+			/// CREATE DOM
 			dom = document.createElement("a");
-			dom.href = url;
-			dom.className = "ascii_link";
 			dom.style.left = g.char_width * x + "px";
 			dom.style.top = g.char_height * y + "px";
 			dom.style.width = g.char_width * w + "px";
 			dom.style.height = g.char_height * h + "px";
 			dom_links.appendChild(dom);
+			/// MODE URL
+			if (typeof(url) == "string") {
+				dom.href = url;
+			/// MODE FUNCTION
+			} else if (typeof(url) == "function") {
+				dom.onclick = url;
+			}
+			/// SAVE
 			this.dom = dom;
 			this.url = url;
 			this.x = x;
