@@ -3,5 +3,3 @@
 - Link -> new Link(function || string, x, y, width)
 
 - talk about canvas in css into readme
-
-- text() -> spaces in text should be transparent and not draw on background
