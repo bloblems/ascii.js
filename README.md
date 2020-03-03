@@ -1,21 +1,53 @@
 # lib-ascii
 
-## About
-
 This is a javascript library that aims to help artists and developers create
-light weight ascii (text only) creative coding sketches or websites.
+lightweight ascii (text only) creative coding sketches or websites.
 
-## Learn
 
-### Use it
+Index:
+- [How to](#How-to)
+>	- [Introduction](#Introduction)
+>	>	- [Initialize ascii environment](#Initialize-ascii-environment)
+>	>	- [Start drawing](#Start-drawing)
+>	>	- [Style the canvas](#Style-the-canvas)
+>	- [Go further](#Go-further)
+>	>	- [Make the canvas fill the window](#Make-the-canvas-fill-the-window)
+>	>	- [Make the canvas responsive](#Make-the-canvas-responsive)
+>	>	- [Put the canvas into another dom element](#Put-the-canvas-into-another-dom-element)
+>	>	- [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)
+>	>	- [Create multiple canvas](#Create-multiple-canvas)
+>	>	- simulate 
+- [Manual](#Manual)
+>	- [Environment variables](#Environment-variables)
+>	- [Functions](#Functions)
+>	>	- [Environment functions](#Environment-functions)
+>	>	- [Drawing functions](#Drawing-functions)
+>	>	- [Other functions](#Other-functions)
+>	>	- [Event functions](#Event-functions)
+>	- [Classes](#Classes)
 
-Once you got the ascii.js file, you just have to link it into your HTML page.
-Just like any other javascript library.
-Here's an exemple:
+## How to
+
+### Introduction
+
+#### Initialize ascii environment
+
+To use the library, you got two options. Download the lib and use its file
+(which is the simplest way to test it localy) or use the lib's file url.
+
+[ascii.min.js](https://gitlab.com/cactusfluo/lib-ascii/-/raw/release/ascii.min.js)
+
+##### Download
+
+To download the lib, you simply need to open 'ascii.min.js' and download it into
+your computer. Once you got the .js file, you add it to your HTML page.
+
 ```html
 <html>
 	<head>
-		<script src="../ascii.js"></script>
+		<!-- Link to Ascii library -->
+		<script src="path/to/ascii.js"></script>
+		<!-- Link to your code -->
 		<script src="sketch.js"></script>
 	</head>
 	<body>
@@ -23,10 +55,29 @@ Here's an exemple:
 </html>
 ```
 
-### Base
+##### Url
 
-Here's the ascii library base:
-Here's 
+Or you can simply insert the library via it's url
+
+```html
+<html>
+	<head>
+		<!-- Link to Ascii library -->
+		<script src="https://gitlab.com/cactusfluo/lib-ascii/release/ascii.min.js"></script>
+		<!-- Link to your code -->
+		<script src="sketch.js"></script>
+	</head>
+	<body>
+	</body>
+</html>
+```
+
+##### Create a canvas
+
+Once you added the library to your environment, you already can jump to JS !
+
+Your JS main file should follow a simple base, containing these two functions:
+
 ```javascript
 function	setup() {
 }
@@ -35,29 +86,33 @@ function	draw() {
 }
 ```
 
-#### step()
+###### setup()
 
-The `setup()` function is called once when the page's loading is done. Then,
-the function `draw()` is called at each frame.
+The `setup()` function is called once when the page's loading is done. This is
+where you create the main canvas and initialize your own variables for further
+use.
 
-The `setup()` function is where you create the main canvas. You can also
-initialize variables you will need later.
+You can also draw into `setup()` if your project doesn't need any animation or
+if you want to prepare a background which will then be drawn at each frame
+(from `draw()`).
 
-To create the canvas, you will need to `create_canvas()` function.
-It can take parameters but the simplest way to use it is without any parameter.
+To create the canvas, you will need the `create_canvas()` function.
+The simplest way to use it is to give the width and height of the canvas in
+characters (adaptative width and height are seen here).
 
 ```javascript
 function	setup() {
-	create_canvas();
+	create_canvas(15, 10);
 }
 ```
 
-#### draw()
+In this example, the `setup()` function creates a canvas of `15` (width) x `10`
+(height) characters.
+
+###### draw()
 
 The `draw()` function is called each frame. This is where you put the drawing
 part of your code.
-
-Here's a small example:
 
 ```javascript
 function	draw() {
@@ -65,12 +120,73 @@ function	draw() {
 }
 ```
 
-In this example, `draw()` will draw a diagonal line, from the top left border to
-the bottom right one.
+In this example, `draw()` will draw a diagonal line from the top left border to
+the bottom right one (`canvas_width` and `canvas_height` being two environment
+variables you can use anytime).
 
-### Variables
+#### Start drawing
 
-The Asci lib provides user some environment variables.
+The following example draws a vertical line which moves indefinitely from left
+to right.
+
+```javascript
+/// Create x
+let	x;
+
+function	setup() {
+	/// Create the canvas of 30 x 20
+	create_canvas(30, 20);
+	/// Initialize x
+	x = 0;
+}
+
+function	draw() {
+	/// Clear the canvas (remove previous drawn stuff)
+	clear();
+	/// Draw a vertical line at x
+	line(x, 0, x, canvas_height - 1);
+	/// Increment x (go to right)
+	x += 1;
+	/// Check canvas width limit
+	if (x >= canvas_width) {
+		/// Restart at 0
+		x = 0;
+	}
+}
+```
+
+Here's another example which allows the user to draw with the mouse.
+
+```javascript
+function	setup() {
+	/// Create the canvas of 30 x 20
+	create_canvas(30, 20);
+}
+
+function	draw() {
+	/// Put a '#' character at mouse position
+	ascii[mouse_y][mouse_x] = '#';
+}
+```
+
+The `ascii` environment variable is an array which gives you access to the
+canvas characters. You access it with a `y` index (line) and with a `x` index
+(column).
+
+`mouse_x` and `mouse_y` are other environment variables which give you the mouse
+coordinates.
+
+#### Style canvas
+
+css info
+
+### Go further
+
+## Manual
+
+### Environment variables
+
+The Ascii lib provides user some environment variables.
 
 - ascii
 - canvas_width
@@ -91,7 +207,7 @@ like `ascii[y][x]`.
 
 #### canvas_width + canvas_height
 
-The canvas format in characters, the limits of the `ascii` array.
+The canvas dimensions in characters, the limits of the `ascii` array.
 
 #### layer_width + layer_height
 
@@ -108,25 +224,29 @@ A list which contains current touch points and their coordinates.
 
 #### char_width + char_height
 
-The characters format in pixel.
+The characters dimensions in pixel.
 
 ### Functions
 
-- create_ascii([object])
+#### Environment functions
+
+- create_ascii(object)
 
 - create_canvas([width[, height[, dom]]])
 - resize_canvas([width[, height]])
 
+- create_layer() -> return layer
+- set_layer([layer])
+- draw_layer(layer)
+
 - no_loop()
 - loop()
+
+#### Drawing functions
 
 - clear()
 - background(character)
 - fill(x, y, character)
-
-- create_layer()
-- set_layer([layer])
-- draw_layer(layer)
 
 - line(x0, y0, x1, y1[, character])
 - set_line_char([character])
@@ -141,18 +261,17 @@ The characters format in pixel.
 
 - border(char)
 
-- text(string, x, y[, width])
+- text(string, x, y[, width]) -> return [x, y]
 - set_text_mode([mode])
 - set_text_wrap([wrap_mode])
 - set_text_align([align_mode])
 
 - set_draw_mode([mode])
 
+#### Other functions
+
 - random([max]) || random(from, to) || random(list)
 - shuffle(list[, force])
-
-#### Minor
-
 - is_int(x)
 - is_float(x)
 - is_array(x)
@@ -201,4 +320,8 @@ The characters format in pixel.
 
 ### Classes
 
-- Link(x, y, width, height) || Link(x, y, string)
+- Link(url || callback, x, y, string) || Link(url || callback, x, y, width, height)
+> - print()
+> - move_to(x, y)
+> - remove()
+> - activate()

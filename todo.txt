@@ -1,5 +1,4 @@
 - Link -> instead of giving x, y... give a drawn layer. The link will be created
   from non null characters.
-- Link -> new Link(function || string, x, y, width)
 
 - talk about canvas in css into readme
