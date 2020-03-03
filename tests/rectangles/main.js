@@ -27,7 +27,7 @@ function	setup() {
 function	draw() {
 	clear();
 	set_rect_mode(RECT_CORNER);
-	rect(0, 0, canvas_width, canvas_height);
+	rect(0, 0, canvas_width - 1, canvas_height - 1);
 	set_rect_mode(RECT_CENTER);
 	rect(x, y, 10, 6);
 	++x;

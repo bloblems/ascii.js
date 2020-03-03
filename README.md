@@ -189,10 +189,13 @@ either `fixed` or `relative`.
 
 ##### Make the canvas fill the window (or the mother dom element)
 
-`create_canvas()` does not require any parameter. By default, when no parameter
-is passed (or if dimensions are set to `null`) it will try to fill the mother
-element. But it is really important to notice that in that case, the mother
-must have `width` and `height` set into the CSS.
+`create_canvas()` does not require any parameter. By default, when a dimension
+is not passed or set to `null`, this dimension will try to fill the mother
+element. In that way, if you do not pass any dimension to the function, the
+canvas will simply fill the mother element. But it is really important to notice
+that in the previous cases, the mother must have the unpassed dimensions set
+into the CSS (`width`, `height` or both) or it will be set to 1 (minimum of
+`width` and `height`).
 
 Here is an example where the canvas will fill the whole window:
 

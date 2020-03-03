@@ -342,14 +342,8 @@ function	create_ascii(g = window) {
 			dom_mother.appendChild(dom_ascii);
 		}
 		/// GET WIDTH AND HEIGHT
-		width_px = dom_mother.offsetWidth;
-		height_px = dom_mother.offsetHeight;
-		if (width_px == 0 || width_px == undefined) {
-			width_px = 1;
-		}
-		if (height_px == 0 || height_px == undefined) {
-			height_px = 1;
-		}
+		width_px = dom_mother.offsetWidth || 0;
+		height_px = dom_mother.offsetHeight || 0;
 		span = document.createElement("span");
 		dom_array.appendChild(span);
 		/// RESPONSIVE WIDTH
@@ -357,6 +351,7 @@ function	create_ascii(g = window) {
 			span.textContent += " ".repeat(100);
 			num_char = width_px / (dom_array.offsetWidth / 100);
 			width = floor(num_char) - ((canvas_fit == CANVAS_FIT) ? 1 : 0);
+			width = max(1, width);
 			span.textContent = " ".repeat(width);
 		/// FIXED WIDTH
 		} else {
@@ -371,7 +366,7 @@ function	create_ascii(g = window) {
 				g.ascii.push(span.textContent.split(""));
 			}
 			if (canvas_fit == CANVAS_FIT
-			&& dom_array.offsetHeight > height_px) {
+			&& dom_array.offsetHeight > height_px && dom_array.length > 1) {
 				dom_array.removeChild(dom_array.firstChild);
 			}
 			height = dom_array.childNodes.length;
