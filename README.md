@@ -3,27 +3,28 @@
 This is a javascript library that aims to help artists and developers create
 lightweight ascii (text only) creative coding sketches or websites.
 
-## Index:
+## Table of content:
 
 - [How to](#How-to)
->	- [Introduction](#Introduction)
->	>	- [Initialize ascii environment](#Initialize-ascii-environment)
->	>	- [Start drawing](#Start-drawing)
->	>	- [Understand canvas format](#Understand-canvas-format)
->	- [Go further](#Go-further)
->	>	- [Make the canvas responsive](#Make-the-canvas-responsive)
->	>	- [Put the canvas into another dom element](#Put-the-canvas-into-another-dom-element)
->	>	- [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)
->	>	- [Create multiple canvas](#Create-multiple-canvas)
->	>	- simulate 
+	- [Introduction](#Introduction)
+		- [Initialize ascii environment](#Initialize-ascii-environment)
+		- [Start drawing](#Start-drawing)
+		- [Understand canvas format](#Understand-canvas-format)
+	- [Go further](#Go-further)
+		- [Make the canvas responsive](#Make-the-canvas-responsive)
+		- [Put the canvas into another dom element](#Put-the-canvas-into-another-dom-element)
+		- [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)
+		- [Create multiple canvas](#Create-multiple-canvas)
+	- [Examples](#Examples)
+		- simulate collision detection
 - [Manual](#Manual)
->	- [Environment variables](#Environment-variables)
->	- [Functions](#Functions)
->	>	- [Environment functions](#Environment-functions)
->	>	- [Drawing functions](#Drawing-functions)
->	>	- [External functions](#External-functions)
->	>	- [Event functions](#Event-functions)
->	- [Classes](#Classes)
+	- [Environment variables](#Environment-variables)
+	- [Functions](#Functions)
+		- [Environment functions](#Environment-functions)
+		- [Drawing functions](#Drawing-functions)
+		- [External functions](#External-functions)
+		- [Event functions](#Event-functions)
+	- [Classes](#Classes)
 
 # How to
 
@@ -415,6 +416,9 @@ The characters dimensions in pixel.
 - create_layer() -> return layer
 - set_layer([layer])
 - draw_layer(layer)
+
+- create_mask() -> return mask
+- put_mask(mask[, x, y[, invert]])
 
 - no_loop()
 - loop()

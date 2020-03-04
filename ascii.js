@@ -490,6 +490,74 @@ function	create_ascii(g = window) {
 	}
 
 ////////////////////
+/// MASK
+////////////////////
+
+	g.create_mask = function(width = g.canvas_width, height = g.canvas_height) {
+		let		mask;
+		let		y;
+
+		if (is_int(width) == false) { width = round(width); }
+		if (is_int(height) == false) { height = round(height); }
+		mask = [];
+		for (y = 0; y < height; ++y) {
+			mask.push(" ".repeat(width).split(""));
+		}
+		return (mask);
+	}
+
+	// > put_mask()
+	// > put_mask(x, y)
+	// > put_mask(x, y, invert)
+	// > put_mask(invert)
+	//
+	// Put a mask on the current layer. By default, empty characters of the mask
+	// will make drawn layer characters empty too. If invert is set to true, non
+	// empty characters will make drawn layer characters empty.
+	g.put_mask = function(mask, option_1 = 0, option_2 = 0, invert = false) {
+		let		layer;
+		let		layer_line;
+		let		mask_line;
+		let		mask_cell;
+		let		width, height;
+		let		pos_x, pos_y;
+		let		off_x, off_y;
+		let		x, y;
+
+		if (typeof(option_1) == "boolean") {
+			invert = option_1;
+			option_1 = 0;
+		}
+		pos_x = option_1;
+		pos_y = option_2;
+		if (is_int(pos_x) == false) { pos_x = round(pos_x); }
+		if (is_int(pos_y) == false) { pos_y = round(pos_y); }
+		width = mask[0].length;
+		height = mask.length;
+		layer = current_layer;
+		for (y = 0; y < height; ++y) {
+			off_y = pos_y + y;
+			if (off_y < 0) {
+				continue;
+			} else if (off_y >= g.layer_height) {
+				return;
+			}
+			layer_line = layer[off_y];
+			mask_line = mask[y];
+			for (x = 0; x < width; ++x) {
+				off_x = pos_x + x;
+				if (off_x < 0 || off_x >= g.layer_width) {
+					continue;
+				}
+				mask_cell = mask_line[x];
+				if (mask_cell == " " ^ invert == true) {
+					layer_line[off_x] = " ";
+				}
+			}
+		}
+	}
+
+////////////////////
 /// RECT
 ////////////////////
 
@@ -932,6 +1000,9 @@ function	create_ascii(g = window) {
 		if (is_int(y) == false) { y = round(y); }
 		layer = current_layer;
 		to_change = layer[y][x];
+		if (to_change == char) {
+			return;
+		}
 		layer[y][x] = char;
 		if (x > 0 && layer[y][x - 1] == to_change) {
 			fill(x - 1, y, char);
