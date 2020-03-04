@@ -193,8 +193,8 @@ function	create_ascii(g = window) {
 			let	dom;
 			let	w, h;
 
-			if (is_int(x) == false) { x = round(x); }
-			if (is_int(y) == false) { y = round(y); }
+			if (is_int(x) == false) { x = floor(x); }
+			if (is_int(y) == false) { y = floor(y); }
 			/// MODE STRING
 			if (typeof(option_1) == "string") {
 				this.string = option_1;
@@ -202,8 +202,8 @@ function	create_ascii(g = window) {
 				h = 1;
 			/// MODE RECT
 			} else {
-				w = round(option_1);
-				h = round(option_2);
+				w = floor(option_1);
+				h = floor(option_2);
 			}
 			/// CREATE DOM
 			dom = document.createElement("a");
@@ -249,8 +249,8 @@ function	create_ascii(g = window) {
 		}
 
 		move_to(x, y) {
-			if (is_int(x) == false) { x = round(x); }
-			if (is_int(y) == false) { y = round(y); }
+			if (is_int(x) == false) { x = floor(x); }
+			if (is_int(y) == false) { y = floor(y); }
 			this.x = x;
 			this.dom.style.left = g.char_width * x + "px";
 			this.y = y;
@@ -355,7 +355,7 @@ function	create_ascii(g = window) {
 			span.textContent = " ".repeat(width);
 		/// FIXED WIDTH
 		} else {
-			if (is_int(width) == false) { width = round(width); }
+			if (is_int(width) == false) { width = floor(width); }
 			span.textContent += " ".repeat(width);
 		}
 		g.ascii = [span.textContent.split("")];
@@ -372,7 +372,7 @@ function	create_ascii(g = window) {
 			height = dom_array.childNodes.length;
 		/// FIXED HEIGHT
 		} else {
-			if (is_int(height) == false) { height = round(height); }
+			if (is_int(height) == false) { height = floor(height); }
 			for (i = 1; i < height; ++i) {
 				dom_array.appendChild(span.cloneNode(true));
 				g.ascii.push(span.textContent.split(""));
@@ -395,8 +395,8 @@ function	create_ascii(g = window) {
 	// By default, the canvas will be resized to fill mother dom but dimensions
 	//  can be passed by user via 'width' and 'height'.
 	g.resize_canvas = function(width = null, height = null) {
-		if (is_int(width) == false) { width = round(width); }
-		if (is_int(height) == false) { height = round(height); }
+		if (is_int(width) == false) { width = floor(width); }
+		if (is_int(height) == false) { height = floor(height); }
 		while (dom_array.firstChild) {
 			dom_array.removeChild(dom_array.lastChild);
 		}
@@ -421,8 +421,8 @@ function	create_ascii(g = window) {
 		let		layer;
 		let		y;
 
-		if (is_int(width) == false) { width = round(width); }
-		if (is_int(height) == false) { height = round(height); }
+		if (is_int(width) == false) { width = floor(width); }
+		if (is_int(height) == false) { height = floor(height); }
 		layer = [];
 		for (y = 0; y < height; ++y) {
 			layer.push(" ".repeat(width).split(""));
@@ -462,8 +462,8 @@ function	create_ascii(g = window) {
 		let		off_x, off_y;
 		let		x, y;
 
-		if (is_int(pos_x) == false) { pos_x = round(pos_x); }
-		if (is_int(pos_y) == false) { pos_y = round(pos_y); }
+		if (is_int(pos_x) == false) { pos_x = floor(pos_x); }
+		if (is_int(pos_y) == false) { pos_y = floor(pos_y); }
 		width = to_draw[0].length;
 		height = to_draw.length;
 		layer = current_layer;
@@ -525,8 +525,8 @@ function	create_ascii(g = window) {
 		}
 		pos_x = option_1;
 		pos_y = option_2;
-		if (is_int(pos_x) == false) { pos_x = round(pos_x); }
-		if (is_int(pos_y) == false) { pos_y = round(pos_y); }
+		if (is_int(pos_x) == false) { pos_x = floor(pos_x); }
+		if (is_int(pos_y) == false) { pos_y = floor(pos_y); }
 		width = mask[0].length;
 		height = mask.length;
 		layer = current_layer;
@@ -569,10 +569,10 @@ function	create_ascii(g = window) {
 		let		chars;
 		let		x, y;
 
-		if (is_int(pos_x) == false) { pos_x = round(pos_x); }
-		if (is_int(pos_y) == false) { pos_y = round(pos_y); }
-		if (is_int(width) == false) { width = round(width); }
-		if (is_int(height) == false) { height = round(height); }
+		if (is_int(pos_x) == false) { pos_x = floor(pos_x); }
+		if (is_int(pos_y) == false) { pos_y = floor(pos_y); }
+		if (is_int(width) == false) { width = floor(width); }
+		if (is_int(height) == false) { height = floor(height); }
 		/// HANDLE RECT MODE
 		if (rect_mode == RECT_CENTER) {
 			pos_x -= round(width / 2);
@@ -676,10 +676,10 @@ function	create_ascii(g = window) {
 		let		sx, sy;
 		let		err, err_2;
 
-		if (is_int(x0) == false) { x0 = round(x0); }
-		if (is_int(y0) == false) { y0 = round(y0); }
-		if (is_int(x1) == false) { x1 = round(x1); }
-		if (is_int(y1) == false) { y1 = round(y1); }
+		if (is_int(x0) == false) { x0 = floor(x0); }
+		if (is_int(y0) == false) { y0 = floor(y0); }
+		if (is_int(x1) == false) { x1 = floor(x1); }
+		if (is_int(y1) == false) { y1 = floor(y1); }
 		layer = current_layer;
 		char = char || line_char;
 		/// INIT
@@ -715,10 +715,10 @@ function	create_ascii(g = window) {
 		let		sx, sy;
 		let		err, err_2;
 
-		if (is_int(x0) == false) { x0 = round(x0); }
-		if (is_int(y0) == false) { y0 = round(y0); }
-		if (is_int(x1) == false) { x1 = round(x1); }
-		if (is_int(y1) == false) { y1 = round(y1); }
+		if (is_int(x0) == false) { x0 = floor(x0); }
+		if (is_int(y0) == false) { y0 = floor(y0); }
+		if (is_int(x1) == false) { x1 = floor(x1); }
+		if (is_int(y1) == false) { y1 = floor(y1); }
 		layer = current_layer;
 		/// INIT
 		dx =  abs(x1 - x0);
@@ -769,9 +769,9 @@ function	create_ascii(g = window) {
 		let		max;
 		let		i, j;
 
-		if (is_int(x) == false) { x = round(x); }
-		if (is_int(y) == false) { y = round(y); }
-		if (w != null && is_int(w) == false) { w = round(w); }
+		if (is_int(x) == false) { x = floor(x); }
+		if (is_int(y) == false) { y = floor(y); }
+		if (w != null && is_int(w) == false) { w = floor(w); }
 		layer = current_layer;
 		if (y >= g.layer_height) {
 			return (null);
@@ -925,8 +925,8 @@ function	create_ascii(g = window) {
 		let		x, y;
 		let		i;
 
-		if (is_int(pos_x) == false) { pos_x = round(pos_x); }
-		if (is_int(pos_y) == false) { pos_y = round(pos_y); }
+		if (is_int(pos_x) == false) { pos_x = floor(pos_x); }
+		if (is_int(pos_y) == false) { pos_y = floor(pos_y); }
 		last_x = null;
 		layer = current_layer;
 		step = TWO_PI / vertices;
@@ -991,8 +991,8 @@ function	create_ascii(g = window) {
 		let		layer;
 		let		to_change;
 
-		if (is_int(x) == false) { x = round(x); }
-		if (is_int(y) == false) { y = round(y); }
+		if (is_int(x) == false) { x = floor(x); }
+		if (is_int(y) == false) { y = floor(y); }
 		layer = current_layer;
 		to_change = layer[y][x];
 		if (to_change == char) {
