@@ -66,6 +66,11 @@ const	LOG10E						= Math.LOG10E;
 /// ASCII
 //////////////////////////////////////////////////
 
+const	DOM_CLASS_ASCII				= "ascii";
+const	DOM_CLASS_ASCII_ARRAY		= "ascii_array";
+const	DOM_CLASS_ASCII_LINKS		= "ascii_links";
+const	DOM_CLASS_ASCII_LINE		= "ascii_line";
+
 const	CANVAS_FIT					= 0;
 const	CANVAS_COVER				= 1;
 const	CANVAS_DEFAULT_FIT			= CANVAS_FIT;
@@ -174,6 +179,7 @@ function	create_ascii(g = window) {
 	let	dom_links			= null;
 	let	dom_spans			= null;
 	let	current_layer		= null;
+	let	color_layer			= null;
 	let	canvas_fit			= CANVAS_DEFAULT_FIT;
 	let	rect_border_chars	= RECT_DEFAULT_BORDER_CHARS;
 	let	rect_mode			= RECT_DEFAULT_MODE;
@@ -327,14 +333,14 @@ function	create_ascii(g = window) {
 		if (dom_ascii == null) {
 			/// CREATE ASCII BASE DOM
 			dom_ascii = document.createElement("div");
-			dom_ascii.className = "ascii";
+			dom_ascii.className = DOM_CLASS_ASCII;
 			/// CREATE ASCII ARRAY DOM
 			dom_array = document.createElement("div");
-			dom_array.className = "ascii_array";
+			dom_array.className = DOM_CLASS_ASCII_ARRAY;
 			dom_ascii.appendChild(dom_array);
 			/// CREATE ASCII LINKS DOM
 			dom_links = document.createElement("div");
-			dom_links.className = "ascii_links";
+			dom_links.className = DOM_CLASS_ASCII_LINKS;
 			dom_ascii.appendChild(dom_links);
 		}
 		/// ADD ASCII TO MOTHER DOM
@@ -358,6 +364,7 @@ function	create_ascii(g = window) {
 			if (is_int(width) == false) { width = floor(width); }
 			span.textContent += " ".repeat(width);
 		}
+		span.className = DOM_CLASS_ASCII_LINE;
 		g.ascii = [span.textContent.split("")];
 		/// RESPONSIVE HEIGHT
 		if (height == 0 || height == null) {
@@ -550,6 +557,30 @@ function	create_ascii(g = window) {
 				}
 			}
 		}
+	}
+
+////////////////////
+/// COLOR
+////////////////////
+
+	g.create_color_layer = function() {
+		let		layer;
+		let		line;
+		let		x, y;
+
+		line = [];
+		for (x = 0; x < g.canvas_width; ++x) {
+			line.push(null);
+		}
+		layer = [];
+		for (y = 0; y < g.canvas_height; ++y) {
+			layer.push(line.slice());
+		}
+		return (layer);
+	}
+
+	g.set_color = function(layer = null) {
+		color_layer = layer;
 	}
 
 ////////////////////
@@ -1081,17 +1112,59 @@ function	create_ascii(g = window) {
 	}
 
 	function	ascii_draw() {
-		let		y;
+		let		x, y;
 		let		spans;
+		let		line;
+		let		prev_color;
+		let		color_line;
+		let		ascii_line;
 
 		/// CALL draw()
 		g.draw();
 		/// DRAW ARRAY TO DOM ASCII
 		spans = dom_array.childNodes;
+		/// TEXT MODE
 		if (draw_mode == DRAW_TEXT) {
-			for (y = 0; y < g.canvas_height; ++y) {
-				spans[y].textContent = g.ascii[y].join("");
+			/// NO COLOR SET
+			if (color_layer == null) {
+				for (y = 0; y < g.canvas_height; ++y) {
+					spans[y].textContent = g.ascii[y].join("");
+				}
+			/// COLOR SET
+			} else {
+				for (y = 0; y < g.canvas_height; ++y) {
+					color_line = color_layer[y];
+					ascii_line = g.ascii[y];
+					line = "";
+					prev_color = null;
+					for (x = 0; x < g.canvas_width; ++x) {
+						/// COLOR CHANGED
+						if (color_line[x] != prev_color) {
+							/// START COLOR
+							if (prev_color == null) {
+								line += "<span style=\"color:"
+								+ color_line[x] + "\">" + ascii_line[x];
+							/// END COLOR
+							} else {
+								line += "</span>";
+								/// START NEW COLOR
+								if (color_line[x] != null) {
+									line += "<span style=\"color:"
+									+ color_line[x] + "\">";
+								}
+								line += ascii_line[x];
+							}
+							prev_color = color_line[x];
+						/// SAME COLOR
+						} else {
+							line += ascii_line[x];
+						}
+					}
+					/// PRINT LINE
+					spans[y].innerHTML = line;
+				}
 			}
+		/// HTML MODE
 		} else {
 			for (y = 0; y < g.canvas_height; ++y) {
 				spans[y].innerHTML = g.ascii[y].join("");

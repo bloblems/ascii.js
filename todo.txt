@@ -6,3 +6,5 @@
 - tell that user can use mask on color layer
 - tell that user can user most of other drawing function on color layers
   (background, line, shape, fill...)
+
+- tell into README that ascii requires a monospace font !

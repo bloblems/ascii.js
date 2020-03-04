@@ -7,29 +7,12 @@ html, * {
 	overflow-x:			hidden;
 	white-space:		pre;
 	
-	/*
-	 * To handle text (#ascii_array) and links (#ascii_links) superposition,
-	 * #ascii needs to be positioned either "relative" or "fixed" but not
-	 * let default (static).
-	 */
-	/*
-	position:			relative;
-	*/
-	/*
-	position:			fixed;
-	left:				0;
-	top:				0;
-	*/
-	/*
-	right:				0;
-	*/
-
 	/* to avoid selection
 	user-select:		none;
 	*/
 }
 
-.ascii_array span {
+.ascii_line {
 	display:			block;
 }
 
