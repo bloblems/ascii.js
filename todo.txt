@@ -3,3 +3,6 @@
 
 - create_color_layer([width, height])
 - put_color(layer)
+- tell that user can use mask on color layer
+- tell that user can user most of other drawing function on color layers
+  (background, line, shape, fill...)
