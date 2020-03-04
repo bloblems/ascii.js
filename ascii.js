@@ -493,18 +493,13 @@ function	create_ascii(g = window) {
 /// MASK
 ////////////////////
 
-	g.create_mask = function(width = g.canvas_width, height = g.canvas_height) {
-		let		mask;
-		let		y;
-
-		if (is_int(width) == false) { width = round(width); }
-		if (is_int(height) == false) { height = round(height); }
-		mask = [];
-		for (y = 0; y < height; ++y) {
-			mask.push(" ".repeat(width).split(""));
-		}
-		return (mask);
-	}
+	// > create_mask()
+	// > create_mask(width, height)
+	//
+	// Creates a mask layer. A layer is a 2D array.
+	// By default, the layer will take the canvas dimensions but it's dimensions
+	//  can also be passed by user via 'width' and 'height'.
+	g.create_mask = g.create_layer;
 
 	// > put_mask()
 	// > put_mask(x, y)
