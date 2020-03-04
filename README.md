@@ -15,6 +15,7 @@ lightweight ascii (text only) creative coding sketches or websites.
 		- [Put the canvas into another dom element](#Put-the-canvas-into-another-dom-element)
 		- [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)
 		- [Create multiple canvas](#Create-multiple-canvas)
+		- [Use colors](#Use-colors)
 	- [Examples](#Examples)
 		- simulate collision detection
 - [Manual](#Manual)
@@ -419,6 +420,9 @@ The characters dimensions in pixel.
 
 - create_mask() -> return mask
 - put_mask(mask[, x, y[, invert]])
+
+- create_color_layer()
+- set_color(color_layer)
 
 - no_loop()
 - loop()
