@@ -7,4 +7,6 @@
 - tell that user can user most of other drawing function on color layers
   (background, line, shape, fill...)
 
+- color_layer cell with [null, null] to handle font color and background color ?
+
 - tell into README that ascii requires a monospace font !

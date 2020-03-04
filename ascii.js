@@ -1160,6 +1160,9 @@ function	create_ascii(g = window) {
 							line += ascii_line[x];
 						}
 					}
+					if (prev_color != null) {
+						line += "</span>";
+					}
 					/// PRINT LINE
 					spans[y].innerHTML = line;
 				}

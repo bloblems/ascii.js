@@ -16,6 +16,7 @@ function	setup() {
 	color[0][6] = "green";
 	color[0][7] = "green";
 	color[0][9] = "yellow";
+	color[0][19] = "cyan";
 	set_color(color);
 }
 
