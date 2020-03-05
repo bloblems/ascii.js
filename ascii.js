@@ -1111,14 +1111,72 @@ function	create_ascii(g = window) {
 		}
 	}
 
-	function	ascii_draw() {
-		let		x, y;
-		let		spans;
+	function	ascii_draw_color(spans) {
 		let		line;
-		let		back_color, fore_color;
-		let		prev_back_color, prev_fore_color;
-		let		color_line;
-		let		ascii_line;
+		let		x, y;
+		let		color_line, ascii_line;
+		let		fore_color, back_color;
+		let		prev_fore_color, prev_back_color;
+
+		/// FOR EACH LINE
+		for (y = 0; y < g.canvas_height; ++y) {
+			color_line = color_layer[y];
+			ascii_line = g.ascii[y];
+			prev_fore_color = null;
+			prev_back_color = null;
+			line = "";
+			/// FOR EACH CHARACTER
+			for (x = 0; x < g.canvas_width; ++x) {
+				back_color = color_line[x][0];
+				fore_color = color_line[x][1];
+				/// COLOR CHANGED
+				if (fore_color != prev_fore_color
+				|| back_color != prev_back_color) {
+					/// START COLOR
+					if (prev_fore_color == null
+					&& prev_back_color == null) {
+						line += "<span style=\"";
+						if (fore_color != null) {
+							line += "color:" + fore_color + ";";
+						}
+						if (back_color != null) {
+							line += "background:" + back_color;
+						}
+						line += "\">" + ascii_line[x];
+					/// END COLOR
+					} else {
+						line += "</span>";
+						/// START NEW COLOR
+						if (fore_color != null || back_color != null) {
+							line += "<span style=\"";
+							if (fore_color != null) {
+								line += "color:" + fore_color + ";";
+							}
+							if (back_color != null) {
+								line += "background:" + back_color;
+							}
+							line += "\">";
+						}
+						line += ascii_line[x];
+					}
+					prev_back_color = back_color;
+					prev_fore_color = fore_color;
+				/// SAME COLOR
+				} else {
+					line += ascii_line[x];
+				}
+			}
+			if (prev_fore_color != null || prev_back_color != null) {
+				line += "</span>";
+			}
+			/// PRINT LINE
+			spans[y].innerHTML = line;
+		}
+	}
+
+	function	ascii_draw() {
+		let		y;
+		let		spans;
 
 		/// CALL draw()
 		g.draw();
@@ -1126,67 +1184,14 @@ function	create_ascii(g = window) {
 		spans = dom_array.childNodes;
 		/// TEXT MODE
 		if (draw_mode == DRAW_TEXT) {
-			/// NO COLOR SET
+			/// WITHOUT COLOR
 			if (color_layer == null) {
 				for (y = 0; y < g.canvas_height; ++y) {
 					spans[y].textContent = g.ascii[y].join("");
 				}
-			/// COLOR SET
+			/// WITH COLOR
 			} else {
-				/// FOR EACH LINE
-				for (y = 0; y < g.canvas_height; ++y) {
-					color_line = color_layer[y];
-					ascii_line = g.ascii[y];
-					prev_fore_color = null;
-					prev_back_color = null;
-					line = "";
-					/// FOR EACH CHARACTER
-					for (x = 0; x < g.canvas_width; ++x) {
-						back_color = color_line[x][0];
-						fore_color = color_line[x][1];
-						/// COLOR CHANGED
-						if (fore_color != prev_fore_color
-						|| back_color != prev_back_color) {
-							/// START COLOR
-							if (prev_fore_color == null
-							&& prev_back_color == null) {
-								line += "<span style=\"";
-								if (fore_color != null) {
-									line += "color:" + fore_color + ";";
-								}
-								if (back_color != null) {
-									line += "background:" + back_color;
-								}
-								line += "\">" + ascii_line[x];
-							/// END COLOR
-							} else {
-								line += "</span>";
-								/// START NEW COLOR
-								if (fore_color != null || back_color != null) {
-									line += "<span style=\"";
-									if (fore_color != null) {
-										line += "color:" + fore_color + ";";
-									}
-									if (back_color != null) {
-										line += "background:" + back_color;
-									}
-									line += "\">";
-								}
-								line += ascii_line[x];
-							}
-							prev_back_color = back_color;
-							prev_fore_color = fore_color;
-						/// SAME COLOR
-						} else {
-							line += ascii_line[x];
-						}
-					}
-					if (prev_fore_color != null || prev_back_color != null) {
-						line += "</span>";
-					}
-					/// PRINT LINE
-					spans[y].innerHTML = line;
-				}
+				ascii_draw_color(spans);
 			}
 		/// HTML MODE
 		} else {
