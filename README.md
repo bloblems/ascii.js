@@ -301,14 +301,53 @@ draw it, you first need to reput the main canvas as drawing layer by calling
 an other one (or on the main canvas, depending on the the current drawing
 layer).
 
-Layer functions:
+Ascii provides `canvas_width` and `canvas_height` like environment variables
+when `set_layer()` is used. These are `layer_width` and `layer_height` (see
+[layer_width & layer_height](#layer_width--layer_height)) which are set to give
+you the active layer dimensions (giving the canvas dimensions if it is the
+active layer).
+
+See:
 - [create_layer](#create_layer)
 - [set_layer](#set_layer)
 - [draw_layer](#draw_layer)
+- [layer_width & layer_height](#layer_width--layer_height)
 
 ### About masks
 
+Masks are special layers on which you can draw exactly like regular ones. The
+interesting fact about masks is that when they are put on the canvas or on
+layers, empty areas of the mask (space characters: ' ') will erase the same
+areas on the drawn layer. whereas whatever characters are drawn on the mask, if
+they are not spaces, they will not have any effect on the layer.
+
+This can be used, for example, to hide everything on the screen and make appears
+it's content when the mouse hovers it (with a specific radius).
+To do so, you would have to draw a filled circle (see [shape](#shape) and
+[fill](#fill)) on a clear mask at the mouse position (with the radius you
+desire) and then put the mask on the layer (or canvas) you drawn your graphics
+on.
+
+To create a mask, you need to call the `create_mask()` function (see
+[create_mask](#create_mask)) which will returns the mask (a 2D array like the
+main canvas or a layer). You can then draw whatever you want on it, using
+indexation `mask[y][x] = '?';` or `set_layer()` (see [set_layer](#set_layer))
+which works on mask and will allow you to use drawing functions on it.
+Then, once the mask is finished, to put it to the canvas (or layer), you will
+have to use `set_layer()` to set the drawn layer and `put_mask()` (see
+[put_mask](#put_mask)).
+
+Mask functions:
+- [create_mask](#create_mask)
+- [put_mask](#put_mask)
+
 ### About color layers
+
+A color layer can be used to easily color the canvas. A color layer can be
+indexed like the canvas or a regular layer, but instead of characters, cells
+contain a small array to hold a background and a foreground value.
+
+By default, colors are set to `null`.
 
 To draw with colors, ascii provides the `create_color_layer()` function which
 returns an array of the main canvas dimensions. Colors are set into this layer's
