@@ -10,6 +10,7 @@ lightweight ascii (text only) creative coding sketches or websites.
 		- [Initialize ascii environment](#Initialize-ascii-environment)
 		- [Start drawing](#Start-drawing)
 		- [Understand canvas format](#Understand-canvas-format)
+		- [Choose a font](#Choose-a-font)
 	- [Go further](#Go-further)
 		- [Make the canvas responsive](#Make-the-canvas-responsive)
 		- [Put the canvas into another dom element](#Put-the-canvas-into-another-dom-element)
@@ -227,6 +228,22 @@ function	draw() {
 }
 ```
 
+### Choose a font
+
+The easiest way to draw with text is to use monospace fonts.
+
+By default, ascii set the canvas `font-family` property to
+`Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace`.
+`Courier New` being a monospace font which should be on most platforms.
+
+You can easily change the canvas font with CSS:
+
+```css
+.ascii {
+	font-family:		Lucida Console, Lucida Sans Typewriter, monaco, Bitstream Vera Sans Mono, monospace;
+}
+```
+
 ## Go further
 
 ### Make the canvas responsive
@@ -360,6 +377,7 @@ create_ascii(body);
 
 ```
 
+### Use colors
 
 # Manual
 
@@ -421,7 +439,7 @@ The characters dimensions in pixel.
 - create_mask() -> return mask
 - put_mask(mask[, x, y[, invert]])
 
-- create_color_layer()
+- create_color_layer() -> return color layer
 - set_color(color_layer)
 
 - no_loop()
