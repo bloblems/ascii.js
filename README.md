@@ -12,6 +12,10 @@ create lightweight ascii (text only) creative coding sketches or websites.
 		- [Understand canvas format](#Understand-canvas-format)
 		- [Choose a font](#Choose-a-font)
 	- [Go further](#Go-further)
+		- [About layers](#About-layers)
+		- [About masks](#About-masks)
+		- [About color layers](#About-color-layers)
+		- [Layers](#Layers)
 		- [Make the canvas responsive](#Make-the-canvas-responsive)
 		- [Put the canvas into another dom element](#Put-the-canvas-into-another-dom-element)
 		- [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)
@@ -270,6 +274,35 @@ You can easily change the canvas font with CSS:
 
 ## Go further
 
+### About layers
+
+### About masks
+
+### About color layers
+
+To draw with colors, ascii provides the `create_color_layer()` function which
+returns an array of the main canvas dimensions. Colors are set into this layer's
+cells. A cell contains a background color and a font color (null by default)
+combined into a small array accessible like this `color_layer[y][x][ground]`.
+
+Here is an example:
+
+```javascript
+let		color_layer;
+
+/// Create the color layer
+color_layer = create_color_layer;
+/// Index the layer like the main canvas or a regular layer.
+/// As you can see, a 3rd indexation is done.
+/// [0] -> background color
+color_layer[5][5][0] = "red";
+/// [1] -> foreground color
+color_layer[5][5][1] = "#ffffff";
+```
+
+It is important to notice that drawing with a lot of differents colors can have
+a important effect on performances.
+
 ### Make the canvas responsive
 
 The code example given into the [Make the canvas fill the window](#Make-the-canvas-fill-the-window)
@@ -401,29 +434,6 @@ create_ascii(body);
 
 ```
 
-### Use colors
-
-To draw with colors, ascii provides the `create_color_layer()` function which
-returns an array of the main canvas dimensions. Colors are set into this layer's
-cells. A cell contains a background color and a font color (null by default)
-combined into a small array accessible like this `color_layer[y][x][ground]`.
-
-Here is an example:
-
-```javascript
-let		color_layer;
-
-/// Create the color layer
-color_layer = create_color_layer;
-/// Index the layer like the main canvas or a regular layer.
-/// As you can see, a 3rd indexation is done.
-/// [0] -> background color
-color_layer[5][5][0] = "red";
-/// [1] -> foreground color
-color_layer[5][5][1] = "#ffffff";
-```
-
-
 # Manual
 
 ## Environment variables
@@ -474,23 +484,138 @@ The characters dimensions in pixel.
 
 ### Environment functions
 
-- create_ascii(object)
+- [create_ascii](#create_ascii)
 
-- create_canvas([width[, height[, dom]]])
-- resize_canvas([width[, height]])
+- [create_canvas](#create_canvas)
+- [resize_canvas](#resize_canvas)
 
-- create_layer() -> return layer
-- set_layer([layer])
-- draw_layer(layer)
+- [create_layer](#create_layer)
+- [set_layer](#set_layer)
+- [draw_layer](#draw_layer)
 
-- create_mask() -> return mask
-- put_mask(mask[, x, y[, invert]])
+- [create_mask](#create_mask)
+- [put_mask](#put_mask)
 
-- create_color_layer() -> return color layer
-- set_color(color_layer)
+- [create_color_layer](#create_color_layer)
+- [set_color](#set_color)
 
-- no_loop()
-- loop()
+- [no_loop](#no_loop)
+- [loop](#loop)
+
+#### create_ascii
+
+```javascript
+> create_ascii(object);
+```
+
+This function should be used to put the ascii environment into a passed object
+instead of into the `window`.
+
+See [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)
+for an example.
+
+#### create_canvas([width[, height[, mother_dom]]])
+
+```javascript
+> create_canvas();
+> create_canvas(width, height);
+> create_canvas(mother_dom);
+> create_canvas("mother_dom_id");
+> create_canvas(width, height, mother_dom);
+> create_canvas(width, height, "mother_dom_id");
+```
+
+This function, which should be used into the `setup()` function, creates the
+main ascii canvas. `width` and `height` can be passed in term of characters
+to dimension the canvas. If a dimension is not passed (or passed as `null`),
+this dimension will adapt to fill the mother dom element. In this way, if no
+dimension is passed, the canvas will adapt on both dimensions.
+
+By default, the canvas is put at the end of the `body` element. But the mother
+element can be passed as the 3rd parameter, after both dimensions or as
+the only one, setting dimensions to their default values.
+In both cases, the dom can be passed directly (as an element) or as a string
+(corresponding dom id).
+
+#### resize_canvas
+
+```javascript
+> resize_canvas();
+> resize_canvas(width, height);
+```
+
+This function resizes the main ascii canvas. Dimensions work just like with the
+`create_canvas()` function.
+
+#### create_layer
+
+```javascript
+> create_layer();
+> create_layer(width, height);
+
+return layer
+```
+This function create a new layer. A layer is a 2D array which can be manipulated
+just like the `ascii` array. Once the layer created, to use drawing functions
+on it, you need to use `set_layer()`.
+
+#### set_layer([layer])
+
+```javascript
+> set_layer();
+> set_layer(layer);
+```
+
+#### draw_layer(layer)
+
+```javascript
+> draw_layer(layer);
+```
+
+#### create_mask
+
+```javascript
+> create_mask();
+> create_mask(width, height);
+
+return mask
+```
+
+#### put_mask(mask[, x, y[, invert]])
+
+```javascript
+> put_mask(mask);
+> put_mask(mask, x, y);
+> put_mask(mask, x, y, invert);
+```
+
+#### create_color_layer() -> return color layer
+
+```javascript
+> create_color_layer();
+
+return layer
+```
+
+#### set_color(color_layer)
+
+```javascript
+> set_color();
+> set_color(color_layer);
+```
+
+#### no_loop()
+
+```javascript
+> no_loop();
+```
+
+#### loop()
+
+```javascript
+> loop();
+```
+
 
 ### Drawing functions
 

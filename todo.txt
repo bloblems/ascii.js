@@ -1,12 +1,2 @@
 - Link -> instead of giving x, y... give a drawn layer. The link will be created
   from non null characters.
-
-- create_color_layer([width, height])
-- put_color(layer)
-- tell that user can use mask on color layer
-- tell that user can user most of other drawing function on color layers
-  (background, line, shape, fill...)
-
-- color_layer cell with [null, null] to handle font color and background color ?
-
-- tell into README that ascii requires a monospace font !
