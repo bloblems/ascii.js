@@ -1,7 +1,7 @@
 # lib-ascii
 
-This is a javascript library that aims to help artists and developers create
-lightweight ascii (text only) creative coding sketches or websites.
+This is a javascript library that aims to help artists and developers easily
+create lightweight ascii (text only) creative coding sketches or websites.
 
 ## Table of content:
 
@@ -128,8 +128,32 @@ variables you can use anytime).
 
 ### Start drawing
 
+#### Character array
+
+The `ascii` environment variable allows you to get access to printed characters.
+It is a simple 2D array accessible like this `ascii[y][x]`.
+
+Here is an example which draws a '#' character on the screen at the mouse
+coordinates:
+
+```javascript
+function	setup() {
+	/// Create the canvas of 30 x 20
+	create_canvas(30, 20);
+}
+
+function	draw() {
+	/// Clear the canvas background with the '.' character
+	background('.');
+	/// Put '#' to mouse coordinates
+	ascii[mouse_y][mouse_x] = '#';
+}
+```
+
+#### Moving line
+
 The following example draws a vertical line which moves indefinitely from left
-to right.
+to right:
 
 ```javascript
 /// Create x
@@ -379,6 +403,27 @@ create_ascii(body);
 
 ### Use colors
 
+To draw with colors, ascii provides the `create_color_layer()` function which
+returns an array of the main canvas dimensions. Colors are set into this layer's
+cells. A cell contains a background color and a font color (null by default)
+combined into a small array accessible like this `color_layer[y][x][ground]`.
+
+Here is an example:
+
+```javascript
+let		color_layer;
+
+/// Create the color layer
+color_layer = create_color_layer;
+/// Index the layer like the main canvas or a regular layer.
+/// As you can see, a 3rd indexation is done.
+/// [0] -> background color
+color_layer[5][5][0] = "red";
+/// [1] -> foreground color
+color_layer[5][5][1] = "#ffffff";
+```
+
+
 # Manual
 
 ## Environment variables
@@ -401,6 +446,8 @@ The Ascii lib provides user some environment variables.
 `ascii` is the most important variable. It is the character array that will be
 printed on screen. It is two dimentional array (x and y). You can access it
 like `ascii[y][x]`.
+
+See [Character array](#Character-array) for an example.
 
 ### canvas_width + canvas_height
 
