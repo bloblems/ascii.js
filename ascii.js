@@ -568,13 +568,13 @@ function	create_ascii(g = window) {
 		let		line;
 		let		x, y;
 
-		line = [];
-		for (x = 0; x < g.canvas_width; ++x) {
-			line.push(null);
-		}
 		layer = [];
 		for (y = 0; y < g.canvas_height; ++y) {
-			layer.push(line.slice());
+			line = [];
+			for (x = 0; x < g.canvas_width; ++x) {
+				line.push([null, null]);
+			}
+			layer.push(line);
 		}
 		return (layer);
 	}
@@ -1115,7 +1115,8 @@ function	create_ascii(g = window) {
 		let		x, y;
 		let		spans;
 		let		line;
-		let		prev_color;
+		let		back_color, fore_color;
+		let		prev_back_color, prev_fore_color;
 		let		color_line;
 		let		ascii_line;
 
@@ -1132,35 +1133,55 @@ function	create_ascii(g = window) {
 				}
 			/// COLOR SET
 			} else {
+				/// FOR EACH LINE
 				for (y = 0; y < g.canvas_height; ++y) {
 					color_line = color_layer[y];
 					ascii_line = g.ascii[y];
+					prev_fore_color = null;
+					prev_back_color = null;
 					line = "";
-					prev_color = null;
+					/// FOR EACH CHARACTER
 					for (x = 0; x < g.canvas_width; ++x) {
+						back_color = color_line[x][0];
+						fore_color = color_line[x][1];
 						/// COLOR CHANGED
-						if (color_line[x] != prev_color) {
+						if (fore_color != prev_fore_color
+						|| back_color != prev_back_color) {
 							/// START COLOR
-							if (prev_color == null) {
-								line += "<span style=\"color:"
-								+ color_line[x] + "\">" + ascii_line[x];
+							if (prev_fore_color == null
+							&& prev_back_color == null) {
+								line += "<span style=\"";
+								if (fore_color != null) {
+									line += "color:" + fore_color + ";";
+								}
+								if (back_color != null) {
+									line += "background:" + back_color;
+								}
+								line += "\">" + ascii_line[x];
 							/// END COLOR
 							} else {
 								line += "</span>";
 								/// START NEW COLOR
-								if (color_line[x] != null) {
-									line += "<span style=\"color:"
-									+ color_line[x] + "\">";
+								if (fore_color != null || back_color != null) {
+									line += "<span style=\"";
+									if (fore_color != null) {
+										line += "color:" + fore_color + ";";
+									}
+									if (back_color != null) {
+										line += "background:" + back_color;
+									}
+									line += "\">";
 								}
 								line += ascii_line[x];
 							}
-							prev_color = color_line[x];
+							prev_back_color = back_color;
+							prev_fore_color = fore_color;
 						/// SAME COLOR
 						} else {
 							line += ascii_line[x];
 						}
 					}
-					if (prev_color != null) {
+					if (prev_fore_color != null || prev_back_color != null) {
 						line += "</span>";
 					}
 					/// PRINT LINE
