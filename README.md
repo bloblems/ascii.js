@@ -132,7 +132,7 @@ variables you can use anytime).
 
 ### Start drawing
 
-#### Character array
+#### Understand ascii array
 
 The `ascii` environment variable allows you to get access to printed characters.
 It is a simple 2D array accessible like this `ascii[y][x]`.
@@ -275,6 +275,36 @@ You can easily change the canvas font with CSS:
 ## Go further
 
 ### About layers
+
+Layers are canvas like arrays which are not automatically printed to screen.
+You can draw on them exactly like if it was the main canvas. They can be useful
+in multiple cases.
+
+Like printing text to a layer which won't be modified next and easily print it
+at each `draw()` iteration without any more text calculation.
+
+Or to handle different plans, a layer handling, for example, the background and
+an other one, the foreground.
+
+By default, a layer gets the canvas dimensions but it's dimensions can also be
+passed (smaller or even bigger than the main canvas).
+
+To create a layer, you need to call the `create_layer()` function (see
+[create_layer](#create_layer)) which will returns the layer (a 2D array like
+the main canvas). You can draw yourself on it by indexing it like so
+`layer[y][x] = '#';`. To use drawing functions on it, you can use `set_layer()`
+(see [set_layer](#set_layer)) which will set the passed layer as drawing layer
+(canvas being considered just like a layer). Once you drawns on the layer, to
+draw it, you first need to reput the main canvas as drawing layer by calling
+`set_layer()` without any parameter. Then, you will be able to use
+`draw_layer()` (see [draw_layer](#draw_layer)). This function draws a layer on
+an other one (or on the main canvas, depending on the the current drawing
+layer).
+
+Layer functions:
+- [create_layer](#create_layer)
+- [set_layer](#set_layer)
+- [draw_layer](#draw_layer)
 
 ### About masks
 
