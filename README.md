@@ -15,12 +15,10 @@ create lightweight ascii (text only) creative coding sketches or websites.
 		- [About layers](#About-layers)
 		- [About masks](#About-masks)
 		- [About color layers](#About-color-layers)
-		- [Layers](#Layers)
 		- [Make the canvas responsive](#Make-the-canvas-responsive)
 		- [Put the canvas into another dom element](#Put-the-canvas-into-another-dom-element)
 		- [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)
 		- [Create multiple canvas](#Create-multiple-canvas)
-		- [Use colors](#Use-colors)
 	- [Examples](#Examples)
 		- simulate collision detection
 - [Manual](#Manual)
@@ -294,7 +292,7 @@ To create a layer, you need to call the `create_layer()` function (see
 the main canvas). You can draw yourself on it by indexing it like so
 `layer[y][x] = '#';`. To use drawing functions on it, you can use `set_layer()`
 (see [set_layer](#set_layer)) which will set the passed layer as drawing layer
-(canvas being considered just like a layer). Once you drawns on the layer, to
+(canvas being considered just like a layer). Once you drawn on the layer, to
 draw it, you first need to reput the main canvas as drawing layer by calling
 `set_layer()` without any parameter. Then, you will be able to use
 `draw_layer()` (see [draw_layer](#draw_layer)). This function draws a layer on
@@ -318,7 +316,7 @@ See:
 Masks are special layers on which you can draw exactly like regular ones. The
 interesting fact about masks is that when they are put on the canvas or on
 layers, empty areas of the mask (space characters: ' ') will erase the same
-areas on the drawn layer. whereas whatever characters are drawn on the mask, if
+areas on the active layer. whereas whatever characters are drawn on the mask, if
 they are not spaces, they will not have any effect on the layer.
 
 This can be used, for example, to hide everything on the screen and make appears
@@ -329,48 +327,47 @@ desire) and then put the mask on the layer (or canvas) you drawn your graphics
 on.
 
 To create a mask, you need to call the `create_mask()` function (see
-[create_mask](#create_mask)) which will returns the mask (a 2D array like the
+[create_mask](#create_mask)) which will return the mask (a 2D array like the
 main canvas or a layer). You can then draw whatever you want on it, using
 indexation `mask[y][x] = '?';` or `set_layer()` (see [set_layer](#set_layer))
 which works on mask and will allow you to use drawing functions on it.
 Then, once the mask is finished, to put it to the canvas (or layer), you will
-have to use `set_layer()` to set the drawn layer and `put_mask()` (see
+have to use `set_layer()` to set the active layer and `put_mask()` (see
 [put_mask](#put_mask)).
 
-Mask functions:
+See:
 - [create_mask](#create_mask)
 - [put_mask](#put_mask)
 
 ### About color layers
 
-A color layer can be used to easily color the canvas. A color layer can be
-indexed like the canvas or a regular layer, but instead of characters, cells
-contain a small array to hold a background and a foreground value.
-
-By default, colors are set to `null`.
-
-To draw with colors, ascii provides the `create_color_layer()` function which
-returns an array of the main canvas dimensions. Colors are set into this layer's
-cells. A cell contains a background color and a font color (null by default)
-combined into a small array accessible like this `color_layer[y][x][ground]`.
-
-Here is an example:
+A color layer can be used to easily color the canvas. To create it, use
+`create_color_layer()` (see [create_color_layer](#create_color_layer)) which
+will return the layer. The color layer can be indexed just like the canvas or a
+regular layer, but instead of characters, cells contain a small array holdind a
+background and a foreground value (set to `null` by default). To set a color,
+you simply need to put a color string into this small array at the desired cell.
+Index the cell at `0` for background and `1` for foreground.
+Color strings can be formated like with CSS.
 
 ```javascript
-let		color_layer;
-
-/// Create the color layer
-color_layer = create_color_layer;
-/// Index the layer like the main canvas or a regular layer.
-/// As you can see, a 3rd indexation is done.
-/// [0] -> background color
-color_layer[5][5][0] = "red";
-/// [1] -> foreground color
-color_layer[5][5][1] = "#ffffff";
+/// Change background color
+color_layer[y0][x0][0] = "red";
+/// Change foreground color
+color_layer[y1][x1][1] = "#ff00ff";
 ```
 
+Once you modified the color layer, you need to set it with `set_color()` (see
+[set_color](#set_color)) (once the color layer set, you still can modify it's
+content). The color will be printed at the end of the `draw()` function.
+
 It is important to notice that drawing with a lot of differents colors can have
-a important effect on performances.
+a significant impact on performances.
+
+See:
+- [create_color_layer](#create_color_layer)
+- [set_color](#set_color)
+- [clear_color](#clear_color_layer)
 
 ### Make the canvas responsive
 
@@ -553,23 +550,24 @@ The characters dimensions in pixel.
 
 ### Environment functions
 
-- [create_ascii](#create_ascii)
-
-- [create_canvas](#create_canvas)
-- [resize_canvas](#resize_canvas)
-
-- [create_layer](#create_layer)
-- [set_layer](#set_layer)
-- [draw_layer](#draw_layer)
-
-- [create_mask](#create_mask)
-- [put_mask](#put_mask)
-
-- [create_color_layer](#create_color_layer)
-- [set_color](#set_color)
-
-- [no_loop](#no_loop)
-- [loop](#loop)
+- Base
+	- [create_ascii](#create_ascii)
+	- [no_loop](#no_loop)
+	- [loop](#loop)
+- Canvas
+	- [create_canvas](#create_canvas)
+	- [resize_canvas](#resize_canvas)
+- Layers
+	- [create_layer](#create_layer)
+	- [set_layer](#set_layer)
+	- [draw_layer](#draw_layer)
+- Masks
+	- [create_mask](#create_mask)
+	- [put_mask](#put_mask)
+- Color layers
+	- [create_color_layer](#create_color_layer)
+	- [set_color](#set_color)
+	- [clear_color_layer](#clear_color_layer)
 
 #### create_ascii
 
@@ -583,7 +581,7 @@ instead of into the `window`.
 See [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)
 for an example.
 
-#### create_canvas([width[, height[, mother_dom]]])
+#### create_canvas
 
 ```javascript
 > create_canvas();
@@ -624,22 +622,32 @@ This function resizes the main ascii canvas. Dimensions work just like with the
 
 return layer
 ```
-This function create a new layer. A layer is a 2D array which can be manipulated
-just like the `ascii` array. Once the layer created, to use drawing functions
-on it, you need to use `set_layer()`.
+This function creates a new layer (see [About layers](#About-layers)). If a
+dimension is not passed (or passed as `null`), it will take the canvas
+corresponding dimension. In that way, if no dimension is passed, the layer will
+take the main canvas dimensions.
 
-#### set_layer([layer])
+#### set_layer
 
 ```javascript
 > set_layer();
 > set_layer(layer);
 ```
 
-#### draw_layer(layer)
+This function set the active layer (see [About layers](#About-layers)). The
+active layer (which is the main canvas by default) is the layer on which
+drawing functions will apply (`line()`, `rect()`, `shape()`, `clear()`, etc).
+
+#### draw_layer
 
 ```javascript
 > draw_layer(layer);
+> draw_layer(layer, x, y);
 ```
+
+This function draws the passed layer to the active one (the main canvas by
+default) (see [About layers](#About-layers)). `x` and `y` can be set (positive
+and negative values are allowed) to offset the canvas.
 
 #### create_mask
 
@@ -650,7 +658,7 @@ on it, you need to use `set_layer()`.
 return mask
 ```
 
-#### put_mask(mask[, x, y[, invert]])
+#### put_mask
 
 ```javascript
 > put_mask(mask);
@@ -658,7 +666,7 @@ return mask
 > put_mask(mask, x, y, invert);
 ```
 
-#### create_color_layer() -> return color layer
+#### create_color_layer
 
 ```javascript
 > create_color_layer();
@@ -666,20 +674,26 @@ return mask
 return layer
 ```
 
-#### set_color(color_layer)
+#### set_color
 
 ```javascript
 > set_color();
 > set_color(color_layer);
 ```
 
-#### no_loop()
+#### clear_color_layer
+
+```javascript
+> clear_color_layer(color_layer);
+```
+
+#### no_loop
 
 ```javascript
 > no_loop();
 ```
 
-#### loop()
+#### loop
 
 ```javascript
 > loop();

@@ -583,6 +583,17 @@ function	create_ascii(g = window) {
 		color_layer = layer;
 	}
 
+	g.clear_color_layer = function(layer) {
+		let		x, y;
+
+		for (y = 0; y < g.canvas_height; ++y) {
+			for (x = 0; x < g.canvas_width; ++x) {
+				layer[y][x][0] = null;
+				layer[y][x][1] = null;
+			}
+		}
+	}
+
 ////////////////////
 /// RECT
 ////////////////////
