@@ -740,29 +740,147 @@ See [About color layers](#About-color-layers)
 
 ### Drawing functions
 
-- clear()
-- background(character)
-- fill(x, y, character)
+- base
+	- clear
+	- background
+- line
+	- line
+	- set_line_char
+	- line_func
+- rectangle
+	- rect
+	- set_rect_border
+	- set_rect_mode
+- text
+	- text(string, x, y[, width]) -> return [x, y]
+	- set_text_mode([mode])
+	- set_text_align([align_mode])
+	- set_text_wrap([wrap_mode])
+- other
+	- shape(x, y, rw, rh, vertices, character[, linked[, offset]])
+	- fill(x, y, character)
+	- border(char)
+	- set_draw_mode([mode])
 
-- line(x0, y0, x1, y1[, character])
-- set_line_char([character])
+#### clear
 
-- line_func(x0, y0, x1, y1, function)
+```javascript
+> clear();
+```
+Clear the active layer by putting space characters at each cell.
 
-- rect(x, y, width, height[, characters])
-- set_rect_border([characters])
-- set_rect_mode([mode])
+#### background
 
-- shape(x, y, rw, rh, vertices, character[, linked[, offset]])
+```javascript
+> background(character);
+```
+Put the passed charater at each cell of the active layer.
 
-- border(char)
+#### line
 
-- text(string, x, y[, width]) -> return [x, y]
-- set_text_mode([mode])
-- set_text_wrap([wrap_mode])
-- set_text_align([align_mode])
+```javascript
+> line(x0, y0, x1, y1);
+> line(x0, y0, x1, y1, character);
+```
+Draw a line from `[x0, y0]` to `[x1, y1]` on the active layer with the passed
+character. If no character is passed, `line()` will use the set line character
+(see [set_line_char](#set_line_char)).
 
-- set_draw_mode([mode])
+#### set_line_char
+
+```javascript
+> set_line_char();
+> set_line_char(character);
+```
+Set the line character. Next use of `line()` will use this character if not
+passed into `line()` itself.
+
+#### line_func
+
+```javascript
+> line_func(x0, y0, x1, y1, function);
+```
+Call the passed function for each point of the line formed by `[x0, y0]` and
+`[x1, y1]`. The called function takes 3 parameters, `x` and `y` coordinates
+of the current point and a boolean variable which is set to `true` when the
+coordinates are inside the active layer.
+
+Here is an example of a function passed to `line_func()`:
+```javascript
+function	(x, y, is_on_layer) {
+	if (is_on_layer == true) {
+		my_layer[y][x] = '#';
+	}
+}
+```
+
+#### rect
+
+```javascript
+> rect(x, y, width, height);
+> rect(x, y, width, height, border);
+```
+Draw a rectangle on the active layer. `x`, `y`, `width` and `height` are passed
+to position and dimension the rectangle. A `border` string can be passed to
+style the rectangle. It should be formatted like so:
+```
+with border = "123456789"
+1: top-left corn
+2: top side
+3: top-right corner
+4: left side
+5: center
+6: right side
+7: botton-left corner
+8: bottom side
+9: bottom-right corner
+rect -> 12223
+        45556
+		78889
+```
+
+#### set_rect_border
+
+```javascript
+> set_rect_border();
+> set_rect_border(characters);
+```
+
+#### set_rect_mode
+
+```javascript
+> set_rect_mode();
+> set_rect_mode(mode);
+```
+
+#### text
+
+```javascript
+> text(string, x, y);
+> text(string, x, y, paragraph_width);
+```
+
+#### set_text_mode
+
+```javascript
+> set_text_mode();
+> set_text_mode(mode);
+```
+
+#### set_text_align
+
+```javascript
+> set_text_align();
+> set_text_align(align_mode);
+```
+
+#### set_text_wrap
+
+```javascript
+> set_text_wrap();
+> set_text_wrap(wrap_mode);
+```
+
 
 ### External functions
 
