@@ -792,8 +792,11 @@ character. If no character is passed, `line()` will use the set line character
 > set_line_char();
 > set_line_char(character);
 ```
-Set the line character. Next use of `line()` will use this character if not
-passed into `line()` itself.
+Set the `line()` character. Next calls of `line()` will use this character if
+not passed into `line()` itself.
+
+Calling `set_line_char()` without any parameter resets the `line()` character to
+it's default value.
 
 #### line_func
 
@@ -822,22 +825,24 @@ function	(x, y, is_on_layer) {
 ```
 Draw a rectangle on the active layer. `x`, `y`, `width` and `height` are passed
 to position and dimension the rectangle. A `border` string can be passed to
-style the rectangle. It should be formatted like so:
+style the rectangle. Here is how the border string works:
 ```
-with border = "123456789"
-1: top-left corn
-2: top side
-3: top-right corner
-4: left side
-5: center
-6: right side
-7: botton-left corner
-8: bottom side
-9: bottom-right corner
-rect -> 12223
-        45556
-		78889
+with "012345678"
+0: top-left corn
+1: top side
+2: top-right corner
+3: left side
+4: center
+5: right side
+6: botton-left corner
+7: bottom side
+8: bottom-right corner
 ```
+The border string can also be set through `set_rect_border()` (see
+[set_rect_border](#set_rect_border)).
+By default, the top-left corner of the rectangle is placed at the passed
+coordinates, but it can also be placed differently via `set_rect_mode()` (see
+[set_rect_mode](#set_rect_mode)).
 
 #### set_rect_border
 
@@ -845,6 +850,11 @@ rect -> 12223
 > set_rect_border();
 > set_rect_border(characters);
 ```
+Set the `rect()` border string. Next calls of `rect()` will automatically use
+this string if not passed into `rect()` itself.
+
+Calling `set_rect_border()` without any parameter resets the `rect()` border
+string to it's default value.
 
 #### set_rect_mode
 
@@ -852,6 +862,15 @@ rect -> 12223
 > set_rect_mode();
 > set_rect_mode(mode);
 ```
+Set the `rect()` placement mode. By default, the top-left corner of the drawn
+rectangle is placed at the passed cordinates.
+
+Calling `set_rect_rect()` without any parameter resets the `rect()` border
+string to it's default value.
+
+Modes:
+- `RECT_CORNER` Default value, passed coordinates are used for the top-left corner.
+- `RECT_CENTER` Passed coordinates are used for the center of the rectangle.
 
 #### text
 
