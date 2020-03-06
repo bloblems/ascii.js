@@ -102,7 +102,8 @@ if you want to prepare a background which will then be drawn at each frame
 
 To create the canvas, you will need the `create_canvas()` function.
 The simplest way to use it is to give the width and height of the canvas in
-characters (adaptative width and height are seen here).
+characters (see [Understand canvas format](#Understand-canvas-format) for
+adaptative dimensions).
 
 ```javascript
 function	setup() {
@@ -335,6 +336,9 @@ Then, once the mask is finished, to put it to the canvas (or layer), you will
 have to use `set_layer()` to set the active layer and `put_mask()` (see
 [put_mask](#put_mask)).
 
+Technically, mask layers are created exactly the same way regular ones are. So
+regular layers can be used with `put_mask()` too.
+
 See:
 - [create_mask](#create_mask)
 - [put_mask](#put_mask)
@@ -554,17 +558,17 @@ The characters dimensions in pixel.
 	- [create_ascii](#create_ascii)
 	- [no_loop](#no_loop)
 	- [loop](#loop)
-- Canvas
+- Canvas (see [Introduction](#Introduction))
 	- [create_canvas](#create_canvas)
 	- [resize_canvas](#resize_canvas)
-- Layers
+- Layers (see [About layers](#About-layers))
 	- [create_layer](#create_layer)
 	- [set_layer](#set_layer)
 	- [draw_layer](#draw_layer)
-- Masks
+- Masks (see [About masks](#About-masks))
 	- [create_mask](#create_mask)
 	- [put_mask](#put_mask)
-- Color layers
+- Color layers (see [About color layers](#About-color-layers))
 	- [create_color_layer](#create_color_layer)
 	- [set_color](#set_color)
 	- [clear_color_layer](#clear_color_layer)
@@ -580,6 +584,18 @@ instead of into the `window`.
 
 See [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)
 for an example.
+
+#### no_loop
+
+```javascript
+> no_loop();
+```
+
+#### loop
+
+```javascript
+> loop();
+```
 
 #### create_canvas
 
@@ -610,7 +626,6 @@ In both cases, the dom can be passed directly (as an element) or as a string
 > resize_canvas();
 > resize_canvas(width, height);
 ```
-
 This function resizes the main ascii canvas. Dimensions work just like with the
 `create_canvas()` function.
 
@@ -622,10 +637,11 @@ This function resizes the main ascii canvas. Dimensions work just like with the
 
 return layer
 ```
-This function creates a new layer (see [About layers](#About-layers)). If a
-dimension is not passed (or passed as `null`), it will take the canvas
-corresponding dimension. In that way, if no dimension is passed, the layer will
-take the main canvas dimensions.
+This function creates a new layer. If a dimension is not passed (or passed as
+`null`), it will take the canvas corresponding dimension. In that way, if no
+dimension is passed, the layer will take the main canvas dimensions.
+
+See [About layers](#About-layers)
 
 #### set_layer
 
@@ -633,10 +649,11 @@ take the main canvas dimensions.
 > set_layer();
 > set_layer(layer);
 ```
+This function set the active layer. The active layer (which, by default, is the
+main canvas) is the layer on which drawing functions will apply (`line()`,
+`rect()`, `shape()`, `clear()`, etc).
 
-This function set the active layer (see [About layers](#About-layers)). The
-active layer (which is the main canvas by default) is the layer on which
-drawing functions will apply (`line()`, `rect()`, `shape()`, `clear()`, etc).
+See [About layers](#About-layers)
 
 #### draw_layer
 
@@ -644,10 +661,11 @@ drawing functions will apply (`line()`, `rect()`, `shape()`, `clear()`, etc).
 > draw_layer(layer);
 > draw_layer(layer, x, y);
 ```
-
 This function draws the passed layer to the active one (the main canvas by
-default) (see [About layers](#About-layers)). `x` and `y` can be set (positive
-and negative values are allowed) to offset the canvas.
+default). `x` and `y` can be passed (positive and negative values are allowed)
+to offset the canvas.
+
+See [About layers](#About-layers)
 
 #### create_mask
 
@@ -657,6 +675,14 @@ and negative values are allowed) to offset the canvas.
 
 return mask
 ```
+This function creates a new mask layer. If a dimension is not passed (or passed
+as `null`), it will take the canvas corresponding dimension. In that way, if no
+dimension is passed, the layer will take the main canvas dimensions.
+
+Technically, mask layers are created exactly the same way regular ones are. So
+regular layers can be used with `put_mask()` too.
+
+See [About masks](#About-masks)
 
 #### put_mask
 
@@ -665,6 +691,14 @@ return mask
 > put_mask(mask, x, y);
 > put_mask(mask, x, y, invert);
 ```
+This function put the mask to the active layer. This will erase empty areas of
+the mask on the active layer. `x` and `y` can be passed (positive and negative
+values are allowed) to offset the canvas. `invert` is a boolean varible which
+is set to `false` by default. When it is set true, the mask effects are
+inverted, in this way, non empty areas of the mask will erase characters of the
+layer.
+
+See [About masks](#About-masks)
 
 #### create_color_layer
 
@@ -673,6 +707,12 @@ return mask
 
 return layer
 ```
+This function creates a new color layer. The color layer will automatically take
+the main canvas dimensions. Cells of the color layers are made of small arrays
+holding 2 color strings, a background and a foreground which are, by default,
+set to `null`.
+
+See [About color layers](#About-color-layers)
 
 #### set_color
 
@@ -680,24 +720,22 @@ return layer
 > set_color();
 > set_color(color_layer);
 ```
+This function will set the passed color layer as coloring layer of the main
+canvas. To reset the coloring layer of the main canvas, `set_color()` must be
+used without any parameter.
+
+See [About color layers](#About-color-layers)
 
 #### clear_color_layer
 
 ```javascript
 > clear_color_layer(color_layer);
 ```
+This function resets the passed color layer, putting `null` in each color
+string.
 
-#### no_loop
+See [About color layers](#About-color-layers)
 
-```javascript
-> no_loop();
-```
-
-#### loop
-
-```javascript
-> loop();
-```
 
 
 ### Drawing functions
