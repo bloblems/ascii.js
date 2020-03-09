@@ -878,6 +878,8 @@ Modes:
 > text(string, x, y);
 > text(string, x, y, paragraph_width);
 ```
+Write the passed `string` on the active layer at [`x`, `y`] coordinates. A
+paragraph width can be passed for wrap modes.
 
 #### set_text_mode
 
@@ -885,6 +887,14 @@ Modes:
 > set_text_mode();
 > set_text_mode(mode);
 ```
+Set the `text()` placement mode. By default, passed coordinates of `text()` are
+defining left side of the text. But it can also be the center or the right side
+of the text / paragraph.
+
+Modes:
+- `TEXT_LEFT` Default value,
+- `TEXT_CENTER`
+- `TEXT_RIGHT`
 
 #### set_text_align
 
@@ -892,6 +902,13 @@ Modes:
 > set_text_align();
 > set_text_align(align_mode);
 ```
+Set the `text()` alignement mode. By default, the paragraph is aligned to left
+but it can be set to center or right.
+
+Modes:
+- `TEXT_ALIGN_LEFT`
+- `TEXT_ALIGN_CENTER`
+- `TEXT_ALIGN_RIGHT`
 
 #### set_text_wrap
 
