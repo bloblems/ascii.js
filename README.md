@@ -741,26 +741,26 @@ See [About color layers](#About-color-layers)
 ### Drawing functions
 
 - base
-	- clear
-	- background
+	- [clear](#clear)
+	- [background](#background)
 - line
-	- line
-	- set_line_char
-	- line_func
+	- [line](#line)
+	- [set_line_char](#set_line_char)
+	- [line_func](#line_func)
 - rectangle
-	- rect
-	- set_rect_border
-	- set_rect_mode
+	- [rect](#rect)
+	- [set_rect_border](#set_rect_border)
+	- [set_rect_mode](#set_rect_mode)
 - text
-	- text(string, x, y[, width]) -> return [x, y]
-	- set_text_mode([mode])
-	- set_text_align([align_mode])
-	- set_text_wrap([wrap_mode])
+	- [text](#text)
+	- [set_text_mode](#set_text_mode)
+	- [set_text_align](#set_text_align)
+	- [set_text_wrap](#set_text_wrap)
 - other
-	- shape(x, y, rw, rh, vertices, character[, linked[, offset]])
-	- fill(x, y, character)
-	- border(char)
-	- set_draw_mode([mode])
+	- [shape](#shape)
+	- [fill](#fill)
+	- [border](#border)
+	- [set_draw_mode](#set_draw_mode)
 
 #### clear
 
@@ -879,7 +879,8 @@ Modes:
 > text(string, x, y, paragraph_width);
 ```
 Write the passed `string` on the active layer at [`x`, `y`] coordinates. A
-paragraph width can be passed for wrap modes.
+paragraph width can be passed for wrap modes. In this way, the text will wrap to
+avoid paragraph width overflow.
 
 #### set_text_mode
 
@@ -892,7 +893,7 @@ defining left side of the text. But it can also be the center or the right side
 of the text / paragraph.
 
 Modes:
-- `TEXT_LEFT` Default value,
+- `TEXT_LEFT` Default value
 - `TEXT_CENTER`
 - `TEXT_RIGHT`
 
@@ -903,10 +904,10 @@ Modes:
 > set_text_align(align_mode);
 ```
 Set the `text()` alignement mode. By default, the paragraph is aligned to left
-but it can be set to center or right.
+but it can be set to center or right. The alignement works when wrap mode
 
 Modes:
-- `TEXT_ALIGN_LEFT`
+- `TEXT_ALIGN_LEFT` Default value.
 - `TEXT_ALIGN_CENTER`
 - `TEXT_ALIGN_RIGHT`
 
@@ -915,6 +916,53 @@ Modes:
 ```javascript
 > set_text_wrap();
 > set_text_wrap(wrap_mode);
+```
+Set the `text()` wrapping mode. By default, the text does not wrap, it is
+trimmed once it got out of the active layer.
+
+Modes:
+- `TEXT_TRIM` Default value, text is trimmed out of the active layer.
+- `TEXT_WRAP_HARD` Wrap text. Split words if necessary.
+- `TEXT_WRAP` Wrap text without splitting words (exept if the  word is bigger
+than the text / paragraph width).
+
+#### shape
+
+```javascript
+> shape(x, y, radius_x, radius_y, vertices, character);
+> shape(x, y, radius_x, radius_y, vertices, character, linked);
+> shape(x, y, radius_x, radius_y, vertices, character, linked, rotation_offset);
+```
+Draw a shape on the active layer. The shape is positioned at `x` and `y` passed
+coordinates. The value of `vertices` defines the number of sides of the shape.
+With 3 vertices, the shape would be a **triangle**, with 4, a **square** etc.
+The bigger this value is, the nearer the shape would be to a **circle**.
+
+`radius_x` and `radius_y` are used to modify the shape width / height ratio. As
+most fonts have characters taller than bigger, it is important to make some
+tests with your font to know which radius would give the shape you want.
+
+`character` is used to draw the shape.
+
+If `linked` (`true` by default) is set to `false`, sides of the shape will not
+be drawn. Only the corners will.
+
+`rotation_offset` (`0` by default) is a number value (between `0` and `1`) which
+set the shape rotation offset. At `0`, 
+
+#### fill
+
+```javascript
+> fill(x, y, character);
+```
+
+#### border
+
+#### set_draw_mode
+
+```javascript
+> set_draw_mode();
+> set_draw_mode(mode);
 ```
 
 
