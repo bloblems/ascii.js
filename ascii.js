@@ -410,6 +410,17 @@ function	create_ascii(g = window) {
 		create_canvas(width, height, dom_ascii.parentNode);
 	}
 
+	g.move_canvas = function(x = 0, y = 0, in_characters = false, position_type = "absolute") {
+		dom_ascii.style.position = position_type;
+		if (in_characters == true) {
+			dom_ascii.style.top = floor(y * g.char_height) + "px";
+			dom_ascii.style.left = floor(x * g.char_width) + "px";
+		} else {
+			dom_ascii.style.top = y + "px";
+			dom_ascii.style.left = x + "px";
+		}
+	}
+
 	g.set_canvas_fit = function(mode = CANVAS_DEFAULT_FIT) {
 		canvas_fit = mode;
 	}

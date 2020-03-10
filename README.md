@@ -561,6 +561,8 @@ The characters dimensions in pixel.
 - Canvas (see [Introduction](#Introduction))
 	- [create_canvas](#create_canvas)
 	- [resize_canvas](#resize_canvas)
+	- [move_canvas](#move_canvas)
+	- [set_canvas_fit](#set_canvas_fit)
 - Layers (see [About layers](#About-layers))
 	- [create_layer](#create_layer)
 	- [set_layer](#set_layer)
@@ -574,31 +576,30 @@ The characters dimensions in pixel.
 	- [clear_color_layer](#clear_color_layer)
 
 #### create_ascii
-
 ```javascript
 > create_ascii(object);
 ```
-
 This function should be used to put the ascii environment into a passed object
 instead of into the `window`.
 
 See [Set the ascii environment into an object](#Set-the-ascii-environment-into-an-object)
 for an example.
+##### Parameter:
+- `object` Object: Object in which ascii will set it's environment
 
 #### no_loop
-
 ```javascript
 > no_loop();
 ```
+Disable next `draw()` calls.
 
 #### loop
-
 ```javascript
 > loop();
 ```
+Reactivate `draw()` calls.
 
 #### create_canvas
-
 ```javascript
 > create_canvas();
 > create_canvas(width, height);
@@ -607,7 +608,6 @@ for an example.
 > create_canvas(width, height, mother_dom);
 > create_canvas(width, height, "mother_dom_id");
 ```
-
 This function, which should be used into the `setup()` function, creates the
 main ascii canvas. `width` and `height` can be passed in term of characters
 to dimension the canvas. If a dimension is not passed (or passed as `null`),
@@ -619,15 +619,40 @@ element can be passed as the 3rd parameter, after both dimensions or as
 the only one, setting dimensions to their default values.
 In both cases, the dom can be passed directly (as an element) or as a string
 (corresponding dom id).
+##### Parameters:
+- `width` Number: Width of the canvas
+- `height` Number: Height of the canvas
+- `mother_dom` Element or string: Dom element or element id (as a string)
 
 #### resize_canvas
-
 ```javascript
 > resize_canvas();
 > resize_canvas(width, height);
 ```
 This function resizes the main ascii canvas. Dimensions work just like with the
 `create_canvas()` function.
+##### Parameters:
+- `width` Number: Width of the canvas
+- `height` Number: Height of the canvas
+
+#### move_canvas
+```javascript
+> move_canvas();
+> move_canvas(x, y);
+> move_canvas(x, y, in_characters);
+> move_canvas(x, y, in_characters, position_type);
+```
+Moves the canvas to passed `x` and `y` coordinates (which are set to `0` by
+default). By default, coordinates are in pixels. If `in_characters` is set to
+`true`, the coordinates will be in characters.
+`position_type` will set the canvas' `position` CSS attribute. By default, it is
+set to `absolute` but it can be set to `static`, `fixed`, `relative`, `sticky`,
+`initial` or `inherit`.
+##### Parameters:
+- `x` Number: x coordinate of the canvas
+- `y` Number: y coordinate of the canvas
+- `in_characters` Boolean: If `true`, coordinates will be in characters
+- `position_type` String: Can be `absolute`, `static`, `fixed`, `relative`, `sticky`, `initial` or `inherit`
 
 #### create_layer
 
@@ -640,6 +665,12 @@ return layer
 This function creates a new layer. If a dimension is not passed (or passed as
 `null`), it will take the canvas corresponding dimension. In that way, if no
 dimension is passed, the layer will take the main canvas dimensions.
+##### Parameters:
+- `width` Number: Width of the layer
+- `height` Number: Height of the layer
+
+##### Returns
+- Layer: A 2D array of characters
 
 See [About layers](#About-layers)
 
@@ -652,6 +683,8 @@ See [About layers](#About-layers)
 This function set the active layer. The active layer (which, by default, is the
 main canvas) is the layer on which drawing functions will apply (`line()`,
 `rect()`, `shape()`, `clear()`, etc).
+##### Parameter:
+- `layer` Layer: layer to be set as active layer
 
 See [About layers](#About-layers)
 
@@ -664,6 +697,10 @@ See [About layers](#About-layers)
 This function draws the passed layer to the active one (the main canvas by
 default). `x` and `y` can be passed (positive and negative values are allowed)
 to offset the canvas.
+##### Parameters:
+- `layer` Layer: layer to be drawn
+- `x` Number: x coordinate of the layer
+- `y` Number: y coordinate of the layer
 
 See [About layers](#About-layers)
 
@@ -681,6 +718,12 @@ dimension is passed, the layer will take the main canvas dimensions.
 
 Technically, mask layers are created exactly the same way regular ones are. So
 regular layers can be used with `put_mask()` too.
+##### Parameters:
+- `width` Number: Width of the layer
+- `height` Number: Height of the layer
+
+##### Returns:
+- Layer: A 2D array of characters
 
 See [About masks](#About-masks)
 
@@ -697,6 +740,11 @@ values are allowed) to offset the canvas. `invert` is a boolean varible which
 is set to `false` by default. When it is set true, the mask effects are
 inverted, in this way, non empty areas of the mask will erase characters of the
 layer.
+##### Parameters:
+- `mask` Layer: Layer to be used as mask
+- `x` Number: x coordinate of the layer
+- `y` Number: y coordinate of the layer
+- `invert` Boolean: If `true`, invert mask layer
 
 See [About masks](#About-masks)
 
@@ -711,6 +759,8 @@ This function creates a new color layer. The color layer will automatically take
 the main canvas dimensions. Cells of the color layers are made of small arrays
 holding 2 color strings, a background and a foreground which are, by default,
 set to `null`.
+##### Returns:
+- Color layer: A 2D array of strings arrays
 
 See [About color layers](#About-color-layers)
 
@@ -723,6 +773,8 @@ See [About color layers](#About-color-layers)
 This function will set the passed color layer as coloring layer of the main
 canvas. To reset the coloring layer of the main canvas, `set_color()` must be
 used without any parameter.
+##### Parameter:
+- `color_layer` Color layer: Color layer to be used to color canvas
 
 See [About color layers](#About-color-layers)
 
@@ -733,6 +785,8 @@ See [About color layers](#About-color-layers)
 ```
 This function resets the passed color layer, putting `null` in each color
 string.
+##### Parameter:
+- `color_layer` Color layer: Color layer to be cleared
 
 See [About color layers](#About-color-layers)
 
@@ -766,8 +820,12 @@ See [About color layers](#About-color-layers)
 
 ```javascript
 > clear();
+> clear(layer);
 ```
-Clear the active layer by putting space characters at each cell.
+Clear the passed layer by putting space characters at each cell. By default, the
+cleared layer is the active layer.
+##### Parameter:
+- `layer` Layer: Layer to be cleared
 
 #### background
 
@@ -775,6 +833,8 @@ Clear the active layer by putting space characters at each cell.
 > background(character);
 ```
 Put the passed charater at each cell of the active layer.
+##### Parameter:
+- `character` String: String to be put at each layer cells
 
 #### line
 
@@ -785,6 +845,12 @@ Put the passed charater at each cell of the active layer.
 Draw a line from `[x0, y0]` to `[x1, y1]` on the active layer with the passed
 character. If no character is passed, `line()` will use the set line character
 (see [set_line_char](#set_line_char)).
+##### Parameters:
+- `x0` Number: x coordinate of the first point
+- `y0` Number: y coordinate of the first point
+- `x1` Number: x coordinate of the second point
+- `y1` Number: y coordinate of the second point
+- `character` String: Character to be put at each line point
 
 #### set_line_char
 
@@ -797,6 +863,8 @@ not passed into `line()` itself.
 
 Calling `set_line_char()` without any parameter resets the `line()` character to
 it's default value.
+##### Parameter:
+- `character` String: Character to be set as default for lines
 
 #### line_func
 
@@ -816,6 +884,12 @@ function	(x, y, is_on_layer) {
 	}
 }
 ```
+##### Parameters:
+- `x0` Number: x coordinate of the first point
+- `y0` Number: y coordinate of the first point
+- `x1` Number: x coordinate of the second point
+- `y1` Number: y coordinate of the second point
+- `function` Function: Function to be called at each line point
 
 #### rect
 
@@ -843,6 +917,12 @@ The border string can also be set through `set_rect_border()` (see
 By default, the top-left corner of the rectangle is placed at the passed
 coordinates, but it can also be placed differently via `set_rect_mode()` (see
 [set_rect_mode](#set_rect_mode)).
+##### Parameters:
+- `x` Number: x coordinate of the rectangle
+- `y` Number: y coordinate of the rectangle
+- `width` Number: Width of the rectangle
+- `height` Number: Height of the rectangle
+- `border` String: String border of the rectangle
 
 #### set_rect_border
 
@@ -855,6 +935,8 @@ this string if not passed into `rect()` itself.
 
 Calling `set_rect_border()` without any parameter resets the `rect()` border
 string to it's default value.
+#### Parameter:
+- `characters` String: String border of `rect()`
 
 #### set_rect_mode
 
@@ -867,8 +949,10 @@ rectangle is placed at the passed cordinates.
 
 Calling `set_rect_rect()` without any parameter resets the `rect()` border
 string to it's default value.
+##### Parameter:
+- `mode` Mode: Mode of `rect()`
 
-Modes:
+##### Modes:
 - `RECT_CORNER` Default value, passed coordinates are used for the top-left corner.
 - `RECT_CENTER` Passed coordinates are used for the center of the rectangle.
 
@@ -881,6 +965,11 @@ Modes:
 Write the passed `string` on the active layer at [`x`, `y`] coordinates. A
 paragraph width can be passed for wrap modes. In this way, the text will wrap to
 avoid paragraph width overflow.
+##### Parameters:
+- `string` String: Text to be drawn
+- `x` Number: x coordinate of the text
+- `y` Number: y coordinate of the text
+- `paragraph_width` Number: Width of the paragraph
 
 #### set_text_mode
 
@@ -891,8 +980,10 @@ avoid paragraph width overflow.
 Set the `text()` placement mode. By default, passed coordinates of `text()` are
 defining left side of the text. But it can also be the center or the right side
 of the text / paragraph.
+##### Parameter:
+- `mode` Mode: Mode of `text()`
 
-Modes:
+##### Modes:
 - `TEXT_LEFT` Default value
 - `TEXT_CENTER`
 - `TEXT_RIGHT`
