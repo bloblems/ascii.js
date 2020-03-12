@@ -152,6 +152,23 @@ function	is_float(number) {
 	return (typeof(number) == "number" && number % 1 != 0);
 }
 
+class	FrameLoop {
+	constructor(max, from = 0, to = max) {
+		this.max = max;
+		this.from = from;
+		this.to = to;
+		this.frame = 0;
+		this.value = from;
+	}
+
+	inc() {
+		this.frame += 1;
+		if (this.frame >= this.max) {
+			this.frame = 0;
+		}
+		this.value = map(this.frame, 0, this.max, this.from, this.to);
+	}
+}
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 /// ASCII
