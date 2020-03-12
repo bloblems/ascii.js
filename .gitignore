@@ -1,4 +1,4 @@
-tests/test/*
+tests/test/*.*
 .*.swp
 */.*.swp
 */*/.*.swp

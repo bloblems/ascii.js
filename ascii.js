@@ -139,6 +139,15 @@ function	shuffle(list, force = false) {
 	return (list);
 }
 
+function	map(x, start0, stop0, start1, stop1, bounded = false) {
+	x = (x - start0) / (stop0 - start0);
+	x = x * (stop1 - start1) + start1;
+	if (bounded == true) {
+		return(min(stop1, max(start1, x)));
+	}
+	return (x);
+}
+
 function	is_float(number) {
 	return (typeof(number) == "number" && number % 1 != 0);
 }
