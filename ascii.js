@@ -1111,7 +1111,6 @@ function	create_ascii(g = window) {
 		/// KEYBOARD EVENTS
 		if (typeof(g.key_down) == "function") { document.addEventListener("keydown", g.key_down); }
 		if (typeof(g.key_up) == "function") { document.addEventListener("keyup", g.key_up); }
-		if (typeof(g.key_pressed) == "function") { document.addEventListener("keypress", g.key_pressed); }
 		/// TOUCH EVENTS
 		if (typeof(g.touch_start) == "function") { document.addEventListener("touchstart", g.touch_start); }
 		if (typeof(g.touch_end) == "function") { document.addEventListener("touchend", g.touch_end); }
