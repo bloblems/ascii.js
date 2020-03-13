@@ -17,7 +17,7 @@ window.requestAnimationFrame = window.requestAnimationFrame
 /// DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-const	ascii_style = ``;
+const	ascii_style = `.ascii{font-family:Courier New,Courier,Lucida Sans Typewriter,Lucida Typewriter,monospace;display:inline-block;overflow-x:hidden;white-space:pre}.ascii_line{display:block}.ascii_links a{position:absolute}.ascii_links a:hover{cursor:pointer}`;
 
 //////////////////////////////////////////////////
 /// GENERAL

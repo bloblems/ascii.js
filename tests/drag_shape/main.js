@@ -12,7 +12,7 @@ window.requestAnimationFrame = window.requestAnimationFrame
 ////////////////////////////////////////////////////////////////////////////////
 
 const		WIDTH			= 20;
-const		HEIGHT			= 12;
+const		HEIGHT			= 11;
 const		VERTICES		= 3;
 const		ROTATION_ACC	= 0.01;
 const		ROTATION_SLOW	= 0.005;
