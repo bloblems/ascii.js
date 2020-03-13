@@ -1,5 +1,1 @@
-- Link -> instead of giving x, y... give a drawn layer. The link will be created
-  from non null characters.
-
-- move_canvas(x, y[, in_pixels]) -> move the canvas in characters (or in pixels
-  if true)
+- mode with rectangle: if character is empty (" "), not drawing on the layer
