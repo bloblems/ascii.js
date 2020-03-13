@@ -76,7 +76,7 @@ const	CANVAS_COVER				= 1;
 const	CANVAS_DEFAULT_FIT			= CANVAS_FIT;
 const	RECT_CORNER					= 0;
 const	RECT_CENTER					= 1;
-const	RECT_DEFAULT_BORDER_CHARS	= "|-|| ||-|";
+const	RECT_DEFAULT_BORDER_CHARS	= "\u250C\u2500\u2510\u2502 \u2502\u2514\u2500\u2518";
 const	RECT_DEFAULT_MODE			= RECT_CORNER;
 const	LINE_DEFAULT_CHAR			= ".";
 const	TEXT_TRIM					= 0;
@@ -399,7 +399,9 @@ function	create_ascii(g = window) {
 				g.ascii.push(span.textContent.split(""));
 			}
 			if (canvas_fit == CANVAS_FIT
-			&& dom_array.offsetHeight > height_px && dom_array.length > 1) {
+			&& dom_array.offsetHeight > height_px
+			&& dom_array.childNodes.length > 1) {
+				g.ascii.pop();
 				dom_array.removeChild(dom_array.firstChild);
 			}
 			height = dom_array.childNodes.length;
