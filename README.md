@@ -1,7 +1,8 @@
 # Ascii.js library
 
 Ascii.js is a javascript library that aims to help artists and developers easily
-create lightweight ascii (text only) creative coding sketches or websites.
+animate text for websites of creative coding sketches.
+It is made to easily animate text with a console aethetic.
 
 [Here is the library's wiki](https://gitlab.com/cactusfluo/lib-ascii/-/wikis/home)
 
