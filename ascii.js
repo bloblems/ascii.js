@@ -74,10 +74,13 @@ const	DOM_CLASS_ASCII_LINE		= "ascii_line";
 const	CANVAS_FIT					= 0;
 const	CANVAS_COVER				= 1;
 const	CANVAS_DEFAULT_FIT			= CANVAS_FIT;
-const	RECT_CORNER					= 0;
-const	RECT_CENTER					= 1;
-const	RECT_DEFAULT_BORDER_CHARS	= "\u250C\u2500\u2510\u2502 \u2502\u2514\u2500\u2518";
-const	RECT_DEFAULT_MODE			= RECT_CORNER;
+const	BOX_CORNER					= 0;
+const	BOX_CENTER					= 1;
+const	BOX_BORDERS					= ["\u250C\u2500\u2510\u2502 \u2502\u2514\u2500\u2518\u251C\u2524\u252C\u2534\u253C",
+										"\u2554\u2550\u2557\u2551 \u2551\u255A\u2550\u255D\u2560\u2563\u2566\u2569\u256C",
+										"\u2588\u2588\u2588\u2588 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588"]
+const	BOX_DEFAULT_MODE			= BOX_CORNER;
+const	BOX_DEFAULT_BORDER_CHARS	= BOX_BORDERS[0];
 const	LINE_DEFAULT_CHAR			= ".";
 const	TEXT_TRIM					= 0;
 const	TEXT_WRAP					= 1;
@@ -207,8 +210,8 @@ function	create_ascii(g = window) {
 	let	current_layer		= null;
 	let	color_layer			= null;
 	let	canvas_fit			= CANVAS_DEFAULT_FIT;
-	let	rect_border_chars	= RECT_DEFAULT_BORDER_CHARS;
-	let	rect_mode			= RECT_DEFAULT_MODE;
+	let	box_border_chars	= BOX_DEFAULT_BORDER_CHARS;
+	let	box_mode			= BOX_DEFAULT_MODE;
 	let	line_char			= LINE_DEFAULT_CHAR;
 	let	text_mode			= TEXT_DEFAULT_MODE;
 	let	text_wrap			= TEXT_DEFAULT_WRAP;
@@ -232,7 +235,7 @@ function	create_ascii(g = window) {
 				this.string = option_1;
 				w = option_1.length;
 				h = 1;
-			/// MODE RECT
+			/// MODE BOX
 			} else {
 				w = floor(option_1);
 				h = floor(option_2);
@@ -634,18 +637,10 @@ function	create_ascii(g = window) {
 	}
 
 ////////////////////
-/// RECT
+/// BOX
 ////////////////////
 
-	g.set_rect_border = function(characters = null) {
-		rect_border_chars = characters || RECT_DEFAULT_BORDER_CHARS;
-	}
-
-	g.set_rect_mode = function(mode = RECT_DEFAULT_MODE) {
-		rect_mode = mode;
-	}
-
-	g.rect = function(pos_x, pos_y, width, height = width, border_chars = null) {
+	g.box = function(pos_x, pos_y, width, height = width, border_chars = null) {
 		let		layer;
 		let		chars;
 		let		x, y;
@@ -654,19 +649,23 @@ function	create_ascii(g = window) {
 		if (is_int(pos_y) == false) { pos_y = floor(pos_y); }
 		if (is_int(width) == false) { width = floor(width); }
 		if (is_int(height) == false) { height = floor(height); }
-		/// HANDLE RECT MODE
-		if (rect_mode == RECT_CENTER) {
+		/// HANDLE BOX MODE
+		if (box_mode == BOX_CENTER) {
 			pos_x -= round(width / 2);
 			pos_y -= round(height / 2);
 		}
 		/// CHECK OUTSIDE DRAWING
-		if (pos_x >= g.layer_width || pos_x + width < 0 || pos_y >= g.layer_height
-		|| pos_y + height < 0) {
+		if (pos_x >= g.layer_width || pos_x + width < 0
+		|| pos_y >= g.layer_height || pos_y + height < 0) {
 			return;
 		}
 		/// SET CHARACTERS
+		if (is_int(border_chars) == true) {
+			chars = BOX_BORDERS[border_chars % BOX_BORDERS.length];
+		} else {
+			chars = border_chars || box_border_chars;
+		}
 		layer = current_layer;
-		chars = border_chars || rect_border_chars;
 		if (height == 1) {
 			chars = chars.split("");
 			if (width == 1) {
@@ -708,6 +707,18 @@ function	create_ascii(g = window) {
 				}
 			}
 		}
+	}
+
+	g.set_box_border = function(characters = null) {
+		if (is_int(characters) == true) {
+			box_border_chars = BOX_BORDERS[characters % BOX_BORDERS.length];
+		} else {
+			box_border_chars = characters || BOX_DEFAULT_BORDER_CHARS;
+		}
+	}
+
+	g.set_box_mode = function(mode = BOX_DEFAULT_MODE) {
+		box_mode = mode;
 	}
 
 ////////////////////
