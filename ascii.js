@@ -656,7 +656,8 @@ function	create_ascii(g = window) {
 		}
 		/// CHECK OUTSIDE DRAWING
 		if (pos_x >= g.layer_width || pos_x + width < 0
-		|| pos_y >= g.layer_height || pos_y + height < 0) {
+		|| pos_y >= g.layer_height || pos_y + height < 0
+		|| width == 0 || height == 0) {
 			return;
 		}
 		/// SET CHARACTERS
@@ -666,6 +667,33 @@ function	create_ascii(g = window) {
 			chars = border_chars || box_border_chars;
 		}
 		layer = current_layer;
+		if (width == 1) {
+			if (height == 1) {
+				layer[pos_y][pos_x] = chars[4];
+			} else {
+				for (y = 0; y < height; ++y) {
+					if (pos_y + y < 0) {
+						continue;
+					} else if (pos_y + y >= layer_height) {
+						return;
+					}
+					layer[pos_y + y][pos_x] =
+					chars[(pos_y + y == 0) ? 1 : ((pos_y + y < height - 1) ? 4 : 7)];
+				}
+			}
+		} else if (height == 1) {
+			for (x = 0; x < width; ++x) {
+				if (pos_x + x < 0) {
+					continue;
+				} else if (pos_x + x >= layer_width) {
+					return;
+				}
+				layer[pos_y][pos_x + x] =
+				chars[(pos_x + x == 0) ? 3 : ((pos_x + x < width - 1) ? 4 : 5)];
+			}
+		} else {
+		}
+		/*
 		if (height == 1) {
 			chars = chars.split("");
 			if (width == 1) {
@@ -706,7 +734,7 @@ function	create_ascii(g = window) {
 					layer[pos_y + height - 1][pos_x + x] = (x == 0) ? chars[6] : (x == width - 1) ? chars[8] : chars[7];
 				}
 			}
-		}
+		}*/
 	}
 
 	g.set_box_border = function(characters = null) {
