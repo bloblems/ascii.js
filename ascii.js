@@ -76,11 +76,14 @@ const	CANVAS_COVER				= 1;
 const	CANVAS_DEFAULT_FIT			= CANVAS_FIT;
 const	BOX_CORNER					= 0;
 const	BOX_CENTER					= 1;
+const	BOX_TRANSPARENT				= 0;
+const	BOX_COVER					= 1;
 const	BOX_BORDERS					= ["\u250C\u2500\u2510\u2502 \u2502\u2514\u2500\u2518\u251C\u2524\u252C\u2534\u253C",
 										"\u2554\u2550\u2557\u2551 \u2551\u255A\u2550\u255D\u2560\u2563\u2566\u2569\u256C",
 										"\u2588\u2588\u2588\u2588 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588"]
 const	BOX_DEFAULT_MODE			= BOX_CORNER;
 const	BOX_DEFAULT_BORDER_CHARS	= BOX_BORDERS[0];
+const	BOX_DEFAULT_ALPHA			= BOX_TRANSPARENT;
 const	LINE_DEFAULT_CHAR			= ".";
 const	TEXT_TRIM					= 0;
 const	TEXT_WRAP					= 1;
@@ -212,6 +215,7 @@ function	create_ascii(g = window) {
 	let	canvas_fit			= CANVAS_DEFAULT_FIT;
 	let	box_border_chars	= BOX_DEFAULT_BORDER_CHARS;
 	let	box_mode			= BOX_DEFAULT_MODE;
+	let	box_alpha			= BOX_DEFAULT_ALPHA;
 	let	line_char			= LINE_DEFAULT_CHAR;
 	let	text_mode			= TEXT_DEFAULT_MODE;
 	let	text_wrap			= TEXT_DEFAULT_WRAP;
@@ -670,20 +674,24 @@ function	create_ascii(g = window) {
 		layer = current_layer;
 		/// TOP LINE
 		if (pos_y >= 0 && pos_y < g.layer_height) {
-			if (pos_x >= 0 && pos_x < g.layer_width) {
+			if (pos_x >= 0 && pos_x < g.layer_width
+			&& (box_alpha == BOX_COVER || chars[0] != " ")) {
 				layer[pos_y][pos_x] = chars[0];
 			}
-			for (x = 1; x < width - 1; ++x) {
-				cell_x = pos_x + x;
-				if (cell_x < 0) {
-					continue;
-				} else if (cell_x >= g.layer_width) {
-					break;
+			if (box_alpha == BOX_COVER || chars[1] != " ") {
+				for (x = 1; x < width - 1; ++x) {
+					cell_x = pos_x + x;
+					if (cell_x < 0) {
+						continue;
+					} else if (cell_x >= g.layer_width) {
+						break;
+					}
+					layer[pos_y][cell_x] = chars[1];
 				}
-				layer[pos_y][cell_x] = chars[1];
 			}
-			cell_x = pos_x + x;
-			if (cell_x >= 0 && cell_x < g.layer_width) {
+			cell_x = pos_x + width - 1;
+			if (cell_x >= 0 && cell_x < g.layer_width
+			&& (box_alpha == BOX_COVER || chars[2] != " ")) {
 				layer[pos_y][cell_x] = chars[2];
 			}
 		}
@@ -695,40 +703,48 @@ function	create_ascii(g = window) {
 			} else if (cell_y >= g.layer_height) {
 				return;
 			}
-			if (pos_x >= 0 && pos_x < g.layer_width) {
+			if (pos_x >= 0 && pos_x < g.layer_width
+			&& (box_alpha == BOX_COVER || chars[3] != " ")) {
 				layer[cell_y][pos_x] = chars[3];
 			}
-			for (x = 1; x < width - 1; ++x) {
-				cell_x = pos_x + x;
-				if (cell_x < 0) {
-					continue;
-				} else if (cell_x >= g.layer_width) {
-					break;
+			if (box_alpha == BOX_COVER || chars[4] != " ") {
+				for (x = 1; x < width - 1; ++x) {
+					cell_x = pos_x + x;
+					if (cell_x < 0) {
+						continue;
+					} else if (cell_x >= g.layer_width) {
+						break;
+					}
+					layer[cell_y][cell_x] = chars[4];
 				}
-				layer[cell_y][cell_x] = chars[4];
 			}
-			cell_x = pos_x + x;
-			if (cell_x >= 0 && cell_x < g.layer_width) {
+			cell_x = pos_x + width - 1;
+			if (cell_x >= 0 && cell_x < g.layer_width
+			&& (box_alpha == BOX_COVER || chars[5] != " ")) {
 				layer[cell_y][cell_x] = chars[5];
 			}
 		}
 		/// BOTTOM LINE
-		cell_y = pos_y + y;
+		cell_y = pos_y + height - 1;
 		if (cell_y >= 0 && cell_y < g.layer_height) {
-			if (pos_x >= 0 && pos_x < g.layer_width) {
+			if (pos_x >= 0 && pos_x < g.layer_width
+			&& (box_alpha == BOX_COVER || chars[6] != " ")) {
 				layer[cell_y][pos_x] = chars[6];
 			}
-			for (x = 1; x < width - 1; ++x) {
-				cell_x = pos_x + x;
-				if (cell_x < 0) {
-					continue;
-				} else if (cell_x >= g.layer_width) {
-					break;
+			if (box_alpha == BOX_COVER || chars[7] != " ") {
+				for (x = 1; x < width - 1; ++x) {
+					cell_x = pos_x + x;
+					if (cell_x < 0) {
+						continue;
+					} else if (cell_x >= g.layer_width) {
+						break;
+					}
+					layer[cell_y][cell_x] = chars[7];
 				}
-				layer[cell_y][cell_x] = chars[7];
 			}
-			cell_x = pos_x + x;
-			if (cell_x >= 0 && cell_x < g.layer_width) {
+			cell_x = pos_x + width - 1;
+			if (cell_x >= 0 && cell_x < g.layer_width
+			&& (box_alpha == BOX_COVER || chars[8] != " ")) {
 				layer[cell_y][cell_x] = chars[8];
 			}
 		}
@@ -744,6 +760,10 @@ function	create_ascii(g = window) {
 
 	g.set_box_mode = function(mode = BOX_DEFAULT_MODE) {
 		box_mode = mode;
+	}
+
+	g.set_box_alpha = function(mode = BOX_DEFAULT_ALPHA) {
+		box_alpha = mode;
 	}
 
 ////////////////////
