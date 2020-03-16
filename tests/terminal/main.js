@@ -20,8 +20,7 @@ function	setup() {
 	set_layer(frame);
 	box(0, 0, canvas_width, canvas_height);
 	box(0, 0, canvas_width, 3);
-	frame[2][0] = BOX_BORDERS[0][9];
-	frame[2][canvas_width - 1] = BOX_BORDERS[0][10];
+	box_intersect();
 	set_text_mode(TEXT_CENTER);
 	text("TERMINAL", canvas_width / 2, 1);
 	set_text_mode(TEXT_LEFT);

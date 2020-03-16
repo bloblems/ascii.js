@@ -78,8 +78,8 @@ const	BOX_CORNER					= 0;
 const	BOX_CENTER					= 1;
 const	BOX_TRANSPARENT				= 0;
 const	BOX_COVER					= 1;
-const	BOX_BORDERS					= ["\u250C\u2500\u2510\u2502 \u2502\u2514\u2500\u2518\u251C\u2524\u252C\u2534\u253C",
-										"\u2554\u2550\u2557\u2551 \u2551\u255A\u2550\u255D\u2560\u2563\u2566\u2569\u256C",
+const	BOX_BORDERS					= ["\u250C\u2500\u2510\u2502 \u2502\u2514\u2500\u2518\u251C\u2524\u2534\u252C\u253C",
+										"\u2554\u2550\u2557\u2551 \u2551\u255A\u2550\u255D\u2560\u2563\u2569\u2566\u256C",
 										"\u2588\u2588\u2588\u2588 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588"]
 const	BOX_DEFAULT_MODE			= BOX_CORNER;
 const	BOX_DEFAULT_BORDER_CHARS	= BOX_BORDERS[0];
@@ -649,6 +649,7 @@ function	create_ascii(g = window) {
 		let		chars;
 		let		x, y;
 		let		cell_x, cell_y;
+		let		cell;
 
 		if (is_int(pos_x) == false) { pos_x = floor(pos_x); }
 		if (is_int(pos_y) == false) { pos_y = floor(pos_y); }
@@ -676,52 +677,88 @@ function	create_ascii(g = window) {
 		if (pos_y >= 0 && pos_y < g.layer_height) {
 			if (pos_x >= 0 && pos_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[0] != " ")) {
-				layer[pos_y][pos_x] = chars[0];
+				cell = layer[pos_y][pos_x];
+				if (cell == chars[1]) {
+					layer[pos_y][pos_x] = chars[12];
+				} else if (cell == chars[3] || cell == chars[6]) {
+					layer[pos_y][pos_x] = chars[9];
+				} else if (cell == chars[8]) {
+					layer[pos_y][pos_x] = chars[13];
+				} else {
+					layer[pos_y][pos_x] = chars[0];
+				}
 			}
 			if (box_alpha == BOX_COVER || chars[1] != " ") {
 				for (x = 1; x < width - 1; ++x) {
 					cell_x = pos_x + x;
-					if (cell_x < 0) {
-						continue;
-					} else if (cell_x >= g.layer_width) {
-						break;
+					if (cell_x < 0) { continue;
+					} else if (cell_x >= g.layer_width) { break; }
+					cell = layer[pos_y][cell_x];
+					if (cell == chars[3]) {
+						layer[pos_y][cell_x] = chars[13];
+					} else if (cell == chars[0] || cell == chars[2]) {
+						layer[pos_y][cell_x] = chars[12];
+					} else if (cell == chars[6] || cell == chars[8]) {
+						layer[pos_y][cell_x] = chars[11];
+					} else {
+						layer[pos_y][cell_x] = chars[1];
 					}
-					layer[pos_y][cell_x] = chars[1];
 				}
 			}
 			cell_x = pos_x + width - 1;
 			if (cell_x >= 0 && cell_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[2] != " ")) {
-				layer[pos_y][cell_x] = chars[2];
+				cell = layer[pos_y][cell_x];
+				if (cell == chars[1]) {
+					layer[pos_y][cell_x] = chars[12];
+				} else if (cell == chars[3] || cell == chars[8]) {
+					layer[pos_y][cell_x] = chars[10];
+				} else if (cell == chars[6]) {
+					layer[pos_y][cell_x] = chars[13];
+				} else {
+					layer[pos_y][cell_x] = chars[2];
+				}
 			}
 		}
 		/// MIDDLE LINES
 		for (y = 1; y < height - 1; ++y) {
 			cell_y = pos_y + y;
-			if (cell_y < 0) {
-				continue;
-			} else if (cell_y >= g.layer_height) {
-				return;
-			}
+			if (cell_y < 0) { continue; }
+			else if (cell_y >= g.layer_height) { return; }
 			if (pos_x >= 0 && pos_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[3] != " ")) {
-				layer[cell_y][pos_x] = chars[3];
+				cell = layer[cell_y][pos_x];
+				if (cell == chars[1]) {
+					layer[cell_y][pos_x] = chars[13];
+				} else if (cell == chars[0] || cell == chars[6]) {
+					layer[cell_y][pos_x] = chars[9];
+				} else if (cell == chars[2] || cell == chars[8]) {
+					layer[cell_y][pos_x] = chars[10];
+				} else {
+					layer[cell_y][pos_x] = chars[3];
+				}
 			}
 			if (box_alpha == BOX_COVER || chars[4] != " ") {
 				for (x = 1; x < width - 1; ++x) {
 					cell_x = pos_x + x;
-					if (cell_x < 0) {
-						continue;
-					} else if (cell_x >= g.layer_width) {
-						break;
-					}
+					if (cell_x < 0) { continue; }
+					else if (cell_x >= g.layer_width) { break; }
 					layer[cell_y][cell_x] = chars[4];
 				}
 			}
 			cell_x = pos_x + width - 1;
 			if (cell_x >= 0 && cell_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[5] != " ")) {
-				layer[cell_y][cell_x] = chars[5];
+				cell = layer[cell_y][cell_x];
+				if (cell == chars[1]) {
+					layer[cell_y][cell_x] = chars[13];
+				} else if (cell == chars[0] || cell == chars[6]) {
+					layer[cell_y][cell_x] = chars[9];
+				} else if (cell == chars[2] || cell == chars[8]) {
+					layer[cell_y][cell_x] = chars[10];
+				} else {
+					layer[cell_y][cell_x] = chars[5];
+				}
 			}
 		}
 		/// BOTTOM LINE
@@ -729,23 +766,49 @@ function	create_ascii(g = window) {
 		if (cell_y >= 0 && cell_y < g.layer_height) {
 			if (pos_x >= 0 && pos_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[6] != " ")) {
-				layer[cell_y][pos_x] = chars[6];
+				cell = layer[cell_y][pos_x];
+				if (cell == chars[1]) {
+					layer[cell_y][pos_x] = chars[11];
+				} else if (cell == chars[0]) {
+					layer[cell_y][pos_x] = chars[9];
+				} else if (cell == chars[2]) {
+					layer[cell_y][pos_x] = chars[13];
+				} else if (cell == chars[8]) {
+					layer[cell_y][pos_x] = chars[12];
+				} else {
+					layer[cell_y][pos_x] = chars[6];
+				}
 			}
 			if (box_alpha == BOX_COVER || chars[7] != " ") {
 				for (x = 1; x < width - 1; ++x) {
 					cell_x = pos_x + x;
-					if (cell_x < 0) {
-						continue;
-					} else if (cell_x >= g.layer_width) {
-						break;
+					if (cell_x < 0) { continue;
+					} else if (cell_x >= g.layer_width) { break; }
+					cell = layer[cell_y][cell_x];
+					if (cell == chars[0] || cell == chars[2]) {
+						layer[cell_y][cell_x] = chars[12];
+					} else if (cell == chars[3]) {
+						layer[cell_y][cell_x] = chars[13];
+					} else if (cell == chars[6] || cell == chars[8]) {
+						layer[cell_y][cell_x] = chars[11];
+					} else {
+						layer[cell_y][cell_x] = chars[7];
 					}
-					layer[cell_y][cell_x] = chars[7];
 				}
 			}
 			cell_x = pos_x + width - 1;
 			if (cell_x >= 0 && cell_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[8] != " ")) {
-				layer[cell_y][cell_x] = chars[8];
+				cell = layer[cell_y][cell_x];
+				if (cell == chars[0]) {
+					layer[cell_y][cell_x] = chars[13];
+				} else if (cell == chars[1] || cell == chars[6]) {
+					layer[cell_y][cell_x] = chars[11];
+				} else if (cell == chars[2] || cell == chars[3]) {
+					layer[cell_y][cell_x] = chars[10];
+				} else {
+					layer[cell_y][cell_x] = chars[8];
+				}
 			}
 		}
 	}
@@ -764,38 +827,6 @@ function	create_ascii(g = window) {
 
 	g.set_box_alpha = function(mode = BOX_DEFAULT_ALPHA) {
 		box_alpha = mode;
-	}
-
-////////////////////
-/// BORDER
-////////////////////
-
-	g.border = function(char) {
-		let		border_layer;
-		let		x, y;
-
-		/// DRAW ON A NEW LAYER
-		border_layer = create_layer();
-		for (y = 0; y < g.layer_height; ++y) {
-			for (x = 0; x < g.layer_width; ++x) {
-				if (layer[y][x] != " ") {
-					continue;
-				}
-				if ((x > 0 && layer[y][x - 1] != " ")
-				|| (x + 1 < g.layer_width && layer[y][x + 1] != " ")
-				|| (y > 0 && layer[y - 1][x] != " ")
-				|| (y + 1 < g.layer_height && layer[y + 1][x] != " ")
-				|| (x > 0 && y > 0 && layer[y - 1][x - 1] != " ")
-				|| (x + 1 < g.layer_width && y > 0 && layer[y - 1][x + 1] != " ")
-				|| (x + 1 < g.layer_width && y + 1 < g.layer_height && layer[y + 1][x + 1] != " ")
-				|| (x > 0 && y + 1 < g.layer_height && layer[y + 1][x - 1] != " ")
-				) {
-					border_layer[y][x] = char;
-				}
-			}
-		}
-		/// DRAW NEW LAYER ON CURRENT
-		draw_layer(border_layer);
 	}
 
 ////////////////////
