@@ -650,6 +650,7 @@ function	create_ascii(g = window) {
 		let		x, y;
 		let		cell_x, cell_y;
 		let		cell;
+		let		to_cell;
 
 		if (is_int(pos_x) == false) { pos_x = floor(pos_x); }
 		if (is_int(pos_y) == false) { pos_y = floor(pos_y); }
@@ -673,70 +674,105 @@ function	create_ascii(g = window) {
 			chars = border_chars || box_border_chars;
 		}
 		layer = current_layer;
+		/*
+		 * use chars.indexOf()
+		 * -> index used in an array init before loop.
+		 * to_cell[0] = chars[...]
+		 * to_cell[1] = cahrs[...]
+		 * ...
+		 * to_cell[13] = chars[...]
+		 *
+		 * The array is filled with corresponding values
+		*/
+		to_cell = new Array(13);
 		/// TOP LINE
 		if (pos_y >= 0 && pos_y < g.layer_height) {
 			if (pos_x >= 0 && pos_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[0] != " ")) {
-				cell = layer[pos_y][pos_x];
-				if (cell == chars[1]) {
-					layer[pos_y][pos_x] = chars[12];
-				} else if (cell == chars[3] || cell == chars[6]) {
-					layer[pos_y][pos_x] = chars[9];
-				} else if (cell == chars[8]) {
-					layer[pos_y][pos_x] = chars[13];
-				} else {
-					layer[pos_y][pos_x] = chars[0];
-				}
+				to_cell[0] = chars[0];
+				to_cell[1] = chars[12];
+				to_cell[2] = chars[12];
+				to_cell[3] = chars[9];
+				to_cell[4] = chars[0];
+				to_cell[5] = chars[9];
+				to_cell[6] = chars[9];
+				to_cell[7] = chars[12];
+				to_cell[8] = chars[13];
+				to_cell[9] = chars[9];
+				to_cell[10] = chars[13];
+				to_cell[11] = chars[13];
+				to_cell[12] = chars[12];
+				to_cell[13] = chars[13];
+				cell = chars.indexOf(layer[pos_y][pos_x]);
+				layer[pos_y][pos_x] = (cell >= 0) ? to_cell[cell] : chars[0];
 			}
 			if (box_alpha == BOX_COVER || chars[1] != " ") {
+				to_cell[0] = chars[12];
+				to_cell[1] = chars[1];
+				to_cell[2] = chars[12];
+				to_cell[3] = chars[13];
+				to_cell[4] = chars[1];
+				to_cell[5] = chars[13];
+				to_cell[6] = chars[11];
+				to_cell[7] = chars[1];
+				to_cell[8] = chars[11];
+				to_cell[9] = chars[13];
+				to_cell[10] = chars[13];
+				to_cell[11] = chars[11];
+				to_cell[12] = chars[12];
+				to_cell[13] = chars[13];
 				for (x = 1; x < width - 1; ++x) {
 					cell_x = pos_x + x;
 					if (cell_x < 0) { continue;
 					} else if (cell_x >= g.layer_width) { break; }
-					cell = layer[pos_y][cell_x];
-					if (cell == chars[3]) {
-						layer[pos_y][cell_x] = chars[13];
-					} else if (cell == chars[0] || cell == chars[2]) {
-						layer[pos_y][cell_x] = chars[12];
-					} else if (cell == chars[6] || cell == chars[8]) {
-						layer[pos_y][cell_x] = chars[11];
-					} else {
-						layer[pos_y][cell_x] = chars[1];
-					}
+					cell = chars.indexOf(layer[pos_y][cell_x]);
+					layer[pos_y][cell_x] = (cell >= 0) ? to_cell[cell] : chars[0];
 				}
 			}
 			cell_x = pos_x + width - 1;
 			if (cell_x >= 0 && cell_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[2] != " ")) {
-				cell = layer[pos_y][cell_x];
-				if (cell == chars[1]) {
-					layer[pos_y][cell_x] = chars[12];
-				} else if (cell == chars[3] || cell == chars[8]) {
-					layer[pos_y][cell_x] = chars[10];
-				} else if (cell == chars[6]) {
-					layer[pos_y][cell_x] = chars[13];
-				} else {
-					layer[pos_y][cell_x] = chars[2];
-				}
+				to_cell[0] = chars[12];
+				to_cell[1] = chars[12];
+				to_cell[2] = chars[2];
+				to_cell[3] = chars[10];
+				to_cell[4] = chars[2];
+				to_cell[5] = chars[10];
+				to_cell[6] = chars[13];
+				to_cell[7] = chars[12];
+				to_cell[8] = chars[10];
+				to_cell[9] = chars[13];
+				to_cell[10] = chars[10];
+				to_cell[11] = chars[13];
+				to_cell[12] = chars[12];
+				to_cell[13] = chars[13];
+				cell = chars.indexOf(layer[pos_y][cell_x]);
+				layer[pos_y][cell_x] = (cell >= 0) ? to_cell[cell] : chars[0];
 			}
 		}
 		/// MIDDLE LINES
+		to_cell[0] = chars[9];
+		to_cell[1] = chars[13];
+		to_cell[2] = chars[10];
+		to_cell[3] = chars[3];
+		to_cell[4] = chars[3];
+		to_cell[5] = chars[3];
+		to_cell[6] = chars[9];
+		to_cell[7] = chars[13];
+		to_cell[8] = chars[10];
+		to_cell[9] = chars[9];
+		to_cell[10] = chars[10];
+		to_cell[11] = chars[13];
+		to_cell[12] = chars[13];
+		to_cell[13] = chars[13];
 		for (y = 1; y < height - 1; ++y) {
 			cell_y = pos_y + y;
 			if (cell_y < 0) { continue; }
 			else if (cell_y >= g.layer_height) { return; }
 			if (pos_x >= 0 && pos_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[3] != " ")) {
-				cell = layer[cell_y][pos_x];
-				if (cell == chars[1]) {
-					layer[cell_y][pos_x] = chars[13];
-				} else if (cell == chars[0] || cell == chars[6]) {
-					layer[cell_y][pos_x] = chars[9];
-				} else if (cell == chars[2] || cell == chars[8]) {
-					layer[cell_y][pos_x] = chars[10];
-				} else {
-					layer[cell_y][pos_x] = chars[3];
-				}
+				cell = chars.indexOf(layer[cell_y][pos_x]);
+				layer[cell_y][pos_x] = (cell >= 0) ? to_cell[cell] : chars[0];
 			}
 			if (box_alpha == BOX_COVER || chars[4] != " ") {
 				for (x = 1; x < width - 1; ++x) {
@@ -749,16 +785,8 @@ function	create_ascii(g = window) {
 			cell_x = pos_x + width - 1;
 			if (cell_x >= 0 && cell_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[5] != " ")) {
-				cell = layer[cell_y][cell_x];
-				if (cell == chars[1]) {
-					layer[cell_y][cell_x] = chars[13];
-				} else if (cell == chars[0] || cell == chars[6]) {
-					layer[cell_y][cell_x] = chars[9];
-				} else if (cell == chars[2] || cell == chars[8]) {
-					layer[cell_y][cell_x] = chars[10];
-				} else {
-					layer[cell_y][cell_x] = chars[5];
-				}
+				cell = chars.indexOf(layer[cell_y][cell_x]);
+				layer[cell_y][cell_x] = (cell >= 0) ? to_cell[cell] : chars[0];
 			}
 		}
 		/// BOTTOM LINE
@@ -766,49 +794,65 @@ function	create_ascii(g = window) {
 		if (cell_y >= 0 && cell_y < g.layer_height) {
 			if (pos_x >= 0 && pos_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[6] != " ")) {
-				cell = layer[cell_y][pos_x];
-				if (cell == chars[1]) {
-					layer[cell_y][pos_x] = chars[11];
-				} else if (cell == chars[0]) {
-					layer[cell_y][pos_x] = chars[9];
-				} else if (cell == chars[2]) {
-					layer[cell_y][pos_x] = chars[13];
-				} else if (cell == chars[8]) {
-					layer[cell_y][pos_x] = chars[12];
-				} else {
-					layer[cell_y][pos_x] = chars[6];
-				}
+				to_cell[0] = chars[9];
+				to_cell[1] = chars[11];
+				to_cell[2] = chars[13];
+				to_cell[3] = chars[9];
+				to_cell[4] = chars[6];
+				to_cell[5] = chars[9];
+				to_cell[6] = chars[6];
+				to_cell[7] = chars[11];
+				to_cell[8] = chars[11];
+				to_cell[9] = chars[9];
+				to_cell[10] = chars[13];
+				to_cell[11] = chars[11];
+				to_cell[12] = chars[13];
+				to_cell[13] = chars[13];
+				cell = chars.indexOf(layer[cell_y][pos_x]);
+				layer[cell_y][pos_x] = (cell >= 0) ? to_cell[cell] : chars[0];
 			}
 			if (box_alpha == BOX_COVER || chars[7] != " ") {
+				to_cell[0] = chars[12];
+				to_cell[1] = chars[1];
+				to_cell[2] = chars[12];
+				to_cell[3] = chars[13];
+				to_cell[4] = chars[1];
+				to_cell[5] = chars[13];
+				to_cell[6] = chars[11];
+				to_cell[7] = chars[1];
+				to_cell[8] = chars[11];
+				to_cell[9] = chars[13];
+				to_cell[10] = chars[13];
+				to_cell[11] = chars[11];
+				to_cell[12] = chars[12];
+				to_cell[13] = chars[13];
 				for (x = 1; x < width - 1; ++x) {
 					cell_x = pos_x + x;
 					if (cell_x < 0) { continue;
 					} else if (cell_x >= g.layer_width) { break; }
-					cell = layer[cell_y][cell_x];
-					if (cell == chars[0] || cell == chars[2]) {
-						layer[cell_y][cell_x] = chars[12];
-					} else if (cell == chars[3]) {
-						layer[cell_y][cell_x] = chars[13];
-					} else if (cell == chars[6] || cell == chars[8]) {
-						layer[cell_y][cell_x] = chars[11];
-					} else {
-						layer[cell_y][cell_x] = chars[7];
-					}
+					cell = chars.indexOf(layer[cell_y][cell_x]);
+					layer[cell_y][cell_x] = (cell >= 0) ? to_cell[cell] : chars[0];
 				}
 			}
 			cell_x = pos_x + width - 1;
 			if (cell_x >= 0 && cell_x < g.layer_width
 			&& (box_alpha == BOX_COVER || chars[8] != " ")) {
-				cell = layer[cell_y][cell_x];
-				if (cell == chars[0]) {
-					layer[cell_y][cell_x] = chars[13];
-				} else if (cell == chars[1] || cell == chars[6]) {
-					layer[cell_y][cell_x] = chars[11];
-				} else if (cell == chars[2] || cell == chars[3]) {
-					layer[cell_y][cell_x] = chars[10];
-				} else {
-					layer[cell_y][cell_x] = chars[8];
-				}
+				to_cell[0] = chars[13];
+				to_cell[1] = chars[11];
+				to_cell[2] = chars[10];
+				to_cell[3] = chars[10];
+				to_cell[4] = chars[8];
+				to_cell[5] = chars[10];
+				to_cell[6] = chars[13];
+				to_cell[7] = chars[11];
+				to_cell[8] = chars[8];
+				to_cell[9] = chars[13];
+				to_cell[10] = chars[10];
+				to_cell[11] = chars[11];
+				to_cell[12] = chars[13];
+				to_cell[13] = chars[13];
+				cell = chars.indexOf(layer[cell_y][cell_x]);
+				layer[cell_y][cell_x] = (cell >= 0) ? to_cell[cell] : chars[0];
 			}
 		}
 	}
