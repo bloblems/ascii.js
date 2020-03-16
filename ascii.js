@@ -78,18 +78,21 @@ const	BOX_CORNER					= 0;
 const	BOX_CENTER					= 1;
 const	BOX_TRANSPARENT				= 0;
 const	BOX_COVER					= 1;
-const	BOX_BORDERS					= ["\u250C\u2500\u2510\u2502 \u2502\u2514\u2500\u2518\u251C\u2524\u2534\u252C\u253C",
-										"\u2554\u2550\u2557\u2551 \u2551\u255A\u2550\u255D\u2560\u2563\u2569\u2566\u256C",
-										"\u2588\u2588\u2588\u2588 \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588"]
+const	BOX_HOVER					= 0;
+const	BOX_INTERSECTION			= 1;
+const	BOX_BORDERS					= [	" \u2500\u2502\u250C\u2510\u2514\u2518\u251C\u2524\u2534\u252C\u253C",
+										" \u2550\u2551\u2554\u2557\u255A\u255D\u2560\u2563\u2569\u2566\u256C",
+										" \u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588\u2588"]
 const	BOX_DEFAULT_MODE			= BOX_CORNER;
 const	BOX_DEFAULT_BORDER_CHARS	= BOX_BORDERS[0];
 const	BOX_DEFAULT_ALPHA			= BOX_TRANSPARENT;
-const	BOX_BORDER_INTERSECTION_HORIZONTAL = [12, 1, 12, 13, 1, 13, 11, 1, 11, 13, 13, 11, 12, 13];
-const	BOX_BORDER_INTERSECTION_VERTICAL = [9, 13, 10, 3, 3, 3, 9, 13, 10, 9, 10, 13, 13, 13];
-const	BOX_BORDER_INTERSECTION_TOP_LEFT = [0, 12, 12, 9, 0, 9, 9, 12, 13, 9, 13, 13, 12, 13];
-const	BOX_BORDER_INTERSECTION_TOP_RIGHT = [12, 12, 2, 10, 2, 10, 13, 12, 10, 13, 10, 13, 12, 13];
-const	BOX_BORDER_INTERSECTION_BOTTOM_LEFT = [9, 11, 13, 9, 6, 9, 6, 11, 11, 9, 13, 11, 13, 13];
-const	BOX_BORDER_INTERSECTION_BOTTOM_RIGHT = [13, 11, 10, 10, 8, 10, 13, 11, 8, 13, 10, 11, 13, 13];
+const	BOX_DEFAULT_INTERSECTION	= BOX_HOVER;
+const	BOX_BORDER_INTERSECTION_HORIZONTAL = [1, 1, 11, 10, 10, 9, 9, 11, 11, 9, 10, 11];
+const	BOX_BORDER_INTERSECTION_VERTICAL = [2, 11, 2, 7, 8, 7, 8, 7, 8, 11, 11, 11];
+const	BOX_BORDER_INTERSECTION_TOP_LEFT = [3, 10, 7, 3, 10, 7, 11, 7, 11, 11, 10, 11];
+const	BOX_BORDER_INTERSECTION_TOP_RIGHT = [4, 10, 8, 10, 4, 11, 8, 11, 8, 11, 10, 11];
+const	BOX_BORDER_INTERSECTION_BOTTOM_LEFT = [5, 9, 7, 7, 11, 5, 9, 7, 11, 9, 11, 11];
+const	BOX_BORDER_INTERSECTION_BOTTOM_RIGHT = [6, 9, 8, 11, 8, 11, 6, 11, 8, 9, 11, 11];
 const	LINE_DEFAULT_CHAR			= ".";
 const	TEXT_TRIM					= 0;
 const	TEXT_WRAP					= 1;
@@ -222,6 +225,7 @@ function	create_ascii(g = window) {
 	let	box_border_chars	= BOX_DEFAULT_BORDER_CHARS;
 	let	box_mode			= BOX_DEFAULT_MODE;
 	let	box_alpha			= BOX_DEFAULT_ALPHA;
+	let	box_intersection	= BOX_DEFAULT_INTERSECTION;
 	let	line_char			= LINE_DEFAULT_CHAR;
 	let	text_mode			= TEXT_DEFAULT_MODE;
 	let	text_wrap			= TEXT_DEFAULT_WRAP;
@@ -683,27 +687,39 @@ function	create_ascii(g = window) {
 		/// TOP LINE
 		if (pos_y >= 0 && pos_y < g.layer_height) {
 			if (pos_x >= 0 && pos_x < g.layer_width
-			&& (box_alpha == BOX_COVER || chars[0] != " ")) {
-				to_cell = BOX_BORDER_INTERSECTION_TOP_LEFT;
-				cell = chars.indexOf(layer[pos_y][pos_x]);
-				layer[pos_y][pos_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[0];
+			&& (box_alpha == BOX_COVER || chars[3] != " ")) {
+				if (box_intersection == BOX_INTERSECTION) {
+					to_cell = BOX_BORDER_INTERSECTION_TOP_LEFT;
+					cell = chars.indexOf(layer[pos_y][pos_x]);
+					layer[pos_y][pos_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[3];
+				} else {
+					layer[pos_y][pos_x] = chars[3];
+				}
 			}
 			if (box_alpha == BOX_COVER || chars[1] != " ") {
 				to_cell = BOX_BORDER_INTERSECTION_HORIZONTAL;
 				for (x = 1; x < width - 1; ++x) {
 					cell_x = pos_x + x;
-					if (cell_x < 0) { continue;
-					} else if (cell_x >= g.layer_width) { break; }
-					cell = chars.indexOf(layer[pos_y][cell_x]);
-					layer[pos_y][cell_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[0];
+					if (cell_x < 0) { continue; }
+					else if (cell_x >= g.layer_width) { break; }
+					if (box_intersection == BOX_INTERSECTION) {
+						cell = chars.indexOf(layer[pos_y][cell_x]);
+						layer[pos_y][cell_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[1];
+					} else {
+						layer[pos_y][cell_x] = chars[1];
+					}
 				}
 			}
 			cell_x = pos_x + width - 1;
 			if (cell_x >= 0 && cell_x < g.layer_width
-			&& (box_alpha == BOX_COVER || chars[2] != " ")) {
-				to_cell = BOX_BORDER_INTERSECTION_TOP_RIGHT;
-				cell = chars.indexOf(layer[pos_y][cell_x]);
-				layer[pos_y][cell_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[0];
+			&& (box_alpha == BOX_COVER || chars[4] != " ")) {
+				if (box_intersection == BOX_INTERSECTION) {
+					to_cell = BOX_BORDER_INTERSECTION_TOP_RIGHT;
+					cell = chars.indexOf(layer[pos_y][cell_x]);
+					layer[pos_y][cell_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[4];
+				} else {
+					layer[pos_y][cell_x] = chars[4];
+				}
 			}
 		}
 		/// MIDDLE LINES
@@ -713,50 +729,70 @@ function	create_ascii(g = window) {
 			if (cell_y < 0) { continue; }
 			else if (cell_y >= g.layer_height) { return; }
 			if (pos_x >= 0 && pos_x < g.layer_width
-			&& (box_alpha == BOX_COVER || chars[3] != " ")) {
-				cell = chars.indexOf(layer[cell_y][pos_x]);
-				layer[cell_y][pos_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[0];
+			&& (box_alpha == BOX_COVER || chars[2] != " ")) {
+				if (box_intersection == BOX_INTERSECTION) {
+					cell = chars.indexOf(layer[cell_y][pos_x]);
+					layer[cell_y][pos_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[2];
+				} else {
+					layer[cell_y][pos_x] = chars[2];
+				}
 			}
-			if (box_alpha == BOX_COVER || chars[4] != " ") {
+			if (box_alpha == BOX_COVER || chars[0] != " ") {
 				for (x = 1; x < width - 1; ++x) {
 					cell_x = pos_x + x;
 					if (cell_x < 0) { continue; }
 					else if (cell_x >= g.layer_width) { break; }
-					layer[cell_y][cell_x] = chars[4];
+					layer[cell_y][cell_x] = chars[0];
 				}
 			}
 			cell_x = pos_x + width - 1;
 			if (cell_x >= 0 && cell_x < g.layer_width
-			&& (box_alpha == BOX_COVER || chars[5] != " ")) {
-				cell = chars.indexOf(layer[cell_y][cell_x]);
-				layer[cell_y][cell_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[0];
+			&& (box_alpha == BOX_COVER || chars[2] != " ")) {
+				if (box_intersection == BOX_INTERSECTION) {
+					cell = chars.indexOf(layer[cell_y][cell_x]);
+					layer[cell_y][cell_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[2];
+				} else {
+					layer[cell_y][cell_x] = chars[2];
+				}
 			}
 		}
 		/// BOTTOM LINE
 		cell_y = pos_y + height - 1;
 		if (cell_y >= 0 && cell_y < g.layer_height) {
 			if (pos_x >= 0 && pos_x < g.layer_width
-			&& (box_alpha == BOX_COVER || chars[6] != " ")) {
-				to_cell = BOX_BORDER_INTERSECTION_BOTTOM_LEFT;
-				cell = chars.indexOf(layer[cell_y][pos_x]);
-				layer[cell_y][pos_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[0];
+			&& (box_alpha == BOX_COVER || chars[5] != " ")) {
+				if (box_intersection == BOX_INTERSECTION) {
+					to_cell = BOX_BORDER_INTERSECTION_BOTTOM_LEFT;
+					cell = chars.indexOf(layer[cell_y][pos_x]);
+					layer[cell_y][pos_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[5];
+				} else {
+					layer[cell_y][pos_x] = chars[5];
+				}
 			}
-			if (box_alpha == BOX_COVER || chars[7] != " ") {
+			if (box_alpha == BOX_COVER || chars[1] != " ") {
 				to_cell = BOX_BORDER_INTERSECTION_HORIZONTAL;
 				for (x = 1; x < width - 1; ++x) {
 					cell_x = pos_x + x;
-					if (cell_x < 0) { continue;
-					} else if (cell_x >= g.layer_width) { break; }
-					cell = chars.indexOf(layer[cell_y][cell_x]);
-					layer[cell_y][cell_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[0];
+					if (cell_x < 0) { continue; }
+					else if (cell_x >= g.layer_width) { break; }
+					if (box_intersection == BOX_INTERSECTION) {
+						cell = chars.indexOf(layer[cell_y][cell_x]);
+						layer[cell_y][cell_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[1];
+					} else {
+						layer[cell_y][cell_x] = chars[1];
+					}
 				}
 			}
 			cell_x = pos_x + width - 1;
 			if (cell_x >= 0 && cell_x < g.layer_width
-			&& (box_alpha == BOX_COVER || chars[8] != " ")) {
-				to_cell = BOX_BORDER_INTERSECTION_BOTTOM_RIGHT;
-				cell = chars.indexOf(layer[cell_y][cell_x]);
-				layer[cell_y][cell_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[0];
+			&& (box_alpha == BOX_COVER || chars[6] != " ")) {
+				if (box_intersection == BOX_INTERSECTION) {
+					to_cell = BOX_BORDER_INTERSECTION_BOTTOM_RIGHT;
+					cell = chars.indexOf(layer[cell_y][cell_x]);
+					layer[cell_y][cell_x] = (cell >= 0) ? chars[to_cell[cell]] : chars[6];
+				} else {
+					layer[cell_y][cell_x] = chars[6];
+				}
 			}
 		}
 	}
@@ -775,6 +811,10 @@ function	create_ascii(g = window) {
 
 	g.set_box_alpha = function(mode = BOX_DEFAULT_ALPHA) {
 		box_alpha = mode;
+	}
+
+	g.set_box_intersection = function(mode = BOX_DEFAULT_INTERSECTION) {
+		box_intersection = mode;
 	}
 
 ////////////////////
