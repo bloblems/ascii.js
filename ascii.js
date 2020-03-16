@@ -680,7 +680,6 @@ function	create_ascii(g = window) {
 			chars = border_chars || box_border_chars;
 		}
 		layer = current_layer;
-		to_cell = new Array(13);
 		/// TOP LINE
 		if (pos_y >= 0 && pos_y < g.layer_height) {
 			if (pos_x >= 0 && pos_x < g.layer_width
