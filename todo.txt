@@ -1,0 +1,5 @@
+- draw_layer() should be able to draw only a part of the layer (with width and
+  height)
+
+- create_style_layer();
+- set_style();
