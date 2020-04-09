@@ -17,6 +17,7 @@ const	RAYS_STEP	= (PI * 2) / NUM_RAYS;
 let		walls;
 let		l_walls;
 let		l_rays;
+let		l_colors;
 let		drawing;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,8 +33,10 @@ function	my_line(x, y, on_canvas) {
 		|| (y < canvas_height - 1 && ascii[y + 1][x] != " ")) {
 			return (true);
 		} else {
-			l_rays[y][x] = "@";
+			l_rays[y][x] = "*";
 		}
+	} else {
+		return (true);
 	}
 }
 
@@ -45,6 +48,8 @@ function	setup() {
 	create_canvas();
 	l_walls = create_layer();
 	l_rays = create_layer();
+	l_colors = create_color_layer();
+	set_color(l_colors);
 	drawing = false;
 }
 
@@ -56,6 +61,7 @@ function	draw() {
 	clear();
 	if (drawing == true) {
 		l_walls[mouse_y][mouse_x] = '#';
+		l_colors[mouse_y][mouse_x][1] = "white";
 	}
 	draw_layer(l_walls);
 	clear(l_rays);
