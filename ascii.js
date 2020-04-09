@@ -564,10 +564,10 @@ function	create_ascii(g = window) {
 	//  can also be passed by user via 'width' and 'height'.
 	g.create_mask = g.create_layer;
 
-	// > put_mask()
-	// > put_mask(x, y)
-	// > put_mask(x, y, invert)
-	// > put_mask(invert)
+	// > put_mask(mask)
+	// > put_mask(mask, x, y)
+	// > put_mask(mask, x, y, invert)
+	// > put_mask(mask, invert)
 	//
 	// Put a mask on the current layer. By default, empty characters of the mask
 	// will make drawn layer characters empty too. If invert is set to true, non
@@ -870,6 +870,7 @@ function	create_ascii(g = window) {
 		let		dx, dy;
 		let		sx, sy;
 		let		err, err_2;
+		let		ret;
 
 		if (is_int(x0) == false) { x0 = floor(x0); }
 		if (is_int(y0) == false) { y0 = floor(y0); }
@@ -884,7 +885,11 @@ function	create_ascii(g = window) {
 		err = dx + dy;
 		while (true) {
 			/// CALL USER FUNCTION
-			func(x0, y0, (x0 >= 0 && x0 < g.layer_width && y0 >= 0 && y0 < g.layer_height));
+			ret = func(x0, y0, (x0 >= 0 && x0 < g.layer_width && y0 >= 0 && y0 < g.layer_height));
+			/// IF USER STOPS
+			if (ret == true) {
+				return;
+			}
 			if (x0 == x1 && y0 == y1) {
 				break;
 			}

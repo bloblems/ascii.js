@@ -1,0 +1,71 @@
+<!-- - - - - - - - - - - - - -  BY GIBBONJOYEUX  - - - - - - - - - - - - - - -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<title></title>
+		<script src="../../ascii.js"></script>
+		<script src="main.js"></script>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+	body {
+		position:		fixed;
+		margin:			0;
+		left:			0;
+		top:			0;
+		width:			100%;
+		height:			100vh;
+		background:		black;
+		color:			white;
+		font-family:	Courier New, Courier, Lucida Sans Typewriter, Lucida Typewriter, monospace;
+	}
+
+	.ascii {
+		user-select:	none;
+	}
+
+	#popup div {
+		overflow-y:		auto;
+	}
+
+	#popup p::before {
+		content:		"> ";
+	}
+
+	::-webkit-scrollbar {
+		background:		black;
+	}
+
+	::-webkit-scrollbar-thumb {
+		border:			1px solid white;
+	}
+</style>
+	</head>
+
+	<body>
+		<main>
+			<div id="popup-a-propos">
+				<p>
+				Salut, je m'appelle Seb. Je dessine et je code.
+					J'expérimente beaucoup avec le design génératif et
+					intératif.
+				</p>
+
+				<p>
+					Avec mes différents projets perso, j'essaie de développer
+					(entre autres) un esthétique sobre. Sobre graphiquement et
+					écologiquement parlant.
+				</p>
+
+				<p>
+					J'ai travaillé sur l'impact environnemental du numérique et
+					ses potentiels leviers. C'est pour cette raison que
+					j'essaie, avec ces connaissances et en experimentant
+					beaucoup de voir comment
+				</p>
+			</div>
+		</main>
+		<div id=popup>
+		</div>
+	</body>
+</html>
+
