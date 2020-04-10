@@ -2,11 +2,6 @@
 
 "use strict";
 
-window.requestAnimationFrame = window.requestAnimationFrame
-|| window.mozRequestAnimationFrame
-|| window.webkitRequestAnimationFrame
-|| window.msRequestAnimationFrame;
-
 ////////////////////////////////////////////////////////////////////////////////
 /// DATA
 ////////////////////////////////////////////////////////////////////////////////
@@ -18,7 +13,6 @@ let		walls;
 let		l_walls;
 let		l_rays;
 let		l_colors;
-let		drawing;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// FUNCTIONS
@@ -50,7 +44,6 @@ function	setup() {
 	l_rays = create_layer();
 	l_colors = create_color_layer();
 	set_color(l_colors);
-	drawing = false;
 }
 
 function	draw() {
@@ -59,7 +52,7 @@ function	draw() {
 	let		c, s;
 
 	clear();
-	if (drawing == true) {
+	if (is_mouse_down()) {
 		l_walls[mouse_y][mouse_x] = '#';
 		l_colors[mouse_y][mouse_x][1] = "white";
 	}
@@ -71,12 +64,4 @@ function	draw() {
 		line_func(mouse_x, mouse_y, mouse_x + c, mouse_y + s, my_line);
 	}
 	draw_layer(l_rays);
-}
-
-function	mouse_down() {
-	drawing = true;
-}
-
-function	mouse_up() {
-	drawing = false;
 }

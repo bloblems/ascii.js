@@ -8,6 +8,9 @@ It is made to easily animate text with a console aethetic.
 
 [LIBRARY'S WIKI](https://gitlab.com/cactusfluo/ascii.js/-/wikis/home)
 
+[EXAMPLES OF ascii.js USE CASES](https://codepen.io/collection/nwPYPa)
+
+
 The wiki is made of a
 [tutorial section](https://gitlab.com/cactusfluo/ascii.js/-/wikis/tutorial/tutorial)
 (which explains how to download and use the library and also contains advance
