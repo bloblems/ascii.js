@@ -26,10 +26,10 @@ function	setup() {
 
 function	draw() {
 	clear();
-	set_rect_mode(RECT_CORNER);
-	rect(0, 0, canvas_width - 1, canvas_height - 1);
-	set_rect_mode(RECT_CENTER);
-	rect(x, y, 10, 6);
+	set_box_mode(BOX_CORNER);
+	box(0, 0, canvas_width - 1, canvas_height - 1);
+	set_box_mode(BOX_CENTER);
+	box(x, y, 10, 6);
 	++x;
 	if (x >= canvas_width + 5) {
 		x = -5;

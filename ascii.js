@@ -71,6 +71,24 @@ const	DOM_CLASS_ASCII_ARRAY		= "ascii_array";
 const	DOM_CLASS_ASCII_LINKS		= "ascii_links";
 const	DOM_CLASS_ASCII_LINE		= "ascii_line";
 
+const	MOUSE_LEFT					= 0;
+const	MOUSE_MIDDLE				= 1;
+const	MOUSE_RIGHT					= 2;
+const	KEY_BACKSPACE				= 8;
+const	KEY_DELETE					= 46;
+const	KEY_ENTER					= 13;
+const	KEY_RETURN					= 13;
+const	KEY_TAB						= 9;
+const	KEY_ESCAPE					= 27;
+const	KEY_SHIFT					= 16;
+const	KEY_CONTROL					= 17;
+const	KEY_OPTION					= 17;
+const	KEY_ALT						= 18;
+const	KEY_UP						= 38;
+const	KEY_DOWN 					= 40;
+const	KEY_LEFT 					= 37;
+const	KEY_RIGHT					= 39;
+
 const	CANVAS_FIT					= 0;
 const	CANVAS_COVER				= 1;
 const	CANVAS_DEFAULT_FIT			= CANVAS_FIT;
