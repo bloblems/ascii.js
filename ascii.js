@@ -231,7 +231,9 @@ function	create_ascii(g = window) {
 	let	text_wrap			= TEXT_DEFAULT_WRAP;
 	let	text_align			= TEXT_DEFAULT_ALIGN;
 	let	draw_mode			= DRAW_DEFAULT_MODE;
-	let	ascii_loop_draw		= true;
+	let	loop_draw			= true;
+	let	mouse_buttons		= []
+	let	keys				= [];
 
 ////////////////////////////////////////////////////////////////////////////////
 /// CLASSES
@@ -1182,13 +1184,26 @@ function	create_ascii(g = window) {
 		return (x >= 0 && x < layer_width && y >= 0 && y < layer_height);
 	}
 
+	g.is_key_down = function(key) {
+		return (keys[key] || false);
+	}
+
+	g.is_mouse_down = function(button = null) {
+		if (button == null) {
+			return (mouse_buttons[0] || mouse_buttons[1] || mouse_buttons[2]
+				|| false);
+		} else {
+			return (mouse_buttons[button] || false);
+		}
+	}
+
 	g.no_loop = function() {
-		ascii_loop_draw = false;
+		loop_draw = false;
 	}
 
 	g.loop = function() {
-		if (ascii_loop_draw = false) {
-			ascii_loop_draw = true;
+		if (loop_draw = false) {
+			loop_draw = true;
 			if (typeof(g.draw) == "function") {
 				/// CALL draw()
 				window.requestAnimationFrame(ascii_draw);
@@ -1205,11 +1220,16 @@ function	create_ascii(g = window) {
 //////////////////////////////////////////////////
 
 	function	ascii_init_events() {
-		/// SET EVENTS
-		document.addEventListener("mousemove", ascii_handle_mouse);
+		/// ASCII EVENTS
+		document.addEventListener("keydown", ascii_handle_key_down);
+		document.addEventListener("keyup", ascii_handle_key_up);
+		document.addEventListener("mousedown", ascii_handle_mouse_down);
+		document.addEventListener("mouseup", ascii_handle_mouse_up);
+		document.addEventListener("mousemove", ascii_handle_mouse_move);
 		document.addEventListener("touchstart", ascii_handle_touch);
 		document.addEventListener("touchmove", ascii_handle_touch);
 		document.addEventListener("touchend", ascii_handle_touch);
+		/// USER EVENTS
 		/// MOUSE EVENTS
 		if (typeof(g.mouse_clicked) == "function") { document.addEventListener("click", g.mouse_clicked); }
 		if (typeof(g.mouse_double_clicked) == "function") { document.addEventListener("dblclick", g.mouse_double_clicked); }
@@ -1329,12 +1349,28 @@ function	create_ascii(g = window) {
 			}
 		}
 		/// LOOP ANIMATION
-		if (ascii_loop_draw == true) {
+		if (loop_draw == true) {
 			window.requestAnimationFrame(ascii_draw);
 		}
 	}
 
-	function	ascii_handle_mouse(e) {
+	function	ascii_handle_key_down(e) {
+		keys[e.keyCode] = true;
+	}
+
+	function	ascii_handle_key_up(e) {
+		keys[e.keyCode] = false;
+	}
+
+	function	ascii_handle_mouse_down(e) {
+		mouse_buttons[e.button] = true;
+	}
+
+	function	ascii_handle_mouse_up(e) {
+		mouse_buttons[e.button] = false;
+	}
+
+	function	ascii_handle_mouse_move(e) {
 		let		dom_rect;
 		let		x, y;
 
