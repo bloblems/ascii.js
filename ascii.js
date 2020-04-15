@@ -1200,6 +1200,46 @@ function	create_ascii(g = window) {
 		}
 	}
 
+	g.iter_func = function(func, layer = current_layer) {
+		let		l;
+		let		x, y;
+		let		w, h;
+
+		w = layer[0].length;
+		h = layer.length;
+		for (y = 0; y < h; ++y) {
+			l = layer[y];
+			for (x = 0; x < w; ++x) {
+				func(l[x], x, y, layer);
+			}
+		}
+	}
+
+	g.map_func = function(func, layer = current_layer) {
+		let		new_layer;
+		let		l1, l2;
+		let		x, y;
+		let		w, h;
+
+		w = layer[0].length;
+		h = layer.length;
+		new_layer = create_layer(w, h);
+		for (y = 0; y < h; ++y) {
+			l1 = layer[y];
+			l2 = new_layer[y];
+			for (x = 0; x < w; ++x) {
+				l2[x] = func(l1[x], x, y, layer);
+			}
+		}
+		for (y = 0; y < h; ++y) {
+			l1 = layer[y];
+			l2 = new_layer[y];
+			for (x = 0; x < w; ++x) {
+				l1[x] = l2[x];
+			}
+		}
+	}
+
 	g.is_on_canvas = function(x, y) {
 		return (x >= 0 && x < canvas_width && y >= 0 && y < canvas_height);
 	}
