@@ -1098,42 +1098,48 @@ function	create_ascii(g = window) {
 /// OTHER
 //////////////////////////////
 
-	g.shape = function(pos_x, pos_y, radius_w, radius_h, vertices, char, linked = true, offset = 0) {
-		let		layer;
+	g.polygon = function(cx, cy, rw, rh, vertices, char_edges, char_fill = null, offset = 0) {
+		let		layer, original_layer;
 		let		angle;
 		let		step;
 		let		last_x, last_y;
 		let		x, y;
 		let		i;
 
-		if (is_int(pos_x) == false) { pos_x = floor(pos_x); }
-		if (is_int(pos_y) == false) { pos_y = floor(pos_y); }
-		last_x = null;
-		layer = current_layer;
+		if (is_int(cx) == false) { cx = floor(cx); }
+		if (is_int(cy) == false) { cy = floor(cy); }
+		/// IF FILL IS REQUIRED
+		if (char_fill != null && vertices > 2) {
+			/// CREATE NEW LAYER TO DRAW ON
+			original_layer = current_layer;
+			layer = create_layer(layer_width, layer_height);
+			set_layer(layer);
+		/// NO FILL
+		} else {
+			layer = current_layer;
+		}
 		step = TWO_PI / vertices;
+		/// PREPARE FIRST LINE
+		angle = step * (vertices - 1) + offset * step;
+		last_x = round(cx + cos(angle) * rw);
+		last_y = round(cy + sin(angle) * rh);
 		/// LOOP THROUGH 2 PI
 		for (i = 0; i < TWO_PI; i += step) {
 			/// GET COORDS
 			angle = i + offset * step;
-			x = round(pos_x + cos(angle) * radius_w);
-			y = round(pos_y + sin(angle) * radius_h);
+			x = round(cx + cos(angle) * rw);
+			y = round(cy + sin(angle) * rh);
 			/// PRINT LINE
-			if (linked == true) {
-				if (last_x != null) {
-					line(x, y, last_x, last_y, char);
-				}
-				last_x = x;
-				last_y = y;
-			/// PRINT POINT
-			} else if (x >= 0 && x < g.layer_width && y >= 0 && y < g.layer_height) {
-				layer[y][x] = char;
-			}
+			line(x, y, last_x, last_y, char_edges);
+			last_x = x;
+			last_y = y;
 		}
-		/// PRINT LAST LINE
-		if (linked == true) {
-			x = round(pos_x + cos(offset * step) * radius_w);
-			y = round(pos_y + sin(offset * step) * radius_h);
-			line(x, y, last_x, last_y, char);
+		/// IF FILL IS REQUIRE
+		if (char_fill != null && vertices > 2) {
+			/// RESET LAYER AND PUT DRAWN ONE
+			fill(cx, cy, char_fill);
+			set_layer(original_layer);
+			draw_layer(layer);
 		}
 	}
 
