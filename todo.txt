@@ -6,6 +6,15 @@
 - create_style_layer()
 - set_style()
 
+- iter_func(func[, layer])
+- map_func(func[, layer])
+	-> with func(x, y, layer)
+	-> Loop through each cell of the layer / canvas and run the passed function
+	-> for map_func(), the function should return a character that will update
+	   the layer. Technically, the function will fill a new layer to not affect
+	   the passed layer and only after the fill, the new layer will be drawn on
+	   the passed one.
+
 - polygon(char_edges, char_fill, x1, y1, x2, y2, ...)
 - polygon(char_edges, char_fill, [x1, y1, x2, y2, ...])
 	-> Can pass coordinates as "unlimited" number of parameters or as an array
