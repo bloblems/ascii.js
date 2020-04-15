@@ -28,13 +28,13 @@ function	draw() {
 	clear();
 	background(".");
 	/// DRAW SHAPE
-	shape(canvas_width / 2, canvas_height / 2, 20, 12, 3, "#", true, angle);
+	polygon(canvas_width / 2, canvas_height / 2, 20, 12, 3, "#", true, angle);
 	fill(canvas_width / 2, canvas_height / 2, "#");
 	angle = (angle + 0.05) % 1;
 	/// DRAW MASK
 	set_layer(mask);
 	clear();
-	shape(mouse_x, mouse_y, 20, 12, 12, "?");
+	polygon(mouse_x, mouse_y, 20, 12, 12, "?");
 	fill(mouse_x, mouse_y, "?");
 	set_layer();
 	put_mask(mask);

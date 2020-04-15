@@ -15,7 +15,7 @@ const		CIRCLE_WIDTH	= 18;
 const		CIRCLE_HEIGHT	= 10;
 const		CHAR			= '.';
 
-const		ROTATION_STEP	= TWO_PI / 100;
+const		ROTATION_STEP	= TWO_PI / 300;
 const		VERTICES_MIN	= 2;
 const		VERTICES_MAX	= 8;
 const		VERTICES_DELAY	= 4;
@@ -38,7 +38,7 @@ function	setup() {
 
 function	draw() {
 	clear();
-	shape(mouse_x, mouse_y, CIRCLE_WIDTH, CIRCLE_HEIGHT, vertices, CHAR, true, angle);
+	polygon(mouse_x, mouse_y, CIRCLE_WIDTH, CIRCLE_HEIGHT, vertices, CHAR, null, angle);
 	angle += ROTATION_STEP;
 	if (angle >= 1) {
 		angle = 0;

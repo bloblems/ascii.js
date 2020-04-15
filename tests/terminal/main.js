@@ -34,7 +34,7 @@ function	setup() {
 
 function	draw() {
 	clear();
-	shape(canvas_width / 2, canvas_height / 2, 20, 11, 3, ".", true, rotation.value);
+	polygon(canvas_width / 2, canvas_height / 2, 20, 11, 3, ".", true, rotation.value);
 	rotation.inc();
 	draw_layer(frame);
 }

@@ -146,7 +146,7 @@ function	setup() {
 function	draw() {
 	clear();
 	/// TRIANGLE
-	shape(mouse_x, mouse_y, 20, 11, 3, ".", true, triangle.value);
+	polygon(mouse_x, mouse_y, 20, 11, 3, ".", true, triangle.value);
 	triangle.inc();
 	/// POPUP
 	if (popup_active == true) {

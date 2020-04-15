@@ -48,7 +48,7 @@ function	draw() {
 	clear(layer);
 	set_layer(layer);
 	/// CREATE SHAPE
-	shape(x, y, WIDTH, HEIGHT, VERTICES, "#", true, angle);
+	polygon(x, y, WIDTH, HEIGHT, VERTICES, "#", true, angle);
 	/// FILL SHAPE TO CHECK HOVER
 	fill(x, y, "?");
 	hover = layer[mouse_y + HEIGHT][mouse_x + WIDTH] != " ";
