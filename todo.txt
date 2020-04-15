@@ -1,7 +1,15 @@
-- draw_layer() should be able to draw only a part of the layer (with width and
-  height)
+- draw_layer(layer[, x, y, w, h])
+	-> Draw only rect from layer
 
 - draw() updates only the displayed the <span> elements (optimization)
 
-- create_style_layer();
-- set_style();
+- create_style_layer()
+- set_style()
+
+- polygon(char_edges, char_fill, x1, y1, x2, y2, ...)
+- polygon(char_edges, char_fill, [x1, y1, x2, y2, ...])
+	-> Can pass coordinates as "unlimited" number of parameters or as an array
+- shape(x, y, rx, ry, vertices, char_edges, char_fill = null, angle = 0)
+	-> Can give a fill character, if not provided, no fill
+	-> Fill: use a cache layer to draw the shape, fill it and draw the layer
+	-> shape() would create an array of points and call polygon()
