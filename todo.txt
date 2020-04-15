@@ -14,12 +14,3 @@
 	   the layer. Technically, the function will fill a new layer to not affect
 	   the passed layer and only after the fill, the new layer will be drawn on
 	   the passed one.
-
-- polygon(char_edges, char_fill, x1, y1, x2, y2, ...)
-- polygon(char_edges, char_fill, [x1, y1, x2, y2, ...])
-	-> Can pass coordinates as "unlimited" number of parameters or as an array
-- rpolygon(x, y, rx, ry, vertices, char_edges, char_fill = null, angle = 0)
-	-> rpolygon for regular polygon: It would replace the shape() function
-	-> Can give a fill character, if not provided, no fill
-	-> Fill: use a cache layer to draw the shape, fill it and draw the layer
-	-> shape() would create an array of points and call polygon()
