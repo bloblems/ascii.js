@@ -530,41 +530,48 @@ function	create_ascii(g = window) {
 		}
 	}
 
-	// > draw_layer(layer)
-	// > draw_layer(layer, x, y)
-	//
-	// Draw the given layer to the active layer.
-	// By default, layer is drawn to [0, 0] but it's positions can be passed
-	//  via 'x' and 'y'.
-	g.draw_layer = function(to_draw, pos_x = 0, pos_y = 0) {
+	g.draw_layer = function(to_draw, dst_x = 0, dst_y = 0, src_x = 0, src_y = 0, src_w = null, src_h = null) {
 		let		layer;
 		let		layer_line;
 		let		to_draw_line;
 		let		to_draw_cell;
-		let		width, height;
+		let		w, h;
 		let		off_x, off_y;
 		let		x, y;
 
-		if (is_int(pos_x) == false) { pos_x = floor(pos_x); }
-		if (is_int(pos_y) == false) { pos_y = floor(pos_y); }
-		width = to_draw[0].length;
-		height = to_draw.length;
+		/// GET POSITION
+		if (is_int(dst_x) == false) { dst_x = floor(dst_x); }
+		if (is_int(dst_y) == false) { dst_y = floor(dst_y); }
+		/// GET DRAWN QUAD FROM LAYER
+		if (is_int(src_x) == false) { src_x = floor(src_x); }
+		if (is_int(src_y) == false) { src_y = floor(src_y); }
+		w = to_draw[0].length;
+		h = to_draw.length;
+		if (src_w == null) {
+			src_w = to_draw[0].length - src_x;
+		} else if (is_int(src_w) == false)  { src_w = floor(src_w); }
+		if (src_h == null) {
+			src_h = to_draw.length - src_y;
+		} else if (is_int(src_h) == false)  { src_h = floor(src_h); }
+		src_w = min(src_w, w - src_x);
+		src_h = min(src_h, h - src_y);
+		/// DRAW QUAD TO ACTIVE LAYER
 		layer = current_layer;
-		for (y = 0; y < height; ++y) {
-			off_y = pos_y + y;
+		for (y = 0; y < src_h; ++y) {
+			off_y = dst_y + y;
 			if (off_y < 0) {
 				continue;
 			} else if (off_y >= g.layer_height) {
 				return;
 			}
 			layer_line = layer[off_y];
-			to_draw_line = to_draw[y];
-			for (x = 0; x < width; ++x) {
-				off_x = pos_x + x;
+			to_draw_line = to_draw[y + src_y];
+			for (x = 0; x < src_w; ++x) {
+				off_x = dst_x + x;
 				if (off_x < 0 || off_x >= g.layer_width) {
 					continue;
 				}
-				to_draw_cell = to_draw_line[x];
+				to_draw_cell = to_draw_line[x + src_x];
 				if (to_draw_cell != " ") {
 					layer_line[off_x] = to_draw_cell;
 				}
