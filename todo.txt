@@ -1,7 +1,6 @@
-- draw_layer(layer[, x, y, w, h])
-	-> Draw only rect from layer
-
 - draw() updates only the displayed the <span> elements (optimization)
 
 - create_style_layer()
 - set_style()
+
+- text() should hanle '\n'
