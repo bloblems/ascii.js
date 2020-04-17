@@ -3,4 +3,4 @@
 - create_style_layer()
 - set_style()
 
-- text() should hanle '\n'
+- text() with TEXT_TRIM mode should handle '\n' and white spaces
