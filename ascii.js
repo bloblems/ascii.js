@@ -112,7 +112,7 @@ const	BOX_BORDER_INTERSECTION_TOP_RIGHT = [4, 10, 8, 10, 4, 11, 8, 11, 8, 11, 10
 const	BOX_BORDER_INTERSECTION_BOTTOM_LEFT = [5, 9, 7, 7, 11, 5, 9, 7, 11, 9, 11, 11];
 const	BOX_BORDER_INTERSECTION_BOTTOM_RIGHT = [6, 9, 8, 11, 8, 11, 6, 11, 8, 9, 11, 11];
 const	LINE_DEFAULT_CHAR			= ".";
-const	TEXT_TRIM					= 0;
+const	TEXT_BLOCK					= 0;
 const	TEXT_WRAP					= 1;
 const	TEXT_WRAP_HARD				= 2;
 const	TEXT_LEFT					= 0;
@@ -121,7 +121,7 @@ const	TEXT_RIGHT					= 2;
 const	TEXT_ALIGN_LEFT				= 0;
 const	TEXT_ALIGN_CENTER			= 1;
 const	TEXT_ALIGN_RIGHT			= 2;
-const	TEXT_DEFAULT_WRAP			= TEXT_TRIM;
+const	TEXT_DEFAULT_WRAP			= TEXT_BLOCK;
 const	TEXT_DEFAULT_MODE			= TEXT_LEFT;
 const	TEXT_DEFAULT_ALIGN			= TEXT_ALIGN_LEFT;
 const	DRAW_TEXT					= 0;
@@ -950,12 +950,10 @@ function	create_ascii(g = window) {
 
 	g.text = function(string, x, y, w = null) {
 		let		layer;
-		let		split;
-		let		pos_x;
-		let		line, next_line;
-		let		word;
 		let		max;
-		let		i, j;
+		let		reg;
+		let		pos_x;
+		let		i;
 
 		if (is_int(x) == false) { x = floor(x); }
 		if (is_int(y) == false) { y = floor(y); }
@@ -964,52 +962,26 @@ function	create_ascii(g = window) {
 		if (y >= g.layer_height) {
 			return (null);
 		}
-		/// TRIM MODE
-		if (text_wrap == TEXT_TRIM) {
+		/// PREPARE MODE WRAP
+		if (text_wrap == TEXT_WRAP) {
+			max = w || g.layer_width - x;
+			reg = string.match(RegExp('[\\s\n]*.{1,' + max + '}(\\s+|$\n?)|(.{1,'
+			+ max + '})', 'g'));
+			string = (reg != null) ? reg.join('\n') : "";
+		/// PREPARE WRAP HARD
+		} else if (text_wrap == TEXT_WRAP_HARD) {
+			max = w || g.layer_width - x;
+			reg = string.match(RegExp('[\\s\n]*.{1,' + max + '}', 'g'));
+			string = (reg != null) ? reg.join('\n') : "";
+		}
+		/// PREPARE BLOCK WIDTH
+		if (text_wrap == TEXT_BLOCK) {
 			if (text_mode == TEXT_CENTER) {
 				x -= floor(string.length / 2);
 			} else if (text_mode == TEXT_RIGHT) {
 				x -= string.length;
 			}
-			for (i = 0; i < string.length; ++i) {
-				if (x < 0 || string[i] == " ") {
-					++x;
-					continue;
-				} else if (x >= g.layer_width) {
-					return (null);
-				}
-				layer[y][x] = string[i];
-				++x;
-			}
-			return ([x, y]);
-		/// HARD WRAP MODE
-		} else if (text_wrap == TEXT_WRAP_HARD) {
-			if (w != null) {
-				if (text_mode == TEXT_CENTER) {
-					x -= floor(w / 2);
-				} else if (text_mode == TEXT_RIGHT) {
-					x -= w;
-				}
-			}
-			max = (w == null) ? g.layer_width - 1 : x + w;
-			pos_x = 0;
-			for (i = 0; i < string.length; ++i) {
-				if (x + pos_x < 0 || x + pos_x >= g.layer_width || string[i] == " ") {
-					++pos_x;
-					continue;
-				}
-				layer[y][x + pos_x] = string[i];
-				++pos_x;
-				if (x + pos_x > max) {
-					pos_x = 0;
-					++y;
-					if (y >= g.layer_height) {
-						return (null);
-					}
-				}
-			}
-			return ([x + pos_x, y]);
-		/// WRAP MODE
+		/// PREPARE WRAP WIDTH
 		} else {
 			if (w != null) {
 				if (text_mode == TEXT_CENTER) {
@@ -1018,87 +990,27 @@ function	create_ascii(g = window) {
 					x -= w;
 				}
 			}
-			split = string.split(" ");
-			if (split[split.length - 1].length == 0) {
-				split = split.slice(0, -1);
-			}
-			max = (w == null) ? g.layer_width - 1 : x + w;
-			pos_x = 0;
-			/// LOOP THROUGH WORDS
-			line = "";
-			for (i = 0; i < split.length; ++i) {
-				word = split[i];
-				if (word.length == 0) {
-					continue;
-				}
-				/// NEXT WORD OUT OF LIMIT
-				if (x + line.length + word.length - 1 > max) {
-					/// WORD TOO BIG
-					if (x + word.length - 1 > max) {
-						/// TRUNCATE WORD
-						while (x + word.length - 1 >= max) {
-							next_line = word.substr(0, max - (x + line.length) + 0);
-							for (j = 0; j < next_line.length; ++j) {
-								if (x + j >= 0 && x + j < g.layer_width) {
-									layer[y][x + j] = next_line[j];
-								}
-							}
-							word = word.substr(max - (x + line.length));
-							line = "";
-							++y;
-							if (y >= g.layer_height) {
-								return (null);
-							}
-						}
-						++i;
-					/// NORMAL SIZE
-					} else {
-						if (w == null || text_align == TEXT_ALIGN_LEFT) {
-							pos_x = x;
-						} else if (text_align == TEXT_ALIGN_CENTER) {
-							pos_x = x + round((w - line.length) / 2);
-						} else if (text_align == TEXT_ALIGN_RIGHT) {
-							pos_x = x + w - line.length + 1;
-						}
-						/// PUT LINE
-						for (j = 0; j < line.length - 1; ++j) {
-							if (line[j] == " ") {
-								continue;
-							}
-							if (x >= 0 && x < g.layer_width) {
-								layer[y][pos_x + j] = line[j];
-							}
-						}
-						/// GO TO NEXT LINE
-						line = "";
-						++y;
-						if (y >= g.layer_height) {
-							return (null);
-						}
-					}
-				}
-				if (i < split.length - 1) {
-					line += word + " ";
-				} else {
-					line += word;
-				}
-			}
-			/// PUT REST OF STRING
-			if (w == null || text_align == TEXT_ALIGN_LEFT) {
-				pos_x = x;
-			} else if (text_align == TEXT_ALIGN_CENTER) {
-				pos_x = x + round((w - line.length) / 2);
-			} else if (text_align == TEXT_ALIGN_RIGHT) {
-				pos_x = x + w - line.length + 1;
-			}
-			for (j = 0; j < line.length; ++j) {
-				if (line[j] == " ") {
-					continue;
-				}
-				layer[y][pos_x + j] = line[j];
-			}
-			return ([pos_x + j, y]);
 		}
+		/// PUT STRING
+		pos_x = x;
+		for (i = 0; i < string.length; ++i) {
+			/// NEW LINE
+			if (string[i] == '\n') {
+				pos_x = x;
+				++y;
+				if (y >= g.layer_height) {
+					break;
+				}
+			/// NOTHING TO PRINT
+			} else if (pos_x < 0 || string[i] == ' ') {
+				++pos_x;
+			/// PUT CHARACTER
+			} else {
+				layer[y][pos_x] = string[i];
+				++pos_x;
+			}
+		}
+		return ([pos_x, y]);
 	}
 
 //////////////////////////////

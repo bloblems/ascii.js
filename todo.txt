@@ -3,5 +3,4 @@
 - create_style_layer()
 - set_style()
 
-- text() new mode TEXT_BLOCK which handles '\n' and white spaces to put predrawn
-  strings.
+- new text() should handle alignement
