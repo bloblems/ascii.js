@@ -3,4 +3,5 @@
 - create_style_layer()
 - set_style()
 
-- text() with TEXT_TRIM mode should handle '\n' and white spaces
+- text() new mode TEXT_BLOCK which handles '\n' and white spaces to put predrawn
+  strings.

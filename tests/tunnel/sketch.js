@@ -30,7 +30,7 @@ function	draw_shape(x, y, w, angle) {
 	let		c;
 
 	c = characters[floor(map(w, 5, canvas_width * PARALLAX_RATIO, 0, characters.length - 1, true))];
-	polygon(x + w / 2, y + w / 2, w, w * 0.7, SHAPE_VERTICES, c, true, angle);
+	polygon(x + w / 2, y + w / 2, w, w * 0.7, SHAPE_VERTICES, c, null, angle);
 }
 
 //////////////////////////////////////////////////
