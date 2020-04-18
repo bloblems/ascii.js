@@ -959,18 +959,24 @@ function	create_ascii(g = window) {
 		if (is_int(y) == false) { y = floor(y); }
 		if (w != null && is_int(w) == false) { w = floor(w); }
 		layer = current_layer;
-		if (y >= g.layer_height) {
+		if (x >= g.layer_width || y >= g.layer_height) {
 			return (null);
 		}
 		/// PREPARE MODE WRAP
 		if (text_wrap == TEXT_WRAP) {
 			max = w || g.layer_width - x;
+			if (max == 0) {
+				return (null);
+			}
 			reg = string.match(RegExp('[\\s\n]*.{1,' + max + '}(\\s+|$\n?)|(.{1,'
 			+ max + '})', 'g'));
 			string = (reg != null) ? reg.join('\n') : "";
 		/// PREPARE WRAP HARD
 		} else if (text_wrap == TEXT_WRAP_HARD) {
 			max = w || g.layer_width - x;
+			if (max == 0) {
+				return (null);
+			}
 			reg = string.match(RegExp('[\\s\n]*.{1,' + max + '}', 'g'));
 			string = (reg != null) ? reg.join('\n') : "";
 		}
@@ -1005,7 +1011,7 @@ function	create_ascii(g = window) {
 			} else if (pos_x < 0 || string[i] == ' ') {
 				++pos_x;
 			/// PUT CHARACTER
-			} else {
+			} else if (pos_x < g.layer_width){
 				layer[y][pos_x] = string[i];
 				++pos_x;
 			}
