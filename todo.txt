@@ -3,7 +3,5 @@
 - create_style_layer()
 - set_style()
 
-- new text() WRAP MODE should handle alignement
-
 - extra lib part 'ascii.save.js' than can save canvas to .svg .html and .js
   (save as a string that can then be printed with 'text()')

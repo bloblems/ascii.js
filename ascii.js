@@ -952,6 +952,7 @@ function	create_ascii(g = window) {
 		let		layer;
 		let		max;
 		let		reg;
+		let		line;
 		let		pos_x;
 		let		i;
 
@@ -962,33 +963,45 @@ function	create_ascii(g = window) {
 		if (x >= g.layer_width || y >= g.layer_height) {
 			return (null);
 		}
-		/// PREPARE MODE WRAP
-		if (text_wrap == TEXT_WRAP) {
-			max = w || g.layer_width - x;
-			if (max == 0) {
-				return (null);
-			}
-			reg = string.match(RegExp('[\\s\n]*.{1,' + max + '}(\\s+|$\n?)|(.{1,'
-			+ max + '})', 'g'));
-			string = (reg != null) ? reg.join('\n') : "";
-		/// PREPARE WRAP HARD
-		} else if (text_wrap == TEXT_WRAP_HARD) {
-			max = w || g.layer_width - x;
-			if (max == 0) {
-				return (null);
-			}
-			reg = string.match(RegExp('[\\s\n]*.{1,' + max + '}', 'g'));
-			string = (reg != null) ? reg.join('\n') : "";
-		}
-		/// PREPARE BLOCK WIDTH
+		/// PREPARE MODE BLOCK
 		if (text_wrap == TEXT_BLOCK) {
 			if (text_mode == TEXT_CENTER) {
 				x -= floor(string.length / 2);
 			} else if (text_mode == TEXT_RIGHT) {
 				x -= string.length;
 			}
-		/// PREPARE WRAP WIDTH
 		} else {
+			/// PREPARE MODE WRAP
+			if (text_wrap == TEXT_WRAP) {
+				max = w || g.layer_width - x;
+				if (max == 0) {
+					return (null);
+				}
+				reg = string.match(RegExp('[\\s\n]*.{1,' + max
+				+ '}(\\s+|$\n?)|(.{1,' + max + '})', 'g'));
+				/// HANDLE ALIGNEMENT
+				if (reg != null && w != null && text_align != TEXT_ALIGN_LEFT) {
+					for (i = 0; i < reg.length; ++i) {
+						line = reg[i].trim();
+						if (text_align == TEXT_ALIGN_RIGHT) {
+							reg[i] = " ".repeat(w - line.length) + line;
+						} else {
+							reg[i] = " ".repeat(floor((w - line.length) / 2))
+							+ line;
+						}
+					}
+				}
+				string = (reg != null) ? reg.join('\n') : "";
+			/// PREPARE MODE WRAP HARD
+			} else if (text_wrap == TEXT_WRAP_HARD) {
+				max = w || g.layer_width - x;
+				if (max == 0) {
+					return (null);
+				}
+				reg = string.match(RegExp('[\\s\n]*.{1,' + max + '}', 'g'));
+				string = (reg != null) ? reg.join('\n') : "";
+			}
+			/// HANDLE WIDTH
 			if (w != null) {
 				if (text_mode == TEXT_CENTER) {
 					x -= floor(w / 2);
