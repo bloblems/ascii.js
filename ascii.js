@@ -181,6 +181,10 @@ function	map(x, start0, stop0, start1, stop1, bounded = false) {
 	return (x);
 }
 
+function	constrain(x, val_min, val_max) {
+	return (min(val_max, max(val_min, x)));
+}
+
 function	is_float(number) {
 	return (typeof(number) == "number" && number % 1 != 0);
 }
