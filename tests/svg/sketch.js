@@ -18,6 +18,8 @@ let		g_shapes			= null;
 let		g_frame				= 0;
 let		g_angle				= 0;
 let		take_screenshot		= false;
+let		screenshot_angle;
+let		screenshot_frame	= 0;
 
 ////////////////////////////////////////////////////////////////////////////////
 /// FUNCTIONS
@@ -42,24 +44,13 @@ function	screenshot() {
 	let		font, elem;
 
 	elem = document.getElementsByClassName("ascii")[0];
-	console.log(window.getComputedStyle(elem, null));
-	console.log(elem.offsetWidth, canvas_width * char_width);
-	console.log(elem.offsetHeight, canvas_height * char_height);
+	//console.log(window.getComputedStyle(elem, null));
+	//console.log(elem.offsetWidth, canvas_width * char_width);
+	//console.log(elem.offsetHeight, canvas_height * char_height);
 	let computed = window.getComputedStyle(elem, null);
 	font = window.getComputedStyle(elem, null).getPropertyValue("font-family");
 
 	string = SVG_HEADER;
-
-	/// ADD STYLE
-	string += "<style>\ntext {\n";
-	string += "font-size: " + computed.getPropertyValue("font-size") + ";\n";
-	string += "font-family: " + computed.getPropertyValue("font-family") + ";\n";
-	string += "white-space: pre;\n";
-	string += "stroke: " + computed.getPropertyValue("color") + ";\n";
-	string += "text-shadow: " + computed.getPropertyValue("text-shadow") + ";\n";
-	string += "font-weight: " + computed.getPropertyValue("font-weight") + ";\n";
-	string += "}\n"
-	string += "</style>\n";
 
 	// FIND BACKGROUND COLOR
 	let		background = computed.getPropertyValue("background-color");
@@ -69,14 +60,24 @@ function	screenshot() {
 	}
 	string += "<rect width=\"100%\" height=\"100%\" fill=\"" + background + "\"/>\n";
 
+	/// ADD STYLE
+	string += "<text style='";
+	string += "font-size:" + computed.getPropertyValue("font-size") + ";";
+	string += "font-family:" + computed.getPropertyValue("font-family") + ";";
+	string += "stroke:" + computed.getPropertyValue("color") + ";";
+	string += "white-space:pre;";
+	string += "'>\n"
+
 	/// FILL TEXT
 	for (y = 0; y < canvas_height; ++y) {
-		string += "<text x=\"0\" y=\"" + (char_height / 2 + y * char_height) + "\">";
+		string += "<tspan x=\"0\" y=\"" + (char_height / 2 + y * char_height) + "\">";
 		string += ascii[y].join("");
-		string += "</text>\n";
+		string += "</tspan>\n";
 	}
+	string += "</text>\n";
 	string += SVG_FOOTER;
-	download_file("test.svg", string);
+	download_file("screen-" + screenshot_frame.toString().padStart(3, '0') + ".svg", string);
+	screenshot_frame++;
 }
 
 //////////////////////////////////////////////////
@@ -145,7 +146,13 @@ function	draw() {
 	/// REMOVE BIG SHAPES
 	while (g_shapes[0].w > canvas_width * PARALLAX_RATIO) {
 		g_shapes.shift();
-		take_screenshot = true;
+		if (take_screenshot == false) {
+			take_screenshot = true;
+			screenshot_angle = g_angle.toFixed(2);
+		} else if (screenshot_angle == g_angle.toFixed(2)) {
+			no_loop();
+			return;
+		}
 	}
 	/// PRINT SHAPES
 	for (i = g_shapes.length - 1; i >= 0; --i) {
@@ -160,7 +167,7 @@ function	draw() {
 	g_frame.inc();
 	/// TAKE SCREENSHOT
 	if (take_screenshot == true) {
+		console.log(screenshot_angle, g_angle);
 		screenshot();
-		no_loop();
 	}
 }
