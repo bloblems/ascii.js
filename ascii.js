@@ -205,6 +205,14 @@ class	FrameLoop {
 		}
 		this.value = map(this.frame, 0, this.max, this.from, this.to);
 	}
+
+	set(frame) {
+		this.frame = frame;
+		if (this.frame >= this.max) {
+			this.frame = 0;
+		}
+		this.value = map(this.frame, 0, this.max, this.from, this.to);
+	}
 }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
