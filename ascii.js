@@ -132,6 +132,134 @@ const	DRAW_DEFAULT_MODE			= DRAW_TEXT;
 /// FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
+//////////////////////////////////////////////////
+/// EASE
+//////////////////////////////////////////////////
+
+function 	ease_linear(t, b, c, d) {
+	return c*t/d + b;
+}
+
+function	ease_quad_in(t, b, c, d) {
+	t /= d;
+	return c*t*t + b;
+}
+
+function	ease_quad_out(t, b, c, d) {
+	t /= d;
+	return -c * t*(t-2) + b;
+}
+
+function	ease_quad_in_out(t, b, c, d) {
+	t /= d/2;
+	if (t < 1) return c/2*t*t + b;
+	t--;
+	return -c/2 * (t*(t-2) - 1) + b;
+}
+
+function	ease_cubic_in(t, b, c, d) {
+	t /= d;
+	return c*t*t*t + b;
+}
+
+function	ease_cubic_out(t, b, c, d) {
+	t /= d;
+	t--;
+	return c*(t*t*t + 1) + b;
+}
+
+function	ease_cubic_in_out(t, b, c, d) {
+	t /= d/2;
+	if (t < 1) return c/2*t*t*t + b;
+	t -= 2;
+	return c/2*(t*t*t + 2) + b;
+}
+
+function	ease_quartic_in(t, b, c, d) {
+	t /= d;
+	return c*t*t*t*t + b;
+}
+
+function	ease_quartic_out(t, b, c, d) {
+	t /= d;
+	t--;
+	return -c * (t*t*t*t - 1) + b;
+}
+
+function	ease_quartic_in_out(t, b, c, d) {
+	t /= d/2;
+	if (t < 1) return c/2*t*t*t*t + b;
+	t -= 2;
+	return -c/2 * (t*t*t*t - 2) + b;
+}
+
+function	ease_quintic_in(t, b, c, d) {
+	t /= d;
+	return c*t*t*t*t*t + b;
+}
+
+function	ease_quintic_out(t, b, c, d) {
+	t /= d;
+	t--;
+	return c*(t*t*t*t*t + 1) + b;
+}
+
+function	ease_quintic_in_out(t, b, c, d) {
+	t /= d/2;
+	if (t < 1) return c/2*t*t*t*t*t + b;
+	t -= 2;
+	return c/2*(t*t*t*t*t + 2) + b;
+}
+
+function	ease_sin_in(t, b, c, d) {
+	return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
+}
+
+function	ease_sin_out(t, b, c, d) {
+	return c * Math.sin(t/d * (Math.PI/2)) + b;
+}
+
+function	ease_sin_in_out(t, b, c, d) {
+	return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
+}
+
+function	ease_exp_in(t, b, c, d) {
+	return c * Math.pow( 2, 10 * (t/d - 1) ) + b;
+}
+
+function	ease_exp_out(t, b, c, d) {
+	return c * ( -Math.pow( 2, -10 * t/d ) + 1 ) + b;
+}
+
+function	ease_exp_in_out(t, b, c, d) {
+	t /= d/2;
+	if (t < 1) return c/2 * Math.pow( 2, 10 * (t - 1) ) + b;
+	t--;
+	return c/2 * ( -Math.pow( 2, -10 * t) + 2 ) + b;
+}
+
+function	ease_circular_in(t, b, c, d) {
+	t /= d;
+	return -c * (Math.sqrt(1 - t*t) - 1) + b;
+}
+
+function	ease_circular_out(t, b, c, d) {
+	t /= d;
+	t--;
+	return c * Math.sqrt(1 - t*t) + b;
+}
+
+function	ease_circular_in_out(t, b, c, d) {
+	t /= d/2;
+	if (t < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
+	t -= 2;
+	return c/2 * (Math.sqrt(1 - t*t) + 1) + b;
+}
+
+//////////////////////////////////////////////////
+/// OTHER
+//////////////////////////////////////////////////
+
 function	random(option_1 = null, option_2 = null) {
 	/// MODE ARRAY
 	if (is_array(option_1) == true) {
@@ -190,12 +318,16 @@ function	is_float(number) {
 }
 
 class	FrameLoop {
-	constructor(max, from = 0, to = max) {
+	// TODO: Handle "go back" (true | false)
+	constructor(max, from = 0, to = max, go_back = false, ease = ease_linear) {
 		this.max = max;
 		this.from = from;
 		this.to = to;
 		this.frame = 0;
 		this.value = from;
+		// ! experimental !
+		this.go_back = go_back;
+		this.ease = ease;
 	}
 
 	inc() {
@@ -204,6 +336,22 @@ class	FrameLoop {
 			this.frame = 0;
 		}
 		this.value = map(this.frame, 0, this.max, this.from, this.to);
+
+		// ! experimental
+		/// TWO DIRECTIONS
+		if (this.go_back == true) {
+			/// FORWARD
+			if (this.frame < this.max / 2) {
+				this.value = map(this.frame, 0, this.max / 2, this.from, this.to);
+			/// BACKWARD
+			} else {
+				// issue here ? from "this.from" to "this.to" ?
+				this.value = map(this.frame, this.max / 2, this.max, this.to, this.from);
+			}
+		/// ONE DIRECTION
+		} else {
+			this.value = map(this.frame, 0, this.max, this.from, this.to);
+		}
 	}
 
 	set(frame) {
