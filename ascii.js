@@ -318,16 +318,31 @@ function	is_float(number) {
 }
 
 class	FrameLoop {
-	// TODO: Handle "go back" (true | false)
 	constructor(max, from = 0, to = max, go_back = false, ease = ease_linear) {
 		this.max = max;
 		this.from = from;
 		this.to = to;
 		this.frame = 0;
 		this.value = from;
-		// ! experimental !
+		this.range = (from < to) ? (to - from) : - (from - to);
 		this.go_back = go_back;
 		this.ease = ease;
+	}
+
+	update_value() {
+		/// TWO DIRECTIONS
+		if (this.go_back == true) {
+			/// FORWARD
+			if (this.frame < this.max / 2) {
+				this.value = this.ease(this.frame, this.from, this.range, this.max / 2);
+			/// BACKWARD
+			} else {
+				this.value = this.ease(this.frame - this.max / 2, this.to, - this.range, this.max / 2);
+			}
+		/// ONE DIRECTION
+		} else {
+			this.value = this.ease(this.frame, this.from, this.range, this.max);
+		}
 	}
 
 	inc() {
@@ -335,23 +350,7 @@ class	FrameLoop {
 		if (this.frame >= this.max) {
 			this.frame = 0;
 		}
-		this.value = map(this.frame, 0, this.max, this.from, this.to);
-
-		// ! experimental
-		/// TWO DIRECTIONS
-		if (this.go_back == true) {
-			/// FORWARD
-			if (this.frame < this.max / 2) {
-				this.value = map(this.frame, 0, this.max / 2, this.from, this.to);
-			/// BACKWARD
-			} else {
-				// issue here ? from "this.from" to "this.to" ?
-				this.value = map(this.frame, this.max / 2, this.max, this.to, this.from);
-			}
-		/// ONE DIRECTION
-		} else {
-			this.value = map(this.frame, 0, this.max, this.from, this.to);
-		}
+		this.update_value();
 	}
 
 	set(frame) {
@@ -359,7 +358,7 @@ class	FrameLoop {
 		if (this.frame >= this.max) {
 			this.frame = 0;
 		}
-		this.value = map(this.frame, 0, this.max, this.from, this.to);
+		this.update_value();
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////
