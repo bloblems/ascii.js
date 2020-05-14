@@ -38,7 +38,7 @@ function	save_to_svg(filename) {
 	/// TEXT
 	for (y = 0; y < canvas_height; ++y) {
 		string += "<tspan x=\"0\" y=\"" + (char_height / 2 + y * char_height) + "\">";
-		string += ascii[y].join("");
+		string += ascii[y].join("").replace(/\</g, "&lt;").replace(/\>/g, "&gt;");
 		string += "</tspan>";
 	}
 	/// FOOTER
