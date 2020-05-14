@@ -18,11 +18,12 @@ OUTPUT=${4}
 if [[ -f ${SRC} ]]; then
 	inkscape -z -w ${WIDTH} -h ${HEIGHT} ${SRC} -e ${OUTPUT}
 elif [[ -d ${SRC} ]]; then
-	if [[ ! -f ${OUTPUT} ]]; then
+	if [[ ! -d ${OUTPUT} ]]; then
 		mkdir ${OUTPUT}
 	fi
 	for file in ${SRC}/*; do
-		name="${file%.*}"
+		name="${file##*/}"
+		name="${name%.*}"
 		inkscape -z -w ${WIDTH} -h ${HEIGHT} "${file}" -e "${OUTPUT}/${name}.png"
 	done
 fi

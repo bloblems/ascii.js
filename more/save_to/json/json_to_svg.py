@@ -9,6 +9,7 @@ import  sys
 import  json
 import  os
 import  re
+import  xml.sax.saxutils as xml
 
 ################################################################################
 ### DATA
@@ -43,8 +44,6 @@ else:
     os.mkdir(sys.argv[2])
 
 ### CREATE FILES
-sub_gt = re.compile(r"\>")
-sub_lt = re.compile(r"\<")
 with open(sys.argv[1]) as json_file:
     ### GET DATA
     json_data = json.load(json_file);
@@ -67,13 +66,13 @@ with open(sys.argv[1]) as json_file:
         y = 0
         for line in frame:
             ### REPLACE SPECIAL CHARACTERS
-            line = sub_gt.sub("&gt;", sub_lt.sub("&lt;", line))
+            line = xml.escape(line)
             ### ADD LINE
             content += SVG_LINE.format(char_height / 2 + y * char_height, line)
             y += 1
         ### ADD FOOTER
         content += SVG_CONTAINER_FOOTER + SVG_FOOTER
         ### CREATE FILE
-        with open("{}/{.5}.svg".format(sys.argv[2], i), "w") as output:
+        with open("{}/{:05}.svg".format(sys.argv[2], i), "w") as output:
             output.write(content)
         i += 1
