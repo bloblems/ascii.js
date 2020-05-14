@@ -74,6 +74,6 @@ with open(sys.argv[1]) as json_file:
         ### ADD FOOTER
         content += SVG_CONTAINER_FOOTER + SVG_FOOTER
         ### CREATE FILE
-        with open("{}/{}.svg".format(sys.argv[2], i), "w") as output:
+        with open("{}/{.5}.svg".format(sys.argv[2], i), "w") as output:
             output.write(content)
         i += 1

@@ -21,9 +21,8 @@ elif [[ -d ${SRC} ]]; then
 	if [[ ! -f ${OUTPUT} ]]; then
 		mkdir ${OUTPUT}
 	fi
-	i=0
 	for file in ${SRC}/*; do
-		inkscape -z -w ${WIDTH} -h ${HEIGHT} ${file} -e ${OUTPUT}/${i}.png
-		((++i))
+		name="${file%.*}"
+		inkscape -z -w ${WIDTH} -h ${HEIGHT} "${file}" -e "${OUTPUT}/${name}.png"
 	done
 fi
