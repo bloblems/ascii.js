@@ -12,9 +12,6 @@ let		ascii_save_json	= null;
 /// FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-function	download_file(filename, content) {
-}
-
 function	record_json() {
 	let		elem, computed;
 	let		back_color, font_color;
@@ -51,11 +48,12 @@ function	record_json() {
 	ascii_save_json.record.push(frame);
 }
 
-function	stop_record_json() {
+function	stop_record_json(filename) {
 	let		json;
 	let		string;
 	let		link;
 
+	/// COMPUTE FILE CONTENT
 	json = {
 		"width": canvas_width,
 		"height": canvas_height,
@@ -68,8 +66,9 @@ function	stop_record_json() {
 		"frames": ascii_save_json.record
 	};
 	string = JSON.stringify(json);
+	/// DOWNLOAD FILE
 	link = document.createElement("a");
 	link.href = "data:text/plain;charset=utf-8," + encodeURIComponent(string);
-	link.download = "record.json";
+	link.download = filename + ".json";
 	link.click();
 }
