@@ -43,6 +43,7 @@ of the library).
 	- [Functions](https://gitlab.com/cactusfluo/ascii.js/-/wikis/api/functions)
 		- [Environment functions](https://gitlab.com/cactusfluo/ascii.js/-/wikis/api/environment-functions)
 		- [Drawing functions](https://gitlab.com/cactusfluo/ascii.js/-/wikis/api/drawing-functions)
+		- [Animation functions](https://gitlab.com/cactusfluo/ascii.js/-/wikis/api/animation-functions)
 		- [Event functions](https://gitlab.com/cactusfluo/ascii.js/-/wikis/api/event-functions)
 		- [External functions](https://gitlab.com/cactusfluo/ascii.js/-/wikis/api/external-functions)
 	- [Classes](https://gitlab.com/cactusfluo/ascii.js/-/wikis/api/classes)
