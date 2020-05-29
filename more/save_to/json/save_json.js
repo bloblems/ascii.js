@@ -38,14 +38,17 @@ function	record_json() {
 		ascii_save_json.font_family = font_family;
 		ascii_save_json.font_color = font_color;
 		ascii_save_json.back_color = back_color;
-		ascii_save_json.record = [];
+		ascii_save_json.record = "";
 	}
 	/// SAVE FRAME
 	frame = [];
 	for (line of ascii) {
 		frame.push(line.join(''));
 	}
-	ascii_save_json.record.push(frame);
+	if (ascii_save_json.record[ascii_save_json.record.length - 1] == "]") {
+		ascii_save_json.record += ",";
+	}
+	ascii_save_json.record += JSON.stringify(frame);
 }
 
 function	stop_record_json(filename) {
@@ -63,9 +66,10 @@ function	stop_record_json(filename) {
 		"font_family": ascii_save_json.font_family,
 		"font_color": ascii_save_json.font_color,
 		"back_color": ascii_save_json.back_color,
-		"frames": ascii_save_json.record
+		"frames": []
 	};
 	string = JSON.stringify(json);
+	string = string.substring(0, string.length - 2) + ascii_save_json.record + "]}";
 	/// DOWNLOAD FILE
 	link = document.createElement("a");
 	link.href = "data:text/plain;charset=utf-8," + encodeURIComponent(string);
