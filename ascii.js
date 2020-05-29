@@ -136,124 +136,172 @@ const	DRAW_DEFAULT_MODE			= DRAW_TEXT;
 /// EASE
 //////////////////////////////////////////////////
 
-function 	ease_linear(t, b, c, d) {
-	return c*t/d + b;
+function	ease_linear(x) {
+	return x;
 }
 
-function	ease_quad_in(t, b, c, d) {
-	t /= d;
-	return c*t*t + b;
+function	ease_quad_in(x) {
+	return x * x;
 }
 
-function	ease_quad_out(t, b, c, d) {
-	t /= d;
-	return -c * t*(t-2) + b;
+function	ease_quad_out(x) {
+	return 1 - (1 - x) * (1 - x);
 }
 
-function	ease_quad_in_out(t, b, c, d) {
-	t /= d/2;
-	if (t < 1) return c/2*t*t + b;
-	t--;
-	return -c/2 * (t*(t-2) - 1) + b;
+function	ease_quad_in_out(x) {
+	return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2;
 }
 
-function	ease_cubic_in(t, b, c, d) {
-	t /= d;
-	return c*t*t*t + b;
+function	ease_cubic_in(x) {
+	return x * x * x;
 }
 
-function	ease_cubic_out(t, b, c, d) {
-	t /= d;
-	t--;
-	return c*(t*t*t + 1) + b;
+function	ease_cubic_out(x) {
+	return 1 - pow(1 - x, 3);
 }
 
-function	ease_cubic_in_out(t, b, c, d) {
-	t /= d/2;
-	if (t < 1) return c/2*t*t*t + b;
-	t -= 2;
-	return c/2*(t*t*t + 2) + b;
+function	ease_cubic_in_out(x) {
+	return x < 0.5 ? 4 * x * x * x : 1 - pow(-2 * x + 2, 3) / 2;
 }
 
-function	ease_quartic_in(t, b, c, d) {
-	t /= d;
-	return c*t*t*t*t + b;
+function	ease_quart_in(x) {
+	return x * x * x * x;
 }
 
-function	ease_quartic_out(t, b, c, d) {
-	t /= d;
-	t--;
-	return -c * (t*t*t*t - 1) + b;
+function	ease_quart_out(x) {
+	return 1 - pow(1 - x, 4);
 }
 
-function	ease_quartic_in_out(t, b, c, d) {
-	t /= d/2;
-	if (t < 1) return c/2*t*t*t*t + b;
-	t -= 2;
-	return -c/2 * (t*t*t*t - 2) + b;
+function	ease_quart_in_out(x) {
+	return x < 0.5 ? 8 * x * x * x * x : 1 - pow(-2 * x + 2, 4) / 2;
 }
 
-function	ease_quintic_in(t, b, c, d) {
-	t /= d;
-	return c*t*t*t*t*t + b;
+function	ease_quint_in(x) {
+	return x * x * x * x * x;
 }
 
-function	ease_quintic_out(t, b, c, d) {
-	t /= d;
-	t--;
-	return c*(t*t*t*t*t + 1) + b;
+function	ease_quint_out(x) {
+	return 1 - pow(1 - x, 5);
 }
 
-function	ease_quintic_in_out(t, b, c, d) {
-	t /= d/2;
-	if (t < 1) return c/2*t*t*t*t*t + b;
-	t -= 2;
-	return c/2*(t*t*t*t*t + 2) + b;
+function	ease_quint_in_out(x) {
+	return x < 0.5 ? 16 * x * x * x * x * x : 1 - pow(-2 * x + 2, 5) / 2;
 }
 
-function	ease_sin_in(t, b, c, d) {
-	return -c * Math.cos(t/d * (Math.PI/2)) + c + b;
+function	ease_sin_in(x) {
+	return 1 - cos((x * PI) / 2);
 }
 
-function	ease_sin_out(t, b, c, d) {
-	return c * Math.sin(t/d * (Math.PI/2)) + b;
+function	ease_sin_out(x) {
+	return sin((x * PI) / 2);
 }
 
-function	ease_sin_in_out(t, b, c, d) {
-	return -c/2 * (Math.cos(Math.PI*t/d) - 1) + b;
+function	ease_sin_in_out(x) {
+	return -(cos(PI * x) - 1) / 2;
 }
 
-function	ease_exp_in(t, b, c, d) {
-	return c * Math.pow( 2, 10 * (t/d - 1) ) + b;
+function	ease_exp_in(x) {
+	return x === 0 ? 0 : pow(2, 10 * x - 10);
 }
 
-function	ease_exp_out(t, b, c, d) {
-	return c * ( -Math.pow( 2, -10 * t/d ) + 1 ) + b;
+function	ease_exp_out(x) {
+	return x === 1 ? 1 : 1 - pow(2, -10 * x);
 }
 
-function	ease_exp_in_out(t, b, c, d) {
-	t /= d/2;
-	if (t < 1) return c/2 * Math.pow( 2, 10 * (t - 1) ) + b;
-	t--;
-	return c/2 * ( -Math.pow( 2, -10 * t) + 2 ) + b;
+function	ease_exp_in_out(x) {
+	return x === 0
+	? 0
+	: x === 1
+	? 1
+	: x < 0.5 ? pow(2, 20 * x - 10) / 2
+	: (2 - pow(2, -20 * x + 10)) / 2;
 }
 
-function	ease_circular_in(t, b, c, d) {
-	t /= d;
-	return -c * (Math.sqrt(1 - t*t) - 1) + b;
+function	ease_circ_in(x) {
+	return 1 - sqrt(1 - pow(x, 2));
 }
 
-function	ease_circular_out(t, b, c, d) {
-	t /= d;
-	t--;
-	return c * Math.sqrt(1 - t*t) + b;
+function	ease_circ_out(x) {
+	return sqrt(1 - pow(x - 1, 2));
 }
 
-function	ease_circular_in_out(t, b, c, d) {
-	t /= d/2;
-	if (t < 1) return -c/2 * (Math.sqrt(1 - t*t) - 1) + b;
-	t -= 2;
-	return c/2 * (Math.sqrt(1 - t*t) + 1) + b;
+function	ease_circ_in_out(x) {
+	return x < 0.5
+	? (1 - sqrt(1 - pow(2 * x, 2))) / 2
+	: (sqrt(1 - pow(-2 * x + 2, 2)) + 1) / 2;
+}
+
+function	ease_back_in(x) {
+	const c1 = 1.70158;
+	const c3 = c1 + 1;
+	return c3 * x * x * x - c1 * x * x;
+}
+
+function	ease_back_out(x) {
+	const c1 = 1.70158;
+	const c3 = c1 + 1;
+	return 1 + c3 * pow(x - 1, 3) + c1 * pow(x - 1, 2);
+}
+
+function	ease_back_in_out(x) {
+	const c1 = 1.70158;
+	const c2 = c1 * 1.525;
+	return x < 0.5
+	? (pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+	: (pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+}
+
+function	ease_elastic_in(x) {
+	const c4 = (2 * Math.PI) / 3;
+	return x === 0
+	? 0
+	: x === 1
+	? 1
+	: -pow(2, 10 * x - 10) * sin((x * 10 - 10.75) * c4);
+}
+
+function	ease_elastic_out(x) {
+	const c4 = (2 * Math.PI) / 3;
+	return x === 0
+	? 0
+	: x === 1
+	? 1
+	: pow(2, -10 * x) * sin((x * 10 - 0.75) * c4) + 1;
+}
+
+function	ease_elastic_in_out(x) {
+	const c5 = (2 * Math.PI) / 4.5;
+	return x === 0
+	? 0
+	: x === 1
+	? 1
+	: x < 0.5
+	? -(pow(2, 20 * x - 10) * sin((20 * x - 11.125) * c5)) / 2
+	: (pow(2, -20 * x + 10) * sin((20 * x - 11.125) * c5)) / 2 + 1;
+}
+
+function	ease_bounce_in(x) {
+	return 1 - ease_bounce_out(1 - x);
+}
+
+function	ease_bounce_out(x) {
+	const n1 = 7.5625;
+	const d1 = 2.75;
+	if (x < 1 / d1) {
+		return n1 * x * x;
+	} else if (x < 2 / d1) {
+		return n1 * (x -= 1.5 / d1) * x + 0.75;
+	} else if (x < 2.5 / d1) {
+		return n1 * (x -= 2.25 / d1) * x + 0.9375;
+	} else {
+		return n1 * (x -= 2.625 / d1) * x + 0.984375;
+	}
+}
+
+function	ease_bounce_in_out(x) {
+	return x < 0.5
+	? (1 - ease_bounce_out(1 - 2 * x)) / 2
+	: (1 + ease_bounce_out(2 * x - 1)) / 2;
 }
 
 //////////////////////////////////////////////////
@@ -332,16 +380,17 @@ class	FrameLoop {
 	update_value() {
 		/// TWO DIRECTIONS
 		if (this.go_back == true) {
+			let	half = this.max / 2;
 			/// FORWARD
 			if (this.frame < this.max / 2) {
-				this.value = this.ease(this.frame, this.from, this.range, this.max / 2);
+				this.value = this.from + this.ease(this.frame / half) * this.range;
 			/// BACKWARD
 			} else {
-				this.value = this.ease(this.frame - this.max / 2, this.to, - this.range, this.max / 2);
+				this.value = this.to - this.ease((this.frame - half) / half) * this.range;
 			}
 		/// ONE DIRECTION
 		} else {
-			this.value = this.ease(this.frame, this.from, this.range, this.max);
+			this.value = this.from + this.ease(this.frame / this.max) * this.range;
 		}
 	}
 
